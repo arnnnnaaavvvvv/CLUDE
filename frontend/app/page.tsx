@@ -2,9 +2,16 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { GitBranch, Plus, Database, CheckCircle2, Clock, AlertCircle, ArrowRight, RefreshCw } from "lucide-react";
+import { GitBranch, Plus, CheckCircle2, Clock, AlertCircle, ArrowRight, RefreshCw, Sparkles, Globe, Trash2 } from "lucide-react";
 import { Repository } from "@/lib/types";
-import { fetchRepos, connectRepo, fetchIndexStatus } from "@/lib/api";
+import { fetchRepos, connectRepo } from "@/lib/api";
+
+const PRESET_REPOS = [
+  "facebook/react",
+  "vercel/next.js",
+  "fastapi/fastapi",
+  "tailwindlabs/tailwindcss",
+];
 
 export default function RepositoriesPage() {
   const [repos, setRepos] = useState<Repository[]>([]);
@@ -14,9 +21,21 @@ export default function RepositoriesPage() {
   const [error, setError] = useState<string | null>(null);
 
   // Form State
-  const [fullName, setFullName] = useState("");
-  const [token, setToken] = useState("");
+  const [repoInput, setRepoInput] = useState("");
   const [branch, setBranch] = useState("main");
+
+  const parseRepoName = (input: string): string => {
+    let clean = input.trim();
+    // Strip http/https/github.com prefix
+    clean = clean.replace(/^(?:https?:\/\/)?(?:www\.)?github\.com\//i, "");
+    // Strip git SSH prefix
+    clean = clean.replace(/^git@github\.com:/i, "");
+    // Strip trailing .git
+    clean = clean.replace(/\.git$/i, "");
+    // Strip leading/trailing slashes
+    clean = clean.replace(/^\/+|\/+$/g, "");
+    return clean;
+  };
 
   const loadRepositories = async () => {
     try {
@@ -37,19 +56,22 @@ export default function RepositoriesPage() {
 
   const handleConnect = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fullName) return;
+    const cleanFullName = parseRepoName(repoInput);
+
+    if (!cleanFullName || !cleanFullName.includes("/")) {
+      setError("Please enter a valid GitHub repository URL or format like 'owner/repo'");
+      return;
+    }
 
     try {
       setConnecting(true);
       setError(null);
       await connectRepo({
         github_repo_id: Math.floor(100000 + Math.random() * 900000),
-        full_name: fullName,
+        full_name: cleanFullName,
         default_branch: branch || "main",
-        access_token: token || undefined,
       });
-      setFullName("");
-      setToken("");
+      setRepoInput("");
       setFormOpen(false);
       await loadRepositories();
     } catch (err: any) {
@@ -64,44 +86,59 @@ export default function RepositoriesPage() {
       {/* Header Banner */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white">
+          <h1 className="text-3xl font-extrabold tracking-tight text-white flex items-center gap-2.5">
+            <GitBranch className="h-8 w-8 text-primary" />
             Connected Repositories
           </h1>
           <p className="text-sm text-gray-400 mt-1">
-            Manage repositories indexed by CLUDE for AI Root-Cause Analysis and Architecture Onboarding.
+            Connect any GitHub repository link to index git history and generate AI root-cause diagnostics & architecture guides.
           </p>
         </div>
         <button
-          onClick={() => setFormOpen(!formOpen)}
+          onClick={() => {
+            setFormOpen(!formOpen);
+            setError(null);
+          }}
           className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary/25 hover:bg-primary-hover transition-all"
         >
           <Plus className="h-4 w-4" />
-          Connect Repository
+          Add Repository Link
         </button>
       </div>
 
       {/* Connect Repo Modal / Form */}
       {formOpen && (
-        <div className="rounded-xl border border-border bg-surface p-6 shadow-xl">
-          <h3 className="text-lg font-bold text-white mb-1">Connect GitHub Repository</h3>
+        <div className="rounded-xl border border-border bg-surface p-6 shadow-xl animate-in fade-in duration-200">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <Globe className="h-5 w-5 text-primary" />
+              Connect GitHub Repository
+            </h3>
+            <span className="text-xs text-gray-500 font-mono">No personal access tokens required</span>
+          </div>
           <p className="text-xs text-gray-400 mb-5">
-            Provide the repository full name (e.g. <code className="text-primary font-mono">owner/repo</code>) and optional personal access token for private repositories.
+            Paste any public repository URL (e.g. <code className="text-primary font-mono">https://github.com/facebook/react</code>) or shorthand name (<code className="text-primary font-mono">owner/repo</code>).
           </p>
 
           <form onSubmit={handleConnect} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="md:col-span-2">
                 <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
-                  Repository Name <span className="text-danger">*</span>
+                  GitHub Repository URL or Name <span className="text-danger">*</span>
                 </label>
-                <input
-                  type="text"
-                  placeholder="e.g. vercel/next.js"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  required
-                  className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-white placeholder-gray-500 focus:border-primary focus:outline-none"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="https://github.com/owner/repo or owner/repo"
+                    value={repoInput}
+                    onChange={(e) => {
+                      setRepoInput(e.target.value);
+                      setError(null);
+                    }}
+                    required
+                    className="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-white placeholder-gray-500 focus:border-primary focus:outline-none font-mono"
+                  />
+                </div>
               </div>
 
               <div>
@@ -113,25 +150,35 @@ export default function RepositoriesPage() {
                   placeholder="main"
                   value={branch}
                   onChange={(e) => setBranch(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-white placeholder-gray-500 focus:border-primary focus:outline-none"
+                  className="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-white placeholder-gray-500 focus:border-primary focus:outline-none font-mono"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
-                GitHub Token (Optional for public, required for private)
-              </label>
-              <input
-                type="password"
-                placeholder="ghp_..."
-                value={token}
-                onChange={(e) => setToken(e.target.value)}
-                className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-white placeholder-gray-500 focus:border-primary focus:outline-none"
-              />
+            {/* Quick Suggestions */}
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <span className="text-[11px] text-gray-400 font-mono">Quick load popular repos:</span>
+              {PRESET_REPOS.map((preset) => (
+                <button
+                  key={preset}
+                  type="button"
+                  onClick={() => {
+                    setRepoInput(`https://github.com/${preset}`);
+                    setError(null);
+                  }}
+                  className="text-[11px] rounded bg-surfaceHover px-2.5 py-1 text-gray-300 hover:text-white hover:bg-primary/20 hover:border-primary/40 border border-border font-mono transition-colors"
+                >
+                  {preset}
+                </button>
+              ))}
             </div>
 
-            {error && <div className="text-xs text-danger font-medium">{error}</div>}
+            {error && (
+              <div className="rounded-lg bg-danger/10 border border-danger/30 p-3 text-xs text-danger font-medium flex items-center gap-2">
+                <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                <span>{error}</span>
+              </div>
+            )}
 
             <div className="flex justify-end gap-3 pt-2">
               <button
@@ -143,10 +190,20 @@ export default function RepositoriesPage() {
               </button>
               <button
                 type="submit"
-                disabled={connecting}
-                className="rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-50"
+                disabled={connecting || !repoInput.trim()}
+                className="rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-50 flex items-center gap-2 shadow-lg shadow-primary/20"
               >
-                {connecting ? "Connecting & Indexing..." : "Start Indexing"}
+                {connecting ? (
+                  <>
+                    <RefreshCw className="h-4 w-4 animate-spin" />
+                    Connecting & Indexing...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-4 w-4" />
+                    Start Indexing
+                  </>
+                )}
               </button>
             </div>
           </form>
@@ -163,7 +220,7 @@ export default function RepositoriesPage() {
           <GitBranch className="mx-auto h-12 w-12 text-gray-500 mb-3" />
           <h3 className="text-base font-semibold text-white">No repositories connected yet</h3>
           <p className="text-xs text-gray-400 max-w-sm mx-auto mt-1 mb-5">
-            Connect a GitHub repository above to index its git history, AST syntax graph, and vector embeddings.
+            Paste a GitHub repository link above to index its git history, AST syntax graph, and vector embeddings.
           </p>
           <button
             onClick={() => setFormOpen(true)}
@@ -187,21 +244,21 @@ export default function RepositoriesPage() {
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-3">
                     <div className="flex items-center gap-2">
-                      <GitBranch className="h-5 w-5 text-primary" />
-                      <span className="font-bold text-white tracking-tight">{repo.full_name}</span>
+                      <GitBranch className="h-5 w-5 text-primary flex-shrink-0" />
+                      <span className="font-bold text-white tracking-tight break-all">{repo.full_name}</span>
                     </div>
                     {isCompleted && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[11px] font-semibold text-emerald-400 border border-emerald-500/20">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[11px] font-semibold text-emerald-400 border border-emerald-500/20 whitespace-nowrap">
                         <CheckCircle2 className="h-3 w-3" /> Indexed
                       </span>
                     )}
                     {isIndexing && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-[11px] font-semibold text-amber-400 border border-amber-500/20 animate-pulse">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-[11px] font-semibold text-amber-400 border border-amber-500/20 animate-pulse whitespace-nowrap">
                         <Clock className="h-3 w-3" /> Indexing
                       </span>
                     )}
                     {repo.indexing_status === "FAILED" && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-rose-500/10 px-2 py-0.5 text-[11px] font-semibold text-rose-400 border border-rose-500/20">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-rose-500/10 px-2 py-0.5 text-[11px] font-semibold text-rose-400 border border-rose-500/20 whitespace-nowrap">
                         <AlertCircle className="h-3 w-3" /> Failed
                       </span>
                     )}
