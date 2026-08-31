@@ -17,15 +17,15 @@ export function ScrollReveal({
   className = "",
   direction = "up",
   delay = 0,
-  duration = 700,
-  threshold = 0.12,
-  once = true,
+  duration = 650,
+  threshold = 0.1,
+  once = false, // Set to false so it animates continuously every time you scroll up or down
 }: ScrollRevealProps) {
   const [isVisible, setIsVisible] = useState(false);
   const elementRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    // Check prefers-reduced-motion
+    // Respect prefers-reduced-motion
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setIsVisible(true);
       return;
@@ -38,13 +38,16 @@ export function ScrollReveal({
           if (once && elementRef.current) {
             observer.unobserve(elementRef.current);
           }
-        } else if (!once) {
-          setIsVisible(false);
+        } else {
+          // Re-trigger every time the element leaves and re-enters viewport
+          if (!once) {
+            setIsVisible(false);
+          }
         }
       },
       {
         threshold,
-        rootMargin: "0px 0px -40px 0px",
+        rootMargin: "0px 0px -60px 0px",
       }
     );
 
@@ -61,11 +64,11 @@ export function ScrollReveal({
   }, [threshold, once]);
 
   // Initial hidden transform offsets
-  let initialTransform = "translate3d(0, 30px, 0)";
-  if (direction === "down") initialTransform = "translate3d(0, -30px, 0)";
-  if (direction === "left") initialTransform = "translate3d(35px, 0, 0)";
-  if (direction === "right") initialTransform = "translate3d(-35px, 0, 0)";
-  if (direction === "zoom") initialTransform = "scale(0.92) translate3d(0, 20px, 0)";
+  let initialTransform = "translate3d(0, 28px, 0)";
+  if (direction === "down") initialTransform = "translate3d(0, -28px, 0)";
+  if (direction === "left") initialTransform = "translate3d(30px, 0, 0)";
+  if (direction === "right") initialTransform = "translate3d(-30px, 0, 0)";
+  if (direction === "zoom") initialTransform = "scale(0.94) translate3d(0, 16px, 0)";
   if (direction === "fade") initialTransform = "translate3d(0, 0, 0)";
 
   const style: React.CSSProperties = {
@@ -74,7 +77,7 @@ export function ScrollReveal({
     transitionProperty: "opacity, transform",
     transitionDuration: `${duration}ms`,
     transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-    transitionDelay: `${delay}ms`,
+    transitionDelay: isVisible ? `${delay}ms` : "0ms", // Instantly reset when leaving, delayed when entering
     willChange: "opacity, transform",
   };
 
