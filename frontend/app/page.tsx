@@ -24,7 +24,7 @@ import {
   Activity,
   Flame,
 } from "lucide-react";
-import { HeroTerminalDemo } from "@/components/HeroTerminalDemo";
+import { CustomerFeedbackSlider } from "@/components/CustomerFeedbackSlider";
 
 export default function LandingPage() {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
@@ -59,22 +59,22 @@ export default function LandingPage() {
 
   return (
     <div className="w-full space-y-28 pb-20 font-sans text-textPrimary overflow-x-hidden">
-      {/* 1. HERO SECTION (EXACT VETRA TEMPLATE WITH ORBITING BACKGROUND & BLUE GLOW) */}
-      <section className="relative pt-12 pb-16 text-center max-w-6xl mx-auto px-4">
+      {/* 1. HERO SECTION (CLEAN VETRA HERO WITH ORBITING BACKGROUND) */}
+      <section className="relative pt-16 pb-16 text-center max-w-5xl mx-auto px-4">
         {/* Orbiting Concentric Ring Animations in Background */}
-        <div className="hidden lg:flex absolute inset-0 top-0 mb-auto flex-col items-center justify-center w-full min-h-[600px] -z-10 pointer-events-none opacity-40">
+        <div className="hidden lg:flex absolute inset-0 top-0 mb-auto flex-col items-center justify-center w-full min-h-[500px] -z-10 pointer-events-none opacity-40">
           <svg xmlns="http://www.w3.org/2000/svg" className="pointer-events-none absolute inset-0 size-full">
-            <circle className="stroke-white/10 stroke-1" strokeDasharray="5 5" cx="50%" cy="50%" r="280" fill="none" />
-            <circle className="stroke-white/10 stroke-1" strokeDasharray="5 5" cx="50%" cy="50%" r="420" fill="none" />
-            <circle className="stroke-white/10 stroke-1" strokeDasharray="5 5" cx="50%" cy="50%" r="560" fill="none" />
+            <circle className="stroke-white/10 stroke-1" strokeDasharray="5 5" cx="50%" cy="50%" r="240" fill="none" />
+            <circle className="stroke-white/10 stroke-1" strokeDasharray="5 5" cx="50%" cy="50%" r="380" fill="none" />
+            <circle className="stroke-white/10 stroke-1" strokeDasharray="5 5" cx="50%" cy="50%" r="520" fill="none" />
           </svg>
-          <div style={{ "--duration": "50s", "--radius": "280px" } as any} className="absolute flex size-6 animate-orbit items-center justify-center rounded-full bg-surface border border-border">
+          <div style={{ "--duration": "50s", "--radius": "240px" } as any} className="absolute flex size-6 animate-orbit items-center justify-center rounded-full bg-surface border border-border">
             <Terminal className="h-3 w-3 text-blue-400" />
           </div>
-          <div style={{ "--duration": "70s", "--radius": "420px" } as any} className="absolute flex size-6 animate-orbit items-center justify-center rounded-full bg-surface border border-border">
+          <div style={{ "--duration": "70s", "--radius": "380px" } as any} className="absolute flex size-6 animate-orbit items-center justify-center rounded-full bg-surface border border-border">
             <GitBranch className="h-3 w-3 text-sky-400" />
           </div>
-          <div style={{ "--duration": "90s", "--radius": "560px" } as any} className="absolute flex size-6 animate-orbit items-center justify-center rounded-full bg-surface border border-border">
+          <div style={{ "--duration": "90s", "--radius": "520px" } as any} className="absolute flex size-6 animate-orbit items-center justify-center rounded-full bg-surface border border-border">
             <Sparkles className="h-3 w-3 text-blue-300" />
           </div>
         </div>
@@ -93,7 +93,7 @@ export default function LandingPage() {
         </div>
 
         {/* Main 7XL Headline */}
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-textPrimary leading-[1.1] max-w-5xl mx-auto">
+        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-textPrimary leading-[1.1] max-w-4xl mx-auto">
           Pinpoint the exact commit that broke production with{" "}
           <span className="bg-gradient-to-r from-sky-400 via-blue-500 to-blue-600 bg-clip-text text-transparent">
             AI Precision
@@ -106,10 +106,10 @@ export default function LandingPage() {
         </p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-wrap items-center justify-center gap-3 pt-6 font-sans">
+        <div className="flex flex-wrap items-center justify-center gap-4 pt-8 font-sans">
           <Link
             href="/rca"
-            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 px-6 py-3.5 text-sm font-semibold text-white shadow-xl shadow-blue-500/25 transition-all hover:-translate-y-0.5"
+            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 px-7 py-3.5 text-sm font-semibold text-white shadow-xl shadow-blue-500/25 transition-all hover:-translate-y-0.5"
           >
             <span>Start Root-Cause Analysis</span>
             <ArrowRight className="h-4 w-4" />
@@ -117,21 +117,11 @@ export default function LandingPage() {
 
           <Link
             href="/onboarding"
-            className="flex items-center gap-2 rounded-lg bg-surface hover:bg-surfaceHover px-6 py-3.5 text-sm font-medium text-textPrimary border border-border hover:border-borderStrong transition-all hover:-translate-y-0.5"
+            className="flex items-center gap-2 rounded-lg bg-surface hover:bg-surfaceHover px-7 py-3.5 text-sm font-medium text-textPrimary border border-border hover:border-borderStrong transition-all hover:-translate-y-0.5"
           >
             <BookOpen className="h-4 w-4 text-textSecondary" />
             <span>Explore Onboarding Guide</span>
           </Link>
-        </div>
-
-        {/* HERO SHOWCASE CONTAINER (Vetra Glowing Dashboard Container) */}
-        <div className="relative mt-12 max-w-5xl mx-auto">
-          {/* Ambient Blue Glow behind the dashboard container */}
-          <div className="absolute top-1/4 left-1/2 -z-10 w-3/4 -translate-x-1/2 h-1/2 bg-gradient-to-r from-sky-500/20 to-blue-600/30 blur-[6rem] lg:blur-[9rem] rounded-full animate-image-glow pointer-events-none" />
-
-          <div className="relative rounded-2xl lg:rounded-[28px] border border-border p-2 bg-surface/60 backdrop-blur-xl shadow-2xl">
-            <HeroTerminalDemo />
-          </div>
         </div>
       </section>
 
@@ -160,7 +150,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 3. BENTO GRID FEATURES SECTION (Vetra Template Structure) */}
+      {/* 3. BENTO GRID FEATURES SECTION */}
       <section className="space-y-12 max-w-6xl mx-auto px-4">
         <div className="text-center space-y-3">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-mono text-blue-400 font-semibold uppercase tracking-wider">
@@ -385,7 +375,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 6. PRICING SECTION (Vetra Template Structure) */}
+      {/* 6. PRICING SECTION */}
       <section className="space-y-12 max-w-6xl mx-auto px-4">
         <div className="text-center space-y-3">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-mono text-blue-400 font-semibold uppercase tracking-wider">
@@ -460,7 +450,7 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* Tier 2: Team Pro (Highlighted with Vetra Electric Blue) */}
+          {/* Tier 2: Team Pro */}
           <div className="rounded-2xl border-2 border-blue-500 bg-surface p-8 space-y-6 flex flex-col justify-between relative shadow-xl shadow-blue-500/10">
             <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-sky-400 to-blue-600 text-white font-mono text-[10px] font-bold uppercase tracking-wider px-3 py-0.5 rounded-full shadow">
               Most Popular
@@ -539,7 +529,10 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 7. FAQ ACCORDION (Vetra Template Structure) */}
+      {/* 7. SLIDING CUSTOMER FEEDBACK ANIMATION (REPLACED IMAGE 2) */}
+      <CustomerFeedbackSlider />
+
+      {/* 8. FAQ ACCORDION */}
       <section className="space-y-8 max-w-4xl mx-auto px-4">
         <div className="text-center space-y-3">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-mono text-blue-400 font-semibold uppercase tracking-wider">
@@ -580,44 +573,6 @@ export default function LandingPage() {
               </div>
             );
           })}
-        </div>
-      </section>
-
-      {/* 8. GIANT CTA BANNER (Vetra Template Structure) */}
-      <section className="max-w-5xl mx-auto px-4">
-        <div className="relative rounded-3xl border border-border bg-surface p-10 md:p-16 text-center space-y-6 overflow-hidden shadow-2xl">
-          {/* Ambient Blue Glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-gradient-to-r from-sky-500/15 to-blue-600/20 blur-[8rem] rounded-full pointer-events-none" />
-
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#030712] border border-border text-xs font-mono text-blue-400">
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>Ready for Zero-Downtime Triage</span>
-          </div>
-
-          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-textPrimary max-w-2xl mx-auto">
-            Ready to cut incident triage time by 90%?
-          </h2>
-
-          <p className="text-sm text-textSecondary max-w-lg mx-auto">
-            Connect any repository link and diagnose production failures with calibrated AI causality right now.
-          </p>
-
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
-            <Link
-              href="/rca"
-              className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 px-7 py-3.5 text-sm font-semibold text-white shadow-xl shadow-blue-500/25 transition-all hover:-translate-y-0.5"
-            >
-              <span>Launch Studio Now</span>
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              href="/repos"
-              className="flex items-center gap-2 rounded-lg bg-[#030712] px-6 py-3.5 text-sm font-medium text-textPrimary border border-border hover:bg-surfaceHover transition-all hover:-translate-y-0.5"
-            >
-              <GitBranch className="h-4 w-4 text-textSecondary" />
-              <span>Connect Repository</span>
-            </Link>
-          </div>
         </div>
       </section>
 
