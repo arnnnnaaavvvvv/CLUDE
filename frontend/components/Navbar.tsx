@@ -2,37 +2,37 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bug, BookOpen, GitBranch, Cpu } from "lucide-react";
+import { Bug, BookOpen, GitBranch, Terminal, Github, ArrowRight, Shield } from "lucide-react";
 
 export function Navbar() {
   const pathname = usePathname();
 
   const navItems = [
-    { href: "/", label: "Repositories", icon: GitBranch },
-    { href: "/rca", label: "Root Cause Studio", icon: Bug },
+    { href: "/rca", label: "Root-Cause Studio", icon: Bug },
     { href: "/onboarding", label: "Onboarding Guide", icon: BookOpen },
+    { href: "/repos", label: "Repositories", icon: GitBranch },
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+    <header className="sticky top-0 z-50 w-full border-b border-border/80 bg-background/90 backdrop-blur-md">
+      <div className="container mx-auto flex h-14 items-center justify-between px-4 max-w-7xl">
         {/* Brand */}
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-white shadow-lg shadow-primary/30">
-            <Cpu className="h-5 w-5" />
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-surface border border-border group-hover:border-primary/50 transition-colors">
+            <Terminal className="h-4 w-4 text-primary" />
           </div>
-          <div className="flex flex-col">
-            <span className="font-bold text-lg tracking-tight text-white flex items-center gap-1.5">
-              CLUDE <span className="text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded font-mono">v1.0</span>
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-base tracking-tight text-textPrimary font-sans">
+              CLUDE
             </span>
-            <span className="text-[10px] text-gray-400 font-mono tracking-wider -mt-1">
-              CODE INTELLIGENCE
+            <span className="text-[10px] font-mono text-primary bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded">
+              v1.0
             </span>
           </div>
         </Link>
 
-        {/* Navigation Tabs */}
-        <nav className="flex items-center gap-1">
+        {/* Navigation Links */}
+        <nav className="hidden md:flex items-center gap-1 font-sans">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
@@ -40,25 +40,38 @@ export function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-2 rounded-md px-3.5 py-2 text-sm font-medium transition-all ${
+                className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all ${
                   isActive
-                    ? "bg-surfaceHover text-white shadow-sm border border-border"
-                    : "text-gray-400 hover:bg-surface hover:text-gray-200"
+                    ? "bg-surface text-textPrimary border border-borderStrong"
+                    : "text-textSecondary hover:text-textPrimary hover:bg-surface/50"
                 }`}
               >
-                <Icon className={`h-4 w-4 ${isActive ? "text-primary" : "text-gray-400"}`} />
+                <Icon className={`h-3.5 w-3.5 ${isActive ? "text-primary" : "text-textSecondary"}`} />
                 {item.label}
               </Link>
             );
           })}
         </nav>
 
-        {/* Status Indicator */}
+        {/* Action Controls */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 text-xs text-gray-400 bg-surface px-3 py-1.5 rounded-full border border-border">
-            <div className="h-2 w-2 rounded-full bg-success animate-pulse" />
-            <span>AI Reasoning Active</span>
-          </div>
+          <a
+            href="https://github.com/arnnnnaaavvvvv/CLUDE"
+            target="_blank"
+            rel="noreferrer"
+            className="hidden sm:flex items-center gap-1.5 text-xs text-textSecondary hover:text-textPrimary bg-surface px-2.5 py-1.5 rounded-md border border-border transition-colors font-mono"
+          >
+            <Github className="h-3.5 w-3.5" />
+            <span>GitHub</span>
+          </a>
+
+          <Link
+            href="/rca"
+            className="flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary-hover transition-colors font-sans"
+          >
+            <span>Launch Studio</span>
+            <ArrowRight className="h-3 w-3" />
+          </Link>
         </div>
       </div>
     </header>

@@ -8,13 +8,12 @@ import {
   GitCommit,
   Clock,
   CheckCircle,
-  AlertTriangle,
   FileCode,
   ArrowRight,
   ShieldCheck,
-  ChevronDown,
+  Check,
 } from "lucide-react";
-import { Repository, AnalysisRun, RankedCandidate } from "@/lib/types";
+import { Repository, AnalysisRun } from "@/lib/types";
 import { fetchRepos, analyzeStackTrace } from "@/lib/api";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { DiffViewer } from "@/components/DiffViewer";
@@ -60,8 +59,6 @@ AttributeError: 'NoneType' object has no attribute 'get_discounted_rate'`
     } else if (type === "go") {
       setRawTrace(
         `panic: runtime error: invalid memory address or nil pointer dereference
-[signal SIGSEGV: code=0x1 addr=0x0 pc=0x10a2f4]
-
 goroutine 1 [running]:
 main.DispatchWorker(0x0, 0x1400011c000)
 \t/src/workers/dispatcher.go:73 +0x3c
@@ -95,14 +92,14 @@ main.main()
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 max-w-6xl mx-auto font-sans">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
-          <Bug className="h-8 w-8 text-primary" />
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-textPrimary flex items-center gap-2.5">
+          <Bug className="h-7 w-7 text-primary" />
           AI Root-Cause Analysis Studio
         </h1>
-        <p className="text-sm text-gray-400 mt-1">
+        <p className="text-xs sm:text-sm text-textSecondary mt-1">
           Ingest stack traces or logs, correlate against git commit history, and rank candidate commits with LLM causal reasoning.
         </p>
       </div>
@@ -115,13 +112,13 @@ main.main()
             <form onSubmit={handleAnalyze} className="space-y-4">
               {/* Repo Selector */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-textSecondary mb-1.5 font-mono">
                   Target Repository
                 </label>
                 <select
                   value={selectedRepoId}
                   onChange={(e) => setSelectedRepoId(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-sm text-white focus:border-primary focus:outline-none"
+                  className="w-full rounded-lg border border-border bg-[#0A0B0D] px-3.5 py-2 text-xs text-textPrimary focus:border-primary focus:outline-none font-mono"
                 >
                   {repos.length === 0 ? (
                     <option value="">No repositories connected</option>
@@ -136,26 +133,26 @@ main.main()
               </div>
 
               {/* Sample Buttons */}
-              <div className="flex items-center gap-2 pt-1">
-                <span className="text-[11px] text-gray-400 font-mono">Load Sample:</span>
+              <div className="flex items-center gap-2 pt-1 font-mono">
+                <span className="text-[11px] text-textSecondary">Load Sample:</span>
                 <button
                   type="button"
                   onClick={() => handleSampleTrace("js")}
-                  className="text-[11px] rounded bg-surfaceHover px-2 py-0.5 text-gray-300 hover:text-white"
+                  className="text-[11px] rounded bg-surfaceHover px-2 py-0.5 text-textSecondary hover:text-textPrimary border border-border"
                 >
                   TypeScript
                 </button>
                 <button
                   type="button"
                   onClick={() => handleSampleTrace("py")}
-                  className="text-[11px] rounded bg-surfaceHover px-2 py-0.5 text-gray-300 hover:text-white"
+                  className="text-[11px] rounded bg-surfaceHover px-2 py-0.5 text-textSecondary hover:text-textPrimary border border-border"
                 >
                   Python
                 </button>
                 <button
                   type="button"
                   onClick={() => handleSampleTrace("go")}
-                  className="text-[11px] rounded bg-surfaceHover px-2 py-0.5 text-gray-300 hover:text-white"
+                  className="text-[11px] rounded bg-surfaceHover px-2 py-0.5 text-textSecondary hover:text-textPrimary border border-border"
                 >
                   Go Panic
                 </button>
@@ -163,7 +160,7 @@ main.main()
 
               {/* Stack Trace Textarea */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-textSecondary mb-1.5 font-mono">
                   Stack Trace or Error Log
                 </label>
                 <textarea
@@ -172,16 +169,16 @@ main.main()
                   onChange={(e) => setRawTrace(e.target.value)}
                   placeholder="Paste stack trace (JS/TS, Python, Go, Java)..."
                   required
-                  className="w-full rounded-lg border border-border bg-background p-3.5 font-mono text-xs text-gray-200 placeholder-gray-600 focus:border-primary focus:outline-none leading-relaxed"
+                  className="w-full rounded-lg border border-border bg-[#0A0B0D] p-3.5 font-mono text-xs text-textPrimary placeholder-textSecondary/50 focus:border-primary focus:outline-none leading-relaxed"
                 />
               </div>
 
-              {error && <div className="text-xs text-danger font-medium">{error}</div>}
+              {error && <div className="text-xs text-danger font-medium font-mono">{error}</div>}
 
               <button
                 type="submit"
                 disabled={loading || !selectedRepoId || !rawTrace.trim()}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-primary py-3 text-sm font-semibold text-white shadow-lg shadow-primary/25 hover:bg-primary-hover disabled:opacity-50 transition-all"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-primary py-3 text-xs font-semibold text-primary-foreground shadow-lg shadow-primary/20 hover:bg-primary-hover disabled:opacity-50 transition-all font-sans"
               >
                 {loading ? (
                   <>
@@ -203,18 +200,18 @@ main.main()
         <div className="lg:col-span-7 space-y-6">
           {loading && (
             <div className="rounded-xl border border-border bg-surface p-12 text-center space-y-4 shadow-lg">
-              <Sparkles className="mx-auto h-10 w-10 animate-spin text-primary" />
-              <h3 className="text-base font-bold text-white">Analyzing Failure Path</h3>
-              <div className="max-w-md mx-auto space-y-2 text-xs text-gray-400">
+              <Sparkles className="mx-auto h-8 w-8 animate-spin text-primary" />
+              <h3 className="text-sm font-bold text-textPrimary">Analyzing Failure Path</h3>
+              <div className="max-w-md mx-auto space-y-2 text-xs text-textSecondary font-mono">
                 <div className="flex items-center gap-2 justify-center">
                   <CheckCircle className="h-3.5 w-3.5 text-success" />
-                  <span>Parsed stack frames & normalized file paths</span>
+                  <span>Parsed stack frames & normalized coordinates</span>
                 </div>
-                <div className="flex items-center gap-2 justify-center animate-pulse">
-                  <Clock className="h-3.5 w-3.5 text-primary" />
+                <div className="flex items-center gap-2 justify-center animate-pulse text-primary">
+                  <Clock className="h-3.5 w-3.5" />
                   <span>Traversing commit graph & diff hunks</span>
                 </div>
-                <div className="flex items-center gap-2 justify-center text-gray-500">
+                <div className="flex items-center gap-2 justify-center text-textSecondary/60">
                   <Clock className="h-3.5 w-3.5" />
                   <span>Evaluating causal likelihood with Claude 3.5 Sonnet</span>
                 </div>
@@ -224,9 +221,9 @@ main.main()
 
           {!loading && !analysisResult && (
             <div className="rounded-xl border border-dashed border-border bg-surface/30 p-12 text-center">
-              <Bug className="mx-auto h-12 w-12 text-gray-600 mb-3" />
-              <h3 className="text-base font-semibold text-white">No Analysis Run Yet</h3>
-              <p className="text-xs text-gray-400 max-w-sm mx-auto mt-1">
+              <Bug className="mx-auto h-10 w-10 text-textSecondary/40 mb-3" />
+              <h3 className="text-sm font-semibold text-textPrimary">No Analysis Run Yet</h3>
+              <p className="text-xs text-textSecondary max-w-sm mx-auto mt-1">
                 Select a repository and paste an error log on the left to discover the root-cause commit.
               </p>
             </div>
@@ -241,11 +238,11 @@ main.main()
                     <span className="text-[11px] uppercase font-mono tracking-wider text-rose-400 font-bold">
                       {analysisResult.error_type || "Runtime Error"}
                     </span>
-                    <h2 className="text-lg font-bold text-white mt-0.5">
+                    <h2 className="text-base font-bold text-textPrimary mt-0.5">
                       {analysisResult.error_message || "An exception occurred"}
                     </h2>
                   </div>
-                  <div className="text-right text-xs text-gray-400 font-mono">
+                  <div className="text-right text-[11px] text-textSecondary font-mono">
                     <div>Duration: {analysisResult.execution_duration_sec}s</div>
                     <div className="text-primary font-semibold">{analysisResult.model_used}</div>
                   </div>
@@ -253,21 +250,21 @@ main.main()
 
                 {/* Parsed Frames List */}
                 <div>
-                  <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">
+                  <h4 className="text-[11px] font-semibold uppercase tracking-wider text-textSecondary mb-2 font-mono">
                     Failing Stack Coordinates
                   </h4>
                   <div className="space-y-1.5 font-mono text-xs">
                     {analysisResult.parsed_frames.map((frame, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center justify-between rounded bg-background px-3 py-1.5 border border-border"
+                        className="flex items-center justify-between rounded bg-[#0A0B0D] px-3 py-1.5 border border-border"
                       >
-                        <div className="flex items-center gap-2 text-gray-300">
+                        <div className="flex items-center gap-2 text-textPrimary">
                           <FileCode className="h-3.5 w-3.5 text-primary" />
                           <span>{frame.file_path}</span>
                           <span className="text-primary font-bold">:{frame.line_number}</span>
                         </div>
-                        <span className="text-gray-500 text-[11px]">
+                        <span className="text-textSecondary text-[11px]">
                           {frame.function_name || "global"}
                         </span>
                       </div>
@@ -278,8 +275,8 @@ main.main()
 
               {/* Ranked Candidates */}
               <div className="space-y-4">
-                <h3 className="text-base font-bold text-white flex items-center gap-2">
-                  <GitCommit className="h-5 w-5 text-primary" />
+                <h3 className="text-sm font-bold text-textPrimary flex items-center gap-2">
+                  <GitCommit className="h-4 w-4 text-primary" />
                   Ranked Candidate Commits ({analysisResult.ranked_candidates.length})
                 </h3>
 
@@ -292,28 +289,28 @@ main.main()
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-3">
                       <div className="flex items-center gap-3">
                         <ScoreBadge score={candidate.causal_score} rank={candidate.rank} />
-                        <span className="font-mono text-xs text-primary font-semibold">
-                          {candidate.commit.sha.substring(0, 8)}
+                        <span className="font-mono text-xs text-primary font-bold">
+                          #{candidate.commit.sha.substring(0, 8)}
                         </span>
                       </div>
-                      <div className="text-xs text-gray-400 font-mono">
+                      <div className="text-xs text-textSecondary font-mono">
                         <span>{candidate.commit.author_name}</span> &bull;{" "}
                         <span>{new Date(candidate.commit.committed_at).toLocaleDateString()}</span>
                       </div>
                     </div>
 
                     {/* Commit Message */}
-                    <div className="text-sm font-semibold text-white">
+                    <div className="text-xs font-semibold text-textPrimary">
                       "{candidate.commit.commit_message}"
                     </div>
 
                     {/* Plain-English Reasoning */}
-                    <div className="rounded-lg bg-background p-4 border border-border space-y-2">
-                      <div className="flex items-center gap-2 text-xs font-bold text-gray-200">
-                        <Sparkles className="h-4 w-4 text-primary" />
-                        <span>Why this commit caused the error:</span>
+                    <div className="rounded-lg bg-[#0A0B0D] p-4 border border-border space-y-2">
+                      <div className="flex items-center gap-2 text-xs font-bold text-textPrimary">
+                        <Sparkles className="h-3.5 w-3.5 text-primary" />
+                        <span>Plain-English Reasoning:</span>
                       </div>
-                      <p className="text-xs text-gray-300 leading-relaxed">
+                      <p className="text-xs text-textSecondary leading-relaxed">
                         {candidate.plain_english_reasoning}
                       </p>
                     </div>
@@ -321,19 +318,19 @@ main.main()
                     {/* Reproduction Hypothesis & Fix */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                       {candidate.reproduction_hypothesis && (
-                        <div className="rounded bg-background/50 p-3 border border-border">
-                          <span className="font-semibold text-amber-400 block mb-1">
+                        <div className="rounded bg-[#0A0B0D]/50 p-3 border border-border">
+                          <span className="font-semibold text-amber-400 block mb-1 font-mono text-[11px]">
                             Reproduction Path:
                           </span>
-                          <p className="text-gray-400">{candidate.reproduction_hypothesis}</p>
+                          <p className="text-textSecondary text-[11px]">{candidate.reproduction_hypothesis}</p>
                         </div>
                       )}
                       {candidate.suggested_fix && (
-                        <div className="rounded bg-background/50 p-3 border border-border">
-                          <span className="font-semibold text-emerald-400 block mb-1">
+                        <div className="rounded bg-[#0A0B0D]/50 p-3 border border-border">
+                          <span className="font-semibold text-emerald-400 block mb-1 font-mono text-[11px]">
                             Suggested Remediation:
                           </span>
-                          <p className="text-gray-400">{candidate.suggested_fix}</p>
+                          <p className="text-textSecondary text-[11px]">{candidate.suggested_fix}</p>
                         </div>
                       )}
                     </div>
@@ -341,7 +338,7 @@ main.main()
                     {/* Matched File Diffs */}
                     {candidate.matched_files.length > 0 && (
                       <div>
-                        <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider block mb-1">
+                        <span className="text-[11px] font-semibold text-textSecondary uppercase tracking-wider block mb-1 font-mono">
                           Affected Files:
                         </span>
                         {candidate.matched_files.map((file, idx) => (
@@ -366,7 +363,7 @@ main.main()
 
 export default function RootCauseStudio() {
   return (
-    <Suspense fallback={<div className="py-20 text-center text-gray-400">Loading Root-Cause Studio...</div>}>
+    <Suspense fallback={<div className="py-20 text-center text-textSecondary font-mono text-xs">Loading Root-Cause Studio...</div>}>
       <RootCauseStudioContent />
     </Suspense>
   );

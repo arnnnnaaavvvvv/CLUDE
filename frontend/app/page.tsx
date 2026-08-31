@@ -1,303 +1,343 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { GitBranch, Plus, CheckCircle2, Clock, AlertCircle, ArrowRight, RefreshCw, Sparkles, Globe, Trash2 } from "lucide-react";
-import { Repository } from "@/lib/types";
-import { fetchRepos, connectRepo } from "@/lib/api";
+import {
+  Bug,
+  BookOpen,
+  GitBranch,
+  Terminal,
+  Sparkles,
+  ArrowRight,
+  Shield,
+  Zap,
+  Layers,
+  Database,
+  CheckCircle2,
+  Code2,
+  Clock,
+  ChevronRight,
+  Github,
+  Search,
+  Cpu,
+  Lock,
+} from "lucide-react";
+import { HeroTerminalDemo } from "@/components/HeroTerminalDemo";
 
-const PRESET_REPOS = [
-  "facebook/react",
-  "vercel/next.js",
-  "fastapi/fastapi",
-  "tailwindlabs/tailwindcss",
-];
-
-export default function RepositoriesPage() {
-  const [repos, setRepos] = useState<Repository[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [connecting, setConnecting] = useState(false);
-  const [formOpen, setFormOpen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  // Form State
-  const [repoInput, setRepoInput] = useState("");
-  const [branch, setBranch] = useState("main");
-
-  const parseRepoName = (input: string): string => {
-    let clean = input.trim();
-    // Strip http/https/github.com prefix
-    clean = clean.replace(/^(?:https?:\/\/)?(?:www\.)?github\.com\//i, "");
-    // Strip git SSH prefix
-    clean = clean.replace(/^git@github\.com:/i, "");
-    // Strip trailing .git
-    clean = clean.replace(/\.git$/i, "");
-    // Strip leading/trailing slashes
-    clean = clean.replace(/^\/+|\/+$/g, "");
-    return clean;
-  };
-
-  const loadRepositories = async () => {
-    try {
-      setLoading(true);
-      const data = await fetchRepos();
-      setRepos(data);
-    } catch (err: any) {
-      console.error(err);
-      setError("Failed to load repositories from CLUDE API.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadRepositories();
-  }, []);
-
-  const handleConnect = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const cleanFullName = parseRepoName(repoInput);
-
-    if (!cleanFullName || !cleanFullName.includes("/")) {
-      setError("Please enter a valid GitHub repository URL or format like 'owner/repo'");
-      return;
-    }
-
-    try {
-      setConnecting(true);
-      setError(null);
-      await connectRepo({
-        github_repo_id: Math.floor(100000 + Math.random() * 900000),
-        full_name: cleanFullName,
-        default_branch: branch || "main",
-      });
-      setRepoInput("");
-      setFormOpen(false);
-      await loadRepositories();
-    } catch (err: any) {
-      setError(err.message || "Failed to connect repository.");
-    } finally {
-      setConnecting(false);
-    }
-  };
+export default function LandingPage() {
+  const [activeTab, setActiveTab] = useState<"rca" | "onboarding">("rca");
 
   return (
-    <div className="space-y-8">
-      {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6">
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white flex items-center gap-2.5">
-            <GitBranch className="h-8 w-8 text-primary" />
-            Connected Repositories
-          </h1>
-          <p className="text-sm text-gray-400 mt-1">
-            Connect any GitHub repository link to index git history and generate AI root-cause diagnostics & architecture guides.
-          </p>
+    <div className="space-y-24 pb-16 font-sans">
+      {/* 1. HERO SECTION */}
+      <section className="relative pt-6 pb-12 text-center space-y-8 max-w-5xl mx-auto">
+        {/* Background Grid Accent */}
+        <div className="absolute inset-0 bg-radial-glow -z-10 pointer-events-none" />
+
+        {/* Eyebrow Badge */}
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface border border-border text-xs font-mono text-textSecondary">
+          <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+          <span className="text-textPrimary font-medium">CLUDE 1.0</span>
+          <span className="text-borderStrong">•</span>
+          <span>Causal Incident Attribution & Architecture Synthesis</span>
         </div>
-        <button
-          onClick={() => {
-            setFormOpen(!formOpen);
-            setError(null);
-          }}
-          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary/25 hover:bg-primary-hover transition-all"
-        >
-          <Plus className="h-4 w-4" />
-          Add Repository Link
-        </button>
-      </div>
 
-      {/* Connect Repo Modal / Form */}
-      {formOpen && (
-        <div className="rounded-xl border border-border bg-surface p-6 shadow-xl animate-in fade-in duration-200">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <Globe className="h-5 w-5 text-primary" />
-              Connect GitHub Repository
-            </h3>
-            <span className="text-xs text-gray-500 font-mono">No personal access tokens required</span>
-          </div>
-          <p className="text-xs text-gray-400 mb-5">
-            Paste any public repository URL (e.g. <code className="text-primary font-mono">https://github.com/facebook/react</code>) or shorthand name (<code className="text-primary font-mono">owner/repo</code>).
-          </p>
+        {/* Hero Headline */}
+        <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-textPrimary leading-[1.1] max-w-4xl mx-auto">
+          Stop bisecting commits.{" "}
+          <span className="text-primary block mt-1 sm:inline">Find the exact diff that broke production</span> in seconds.
+        </h1>
 
-          <form onSubmit={handleConnect} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="md:col-span-2">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
-                  GitHub Repository URL or Name <span className="text-danger">*</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="https://github.com/owner/repo or owner/repo"
-                    value={repoInput}
-                    onChange={(e) => {
-                      setRepoInput(e.target.value);
-                      setError(null);
-                    }}
-                    required
-                    className="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-white placeholder-gray-500 focus:border-primary focus:outline-none font-mono"
-                  />
-                </div>
-              </div>
+        {/* Hero Subtitle */}
+        <p className="text-base sm:text-lg text-textSecondary max-w-2xl mx-auto leading-relaxed font-sans">
+          CLUDE ingests stack traces, correlates them against your repository’s AST and git history, and uses LLM causal reasoning to rank candidate commits with plain-English proof—while generating guided architecture walkthroughs for day-one engineers.
+        </p>
 
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-300 mb-1.5">
-                  Default Branch
-                </label>
-                <input
-                  type="text"
-                  placeholder="main"
-                  value={branch}
-                  onChange={(e) => setBranch(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-white placeholder-gray-500 focus:border-primary focus:outline-none font-mono"
-                />
-              </div>
-            </div>
-
-            {/* Quick Suggestions */}
-            <div className="flex flex-wrap items-center gap-2 pt-1">
-              <span className="text-[11px] text-gray-400 font-mono">Quick load popular repos:</span>
-              {PRESET_REPOS.map((preset) => (
-                <button
-                  key={preset}
-                  type="button"
-                  onClick={() => {
-                    setRepoInput(`https://github.com/${preset}`);
-                    setError(null);
-                  }}
-                  className="text-[11px] rounded bg-surfaceHover px-2.5 py-1 text-gray-300 hover:text-white hover:bg-primary/20 hover:border-primary/40 border border-border font-mono transition-colors"
-                >
-                  {preset}
-                </button>
-              ))}
-            </div>
-
-            {error && (
-              <div className="rounded-lg bg-danger/10 border border-danger/30 p-3 text-xs text-danger font-medium flex items-center gap-2">
-                <AlertCircle className="h-4 w-4 flex-shrink-0" />
-                <span>{error}</span>
-              </div>
-            )}
-
-            <div className="flex justify-end gap-3 pt-2">
-              <button
-                type="button"
-                onClick={() => setFormOpen(false)}
-                className="rounded-lg px-4 py-2 text-sm font-medium text-gray-400 hover:bg-surfaceHover hover:text-white"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={connecting || !repoInput.trim()}
-                className="rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-50 flex items-center gap-2 shadow-lg shadow-primary/20"
-              >
-                {connecting ? (
-                  <>
-                    <RefreshCw className="h-4 w-4 animate-spin" />
-                    Connecting & Indexing...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="h-4 w-4" />
-                    Start Indexing
-                  </>
-                )}
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {/* Repositories List */}
-      {loading ? (
-        <div className="flex items-center justify-center py-20">
-          <RefreshCw className="h-8 w-8 animate-spin text-primary" />
-        </div>
-      ) : repos.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border bg-surface/30 p-12 text-center">
-          <GitBranch className="mx-auto h-12 w-12 text-gray-500 mb-3" />
-          <h3 className="text-base font-semibold text-white">No repositories connected yet</h3>
-          <p className="text-xs text-gray-400 max-w-sm mx-auto mt-1 mb-5">
-            Paste a GitHub repository link above to index its git history, AST syntax graph, and vector embeddings.
-          </p>
-          <button
-            onClick={() => setFormOpen(true)}
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white"
+        {/* Dual CTAs */}
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-2 font-sans">
+          <Link
+            href="/rca"
+            className="flex items-center gap-2 rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary-hover transition-all shadow-lg shadow-primary/20"
           >
-            <Plus className="h-4 w-4" />
-            Connect Your First Repo
-          </button>
+            <Bug className="h-4 w-4" />
+            <span>Launch Root-Cause Studio</span>
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+
+          <Link
+            href="/onboarding"
+            className="flex items-center gap-2 rounded-lg bg-surface hover:bg-surfaceHover px-5 py-3 text-sm font-medium text-textPrimary border border-border hover:border-borderStrong transition-all"
+          >
+            <BookOpen className="h-4 w-4 text-textSecondary" />
+            <span>Explore Onboarding Guide</span>
+          </Link>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {repos.map((repo) => {
-            const isCompleted = repo.indexing_status === "COMPLETED";
-            const isIndexing = repo.indexing_status === "INDEXING" || repo.indexing_status === "PENDING";
 
-            return (
-              <div
-                key={repo.id}
-                className="rounded-xl border border-border bg-surface p-5 shadow-sm hover:border-primary/50 transition-all flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-start justify-between gap-2 mb-3">
-                    <div className="flex items-center gap-2">
-                      <GitBranch className="h-5 w-5 text-primary flex-shrink-0" />
-                      <span className="font-bold text-white tracking-tight break-all">{repo.full_name}</span>
-                    </div>
-                    {isCompleted && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[11px] font-semibold text-emerald-400 border border-emerald-500/20 whitespace-nowrap">
-                        <CheckCircle2 className="h-3 w-3" /> Indexed
-                      </span>
-                    )}
-                    {isIndexing && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-[11px] font-semibold text-amber-400 border border-amber-500/20 animate-pulse whitespace-nowrap">
-                        <Clock className="h-3 w-3" /> Indexing
-                      </span>
-                    )}
-                    {repo.indexing_status === "FAILED" && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-rose-500/10 px-2 py-0.5 text-[11px] font-semibold text-rose-400 border border-rose-500/20 whitespace-nowrap">
-                        <AlertCircle className="h-3 w-3" /> Failed
-                      </span>
-                    )}
-                  </div>
+        {/* HERO INTERACTIVE TERMINAL MOMENT */}
+        <div className="pt-8">
+          <HeroTerminalDemo />
+        </div>
+      </section>
 
-                  <div className="text-xs text-gray-400 space-y-1.5 mb-6 font-mono">
-                    <div className="flex justify-between">
-                      <span>Branch:</span>
-                      <span className="text-gray-200">{repo.default_branch}</span>
-                    </div>
-                    {repo.last_indexed_sha && (
-                      <div className="flex justify-between">
-                        <span>HEAD SHA:</span>
-                        <span className="text-primary">{repo.last_indexed_sha.substring(0, 7)}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
+      {/* 2. THE PROBLEM / COMPARISON MATRIX */}
+      <section className="space-y-8 max-w-5xl mx-auto">
+        <div className="text-center space-y-2">
+          <span className="text-xs font-mono text-primary uppercase tracking-wider font-semibold">
+            Comparative Reasoning Benchmark
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-bold text-textPrimary tracking-tight">
+            Why line ownership is not root cause
+          </h2>
+          <p className="text-sm text-textSecondary max-w-xl mx-auto">
+            Traditional tools show who edited a line. CLUDE reasons about semantic causality across the entire commit graph.
+          </p>
+        </div>
 
-                {/* Action Links */}
-                <div className="pt-4 border-t border-border flex items-center justify-between gap-2">
-                  <Link
-                    href={`/rca?repo_id=${repo.id}`}
-                    className="flex-1 text-center rounded-lg bg-surfaceHover py-2 text-xs font-semibold text-white hover:bg-primary hover:text-white transition-colors flex items-center justify-center gap-1"
-                  >
-                    Analyze Errors <ArrowRight className="h-3 w-3" />
-                  </Link>
-                  <Link
-                    href={`/onboarding?repo_id=${repo.id}`}
-                    className="flex-1 text-center rounded-lg bg-surfaceHover py-2 text-xs font-semibold text-gray-300 hover:bg-surfaceHover/80 hover:text-white transition-colors"
-                  >
-                    View Guide
-                  </Link>
-                </div>
+        <div className="rounded-xl border border-border bg-surface overflow-hidden shadow-xl font-mono text-xs">
+          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
+            {/* Git Blame */}
+            <div className="p-6 space-y-3 bg-[#0D0E11]/40">
+              <div className="text-textSecondary text-[11px] uppercase tracking-wider font-semibold">
+                git blame / Manual Search
               </div>
-            );
-          })}
+              <div className="text-sm font-bold text-textPrimary">Line-Level Blame</div>
+              <ul className="space-y-2 text-textSecondary text-xs">
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-400 font-bold">✕</span>
+                  <span>Shows author who formatted or touched line, ignoring indirect callers.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-400 font-bold">✕</span>
+                  <span>Requires 45–90 minutes of manual bisection during critical outages.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-400 font-bold">✕</span>
+                  <span>Zero awareness of execution flow or semantic side-effects.</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Generic AI Chat */}
+            <div className="p-6 space-y-3 bg-[#0D0E11]/40">
+              <div className="text-textSecondary text-[11px] uppercase tracking-wider font-semibold">
+                Generic AI Chat (ChatGPT / Copilot)
+              </div>
+              <div className="text-sm font-bold text-textPrimary">Contextless Analysis</div>
+              <ul className="space-y-2 text-textSecondary text-xs">
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-400 font-bold">✕</span>
+                  <span>Has no access to recent commit diffs, PR history, or git blame graph.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-400 font-bold">✕</span>
+                  <span>Requires engineers to copy-paste multiple files manually.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-400 font-bold">✕</span>
+                  <span>Hallucinates confidence without repo AST grounding.</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* CLUDE */}
+            <div className="p-6 space-y-3 bg-[#131417] border-l-2 border-l-primary">
+              <div className="text-primary text-[11px] uppercase tracking-wider font-semibold flex items-center justify-between">
+                <span>CLUDE Platform</span>
+                <span className="bg-primary/10 text-primary px-1.5 py-0.5 rounded text-[10px]">Active Engine</span>
+              </div>
+              <div className="text-sm font-bold text-textPrimary">Semantic Causal Proof</div>
+              <ul className="space-y-2 text-textPrimary text-xs font-sans">
+                <li className="flex items-start gap-2 font-mono">
+                  <span className="text-primary font-bold">✓</span>
+                  <span>Extracts AST coordinates and queries temporal commit diff hunks.</span>
+                </li>
+                <li className="flex items-start gap-2 font-mono">
+                  <span className="text-primary font-bold">✓</span>
+                  <span>Claude 3.5 Sonnet evaluates causal probability ($0.0 - 1.0$).</span>
+                </li>
+                <li className="flex items-start gap-2 font-mono">
+                  <span className="text-primary font-bold">✓</span>
+                  <span>Delivers plain-English proof and remediation in &lt; 8 seconds.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
-      )}
+      </section>
+
+      {/* 3. DUAL-FEATURE PILLARS */}
+      <section className="space-y-12 max-w-5xl mx-auto">
+        <div className="flex justify-center">
+          <div className="inline-flex rounded-lg bg-surface p-1 border border-border">
+            <button
+              onClick={() => setActiveTab("rca")}
+              className={`flex items-center gap-2 px-4 py-2 rounded-md text-xs font-medium transition-all ${
+                activeTab === "rca"
+                  ? "bg-primary text-primary-foreground font-semibold shadow"
+                  : "text-textSecondary hover:text-textPrimary"
+              }`}
+            >
+              <Bug className="h-4 w-4" />
+              <span>Feature 1: Root-Cause Analysis</span>
+            </button>
+            <button
+              onClick={() => setActiveTab("onboarding")}
+              className={`flex items-center gap-2 px-4 py-2 rounded-md text-xs font-medium transition-all ${
+                activeTab === "onboarding"
+                  ? "bg-primary text-primary-foreground font-semibold shadow"
+                  : "text-textSecondary hover:text-textPrimary"
+              }`}
+            >
+              <BookOpen className="h-4 w-4" />
+              <span>Feature 2: AI Onboarding Guide</span>
+            </button>
+          </div>
+        </div>
+
+        {activeTab === "rca" ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="rounded-xl border border-border bg-surface p-6 space-y-3">
+              <div className="h-9 w-9 rounded-lg bg-surfaceHover flex items-center justify-center border border-border">
+                <Code2 className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="text-base font-bold text-textPrimary">Multi-Language Normalizer</h3>
+              <p className="text-xs text-textSecondary leading-relaxed">
+                Deterministic regex & AST parsers resolve frames across Python tracebacks, JavaScript/TypeScript V8 & WebKit stacks, Go panics, Java exceptions, and Rust backtraces.
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-border bg-surface p-6 space-y-3">
+              <div className="h-9 w-9 rounded-lg bg-surfaceHover flex items-center justify-center border border-border">
+                <GitBranch className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="text-base font-bold text-textPrimary">Temporal Git Slicer</h3>
+              <p className="text-xs text-textSecondary leading-relaxed">
+                Traverses commit graphs within configurable incident windows (e.g. past 14 days), filtering out lockfiles, generated assets, and minified bundles to protect token budgets.
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-border bg-surface p-6 space-y-3">
+              <div className="h-9 w-9 rounded-lg bg-surfaceHover flex items-center justify-center border border-border">
+                <Sparkles className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="text-base font-bold text-textPrimary">Calibrated Causal Scoring</h3>
+              <p className="text-xs text-textSecondary leading-relaxed">
+                Produces normalized probability scores (0.0 to 1.0) with plain-English failure hypotheses and copy-paste remediation diffs instead of binary guesses.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="rounded-xl border border-border bg-surface p-6 space-y-3">
+              <div className="h-9 w-9 rounded-lg bg-surfaceHover flex items-center justify-center border border-border">
+                <Layers className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="text-base font-bold text-textPrimary">Mermaid Architecture Graphs</h3>
+              <p className="text-xs text-textSecondary leading-relaxed">
+                Generates live, interactive Mermaid.js diagrams directly from repository file trees and boundary interfaces to map dependencies visually.
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-border bg-surface p-6 space-y-3">
+              <div className="h-9 w-9 rounded-lg bg-surfaceHover flex items-center justify-center border border-border">
+                <Zap className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="text-base font-bold text-textPrimary">Critical Execution Paths</h3>
+              <p className="text-xs text-textSecondary leading-relaxed">
+                Extracts primary user-facing pipelines, entry points (e.g. main.py, server.ts), authentication gates, and transactional persistence flows.
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-border bg-surface p-6 space-y-3">
+              <div className="h-9 w-9 rounded-lg bg-surfaceHover flex items-center justify-center border border-border">
+                <Shield className="h-5 w-5 text-rose-400" />
+              </div>
+              <h3 className="text-base font-bold text-textPrimary">High-Churn Danger Zones</h3>
+              <p className="text-xs text-textSecondary leading-relaxed">
+                Calculates git change frequencies (commit diff churn) to flag fragile concurrency locks and state mutations before junior developers touch them.
+              </p>
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* 4. SECURITY & ENTERPRISE ARCHITECTURE */}
+      <section className="rounded-2xl border border-border bg-surface p-8 max-w-5xl mx-auto space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6">
+          <div>
+            <span className="text-xs font-mono text-primary uppercase tracking-wider font-semibold">
+              Enterprise Grade Security
+            </span>
+            <h2 className="text-2xl font-bold text-textPrimary tracking-tight mt-1">
+              Zero Raw Code Retention & Least Privilege
+            </h2>
+          </div>
+          <div className="flex items-center gap-2 text-xs font-mono text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">
+            <CheckCircle2 className="h-4 w-4" />
+            <span>Read-Only GitHub Permissions</span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 font-mono text-xs text-textSecondary">
+          <div className="space-y-1.5">
+            <div className="text-textPrimary font-semibold flex items-center gap-1.5 font-sans">
+              <Lock className="h-4 w-4 text-primary" />
+              <span>AES-256-GCM Token Store</span>
+            </div>
+            <p>GitHub OAuth tokens are encrypted at rest with per-tenant envelope keys.</p>
+          </div>
+
+          <div className="space-y-1.5">
+            <div className="text-textPrimary font-semibold flex items-center gap-1.5 font-sans">
+              <Database className="h-4 w-4 text-primary" />
+              <span>pgvector HNSW Indexing</span>
+            </div>
+            <p>1536-dimensional semantic vectors stored with sub-millisecond distance search.</p>
+          </div>
+
+          <div className="space-y-1.5">
+            <div className="text-textPrimary font-semibold flex items-center gap-1.5 font-sans">
+              <Shield className="h-4 w-4 text-primary" />
+              <span>Prompt Injection Guard</span>
+            </div>
+            <p>Untrusted diffs and commit messages are sanitized inside escaped XML data blocks.</p>
+          </div>
+
+          <div className="space-y-1.5">
+            <div className="text-textPrimary font-semibold flex items-center gap-1.5 font-sans">
+              <Cpu className="h-4 w-4 text-primary" />
+              <span>Prompt Caching</span>
+            </div>
+            <p>Anthropic ephemeral prompt caching cuts token latency and API overhead by 80%.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. CALL TO ACTION FOOTER */}
+      <section className="text-center space-y-6 max-w-3xl mx-auto pt-6">
+        <h2 className="text-3xl sm:text-4xl font-bold text-textPrimary tracking-tight">
+          Ready to diagnose production failures in seconds?
+        </h2>
+        <p className="text-sm text-textSecondary max-w-lg mx-auto">
+          Connect your repository link and paste an error trace to pinpoint the causal commit immediately.
+        </p>
+        <div className="flex justify-center gap-3">
+          <Link
+            href="/rca"
+            className="flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary-hover transition-all shadow-lg shadow-primary/25"
+          >
+            <span>Open Root-Cause Studio</span>
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+          <Link
+            href="/repos"
+            className="flex items-center gap-2 rounded-lg bg-surface px-6 py-3 text-sm font-medium text-textPrimary border border-border hover:bg-surfaceHover transition-all"
+          >
+            <GitBranch className="h-4 w-4 text-textSecondary" />
+            <span>Manage Repositories</span>
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }

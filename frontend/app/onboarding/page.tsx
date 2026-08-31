@@ -5,16 +5,13 @@ import { useSearchParams } from "next/navigation";
 import {
   BookOpen,
   Sparkles,
-  AlertTriangle,
   Layers,
   FileCode,
   ShieldAlert,
   Compass,
-  CheckCircle2,
   RefreshCw,
-  Share2,
 } from "lucide-react";
-import { Repository, OnboardingWalkthrough, WalkthroughSection } from "@/lib/types";
+import { Repository, OnboardingWalkthrough } from "@/lib/types";
 import { fetchRepos, fetchOnboarding, generateOnboarding } from "@/lib/api";
 import { MermaidViewer } from "@/components/MermaidViewer";
 
@@ -81,15 +78,15 @@ function OnboardingContent() {
   const activeSection = walkthrough?.sections.find((s) => s.id === selectedSectionId) || walkthrough?.sections[0];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 max-w-6xl mx-auto font-sans">
       {/* Header Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
-            <BookOpen className="h-8 w-8 text-primary" />
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-textPrimary flex items-center gap-2.5">
+            <BookOpen className="h-7 w-7 text-primary" />
             AI Onboarding Assistant
           </h1>
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-xs sm:text-sm text-textSecondary mt-1">
             Explore system architecture, trace critical business paths, and discover "do-not-touch" danger zones.
           </p>
         </div>
@@ -99,7 +96,7 @@ function OnboardingContent() {
           <select
             value={selectedRepoId}
             onChange={(e) => setSelectedRepoId(e.target.value)}
-            className="rounded-lg border border-border bg-surface px-3.5 py-2 text-sm text-white focus:border-primary focus:outline-none"
+            className="rounded-lg border border-border bg-surface px-3.5 py-2 text-xs text-textPrimary focus:border-primary focus:outline-none font-mono"
           >
             {repos.map((r) => (
               <option key={r.id} value={r.id}>
@@ -111,24 +108,24 @@ function OnboardingContent() {
           <button
             onClick={handleGenerate}
             disabled={generating || !selectedRepoId}
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-primary/25 hover:bg-primary-hover disabled:opacity-50 transition-all"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-lg shadow-primary/20 hover:bg-primary-hover disabled:opacity-50 transition-all font-sans"
           >
             {generating ? (
               <>
-                <RefreshCw className="h-4 w-4 animate-spin" />
+                <RefreshCw className="h-3.5 w-3.5 animate-spin" />
                 Synthesizing Codebase...
               </>
             ) : (
               <>
-                <Sparkles className="h-4 w-4" />
-                {walkthrough ? "Regenerate Guide" : "Generate Onboarding Guide"}
+                <Sparkles className="h-3.5 w-3.5" />
+                {walkthrough ? "Regenerate Guide" : "Generate Guide"}
               </>
             )}
           </button>
         </div>
       </div>
 
-      {error && <div className="text-sm text-danger font-medium">{error}</div>}
+      {error && <div className="text-xs text-danger font-medium font-mono">{error}</div>}
 
       {/* Main Content Area */}
       {loading ? (
@@ -137,15 +134,15 @@ function OnboardingContent() {
         </div>
       ) : !walkthrough ? (
         <div className="rounded-xl border border-dashed border-border bg-surface/30 p-16 text-center">
-          <Compass className="mx-auto h-12 w-12 text-gray-500 mb-3" />
-          <h3 className="text-base font-bold text-white">No Onboarding Walkthrough Generated</h3>
-          <p className="text-xs text-gray-400 max-w-md mx-auto mt-1 mb-6">
+          <Compass className="mx-auto h-12 w-12 text-textSecondary/40 mb-3" />
+          <h3 className="text-base font-bold text-textPrimary">No Onboarding Walkthrough Generated</h3>
+          <p className="text-xs text-textSecondary max-w-md mx-auto mt-1 mb-6">
             Let CLUDE traverse the repository AST, compute churn frequencies, and synthesize a comprehensive developer guide.
           </p>
           <button
             onClick={handleGenerate}
             disabled={generating}
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-hover"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary-hover"
           >
             <Sparkles className="h-4 w-4" />
             Generate Architectural Guide
@@ -157,11 +154,11 @@ function OnboardingContent() {
           {walkthrough.system_diagram_mermaid && (
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold text-white flex items-center gap-2">
-                  <Layers className="h-5 w-5 text-primary" />
+                <h3 className="text-sm font-bold text-textPrimary flex items-center gap-2">
+                  <Layers className="h-4 w-4 text-primary" />
                   System Architecture Topology
                 </h3>
-                <span className="text-xs text-gray-500 font-mono">Auto-generated Mermaid Graph</span>
+                <span className="text-[11px] text-textSecondary font-mono">Auto-generated Mermaid Graph</span>
               </div>
               <MermaidViewer chart={walkthrough.system_diagram_mermaid} />
             </div>
@@ -171,7 +168,7 @@ function OnboardingContent() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Left Column: Chapters Navigation */}
             <div className="lg:col-span-4 space-y-2">
-              <span className="text-xs font-semibold uppercase tracking-wider text-gray-400 block mb-3">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-textSecondary block mb-3 font-mono">
                 Walkthrough Chapters
               </span>
 
@@ -186,8 +183,8 @@ function OnboardingContent() {
                       onClick={() => setSelectedSectionId(sec.id)}
                       className={`w-full text-left rounded-xl p-4 transition-all border ${
                         isSelected
-                          ? "bg-surfaceHover border-primary text-white shadow-md"
-                          : "bg-surface border-border text-gray-400 hover:text-white hover:bg-surfaceHover/60"
+                          ? "bg-surfaceHover border-primary text-textPrimary shadow-md"
+                          : "bg-surface border-border text-textSecondary hover:text-textPrimary hover:bg-surfaceHover/60"
                       }`}
                     >
                       <div className="flex items-center justify-between gap-2 mb-1">
@@ -197,11 +194,11 @@ function OnboardingContent() {
                           ) : (
                             <FileCode className="h-4 w-4 text-primary" />
                           )}
-                          <span className="font-semibold text-sm">{sec.title}</span>
+                          <span className="font-semibold text-xs text-textPrimary">{sec.title}</span>
                         </div>
                         {sec.risk_level && (
                           <span
-                            className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                            className={`text-[10px] font-bold px-2 py-0.5 rounded-full border font-mono ${
                               sec.risk_level === "CRITICAL"
                                 ? "bg-rose-500/10 text-rose-400 border-rose-500/20"
                                 : sec.risk_level === "MEDIUM"
@@ -213,7 +210,7 @@ function OnboardingContent() {
                           </span>
                         )}
                       </div>
-                      <span className="text-xs text-gray-500 line-clamp-1">
+                      <span className="text-[11px] text-textSecondary line-clamp-1 font-mono">
                         {sec.section_type.replace("_", " ")}
                       </span>
                     </button>
@@ -228,30 +225,30 @@ function OnboardingContent() {
                 <div className="rounded-xl border border-border bg-surface p-7 shadow-lg space-y-6">
                   {/* Section Title & Header */}
                   <div className="border-b border-border pb-4">
-                    <div className="flex items-center gap-2 text-xs text-primary font-semibold uppercase tracking-wider mb-1">
+                    <div className="flex items-center gap-2 text-[11px] text-primary font-semibold uppercase tracking-wider mb-1 font-mono">
                       <span>{activeSection.section_type.replace("_", " ")}</span>
                     </div>
-                    <h2 className="text-2xl font-bold text-white tracking-tight">
+                    <h2 className="text-xl font-bold text-textPrimary tracking-tight">
                       {activeSection.title}
                     </h2>
                   </div>
 
                   {/* Section Content Markdown */}
-                  <div className="prose prose-invert max-w-none text-sm text-gray-300 leading-relaxed whitespace-pre-line">
+                  <div className="prose prose-invert max-w-none text-xs text-textSecondary leading-relaxed whitespace-pre-line">
                     {activeSection.content_markdown}
                   </div>
 
                   {/* Referenced Files List */}
                   {activeSection.referenced_files && activeSection.referenced_files.length > 0 && (
                     <div className="pt-6 border-t border-border space-y-2.5">
-                      <span className="text-xs font-semibold uppercase tracking-wider text-gray-400 block">
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-textSecondary block font-mono">
                         Referenced Repository Files
                       </span>
                       <div className="flex flex-wrap gap-2">
                         {activeSection.referenced_files.map((file, idx) => (
                           <div
                             key={idx}
-                            className="inline-flex items-center gap-1.5 rounded-lg bg-background px-3 py-1.5 font-mono text-xs text-gray-300 border border-border"
+                            className="inline-flex items-center gap-1.5 rounded-lg bg-[#0A0B0D] px-3 py-1.5 font-mono text-xs text-textPrimary border border-border"
                           >
                             <FileCode className="h-3.5 w-3.5 text-primary" />
                             <span>{typeof file === "string" ? file : file.file_path || JSON.stringify(file)}</span>
@@ -272,7 +269,7 @@ function OnboardingContent() {
 
 export default function OnboardingPage() {
   return (
-    <Suspense fallback={<div className="py-20 text-center text-gray-400">Loading Onboarding Guide...</div>}>
+    <Suspense fallback={<div className="py-20 text-center text-textSecondary font-mono text-xs">Loading Onboarding Guide...</div>}>
       <OnboardingContent />
     </Suspense>
   );

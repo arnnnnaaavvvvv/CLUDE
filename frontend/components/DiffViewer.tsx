@@ -23,14 +23,14 @@ export function DiffViewer({ filePath, patch }: DiffViewerProps) {
   const lines = patch ? patch.split("\n") : [];
 
   return (
-    <div className="rounded-lg border border-border bg-surface overflow-hidden my-3">
+    <div className="rounded-lg border border-border bg-surface overflow-hidden my-3 font-mono">
       {/* File Header */}
-      <div className="flex items-center justify-between px-3.5 py-2 bg-surfaceHover/50 border-b border-border text-xs font-mono">
+      <div className="flex items-center justify-between px-3 py-2 bg-surfaceHover/60 border-b border-border text-xs">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-2 text-gray-200 hover:text-white font-medium"
+          className="flex items-center gap-2 text-textPrimary hover:text-white font-medium transition-colors"
         >
-          {isOpen ? <ChevronDown className="h-3.5 w-3.5 text-gray-400" /> : <ChevronRight className="h-3.5 w-3.5 text-gray-400" />}
+          {isOpen ? <ChevronDown className="h-3.5 w-3.5 text-textSecondary" /> : <ChevronRight className="h-3.5 w-3.5 text-textSecondary" />}
           <FileCode className="h-3.5 w-3.5 text-primary" />
           <span>{filePath}</span>
         </button>
@@ -38,37 +38,37 @@ export function DiffViewer({ filePath, patch }: DiffViewerProps) {
         {patch && (
           <button
             onClick={handleCopy}
-            className="flex items-center gap-1 text-gray-400 hover:text-gray-200 transition-colors"
+            className="flex items-center gap-1 text-[11px] text-textSecondary hover:text-textPrimary transition-colors"
             title="Copy diff patch"
           >
-            {copied ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
+            {copied ? <Check className="h-3 w-3 text-success" /> : <Copy className="h-3 w-3" />}
             <span>{copied ? "Copied" : "Copy"}</span>
           </button>
         )}
       </div>
 
-      {/* Code / Patch Content */}
+      {/* Code Content */}
       {isOpen && (
-        <div className="overflow-x-auto p-2 font-mono text-xs leading-relaxed bg-[#0a0e17]">
+        <div className="overflow-x-auto p-2 text-xs leading-relaxed bg-[#0A0B0D]">
           {lines.length > 0 ? (
             lines.map((line, idx) => {
-              let lineStyle = "text-gray-400";
+              let lineStyle = "text-textSecondary";
               let bgStyle = "";
 
               if (line.startsWith("+") && !line.startsWith("+++")) {
-                lineStyle = "text-emerald-400";
-                bgStyle = "bg-emerald-950/40";
+                lineStyle = "text-primary";
+                bgStyle = "bg-primary/10";
               } else if (line.startsWith("-") && !line.startsWith("---")) {
                 lineStyle = "text-rose-400";
-                bgStyle = "bg-rose-950/40";
+                bgStyle = "bg-rose-950/20";
               } else if (line.startsWith("@@")) {
-                lineStyle = "text-indigo-400 font-semibold";
-                bgStyle = "bg-indigo-950/30";
+                lineStyle = "text-textSecondary/80 italic text-[11px]";
+                bgStyle = "bg-surfaceHover/30";
               }
 
               return (
                 <div key={idx} className={`flex px-2 py-0.5 rounded-sm ${bgStyle}`}>
-                  <span className="w-8 select-none text-right pr-3 text-gray-600 text-[10px]">
+                  <span className="w-8 select-none text-right pr-3 text-textSecondary/50 text-[10px]">
                     {idx + 1}
                   </span>
                   <span className={`${lineStyle} whitespace-pre`}>{line}</span>
@@ -76,7 +76,7 @@ export function DiffViewer({ filePath, patch }: DiffViewerProps) {
               );
             })
           ) : (
-            <div className="p-3 text-gray-500 italic">No direct patch available for this file.</div>
+            <div className="p-3 text-textSecondary italic text-xs">No direct patch available for this file.</div>
           )}
         </div>
       )}
