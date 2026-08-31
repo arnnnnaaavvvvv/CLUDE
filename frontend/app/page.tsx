@@ -59,7 +59,7 @@ export default function LandingPage() {
 
   return (
     <div className="w-full space-y-28 pb-20 font-sans text-textPrimary overflow-x-hidden">
-      {/* 1. HERO SECTION (CLEAN VETRA HERO WITH ORBITING BACKGROUND) */}
+      {/* 1. HERO SECTION (GLOSSY WHITE TEXT & REFINED SUBTLE GLOW) */}
       <section className="relative pt-16 pb-16 text-center max-w-5xl mx-auto px-4">
         {/* Orbiting Concentric Ring Animations in Background */}
         <div className="hidden lg:flex absolute inset-0 top-0 mb-auto flex-col items-center justify-center w-full min-h-[500px] -z-10 pointer-events-none opacity-40">
@@ -79,10 +79,10 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Vetra Ambient Top Glow (from-sky-500 to-blue-600) */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -z-10 w-[500px] h-[500px] bg-gradient-to-r from-sky-500/20 to-blue-600/20 blur-[10rem] rounded-full pointer-events-none animate-image-glow" />
+        {/* Refined Subtle Ambient Top Glow (Reduced intensity & radius) */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -z-10 w-[420px] h-[320px] bg-gradient-to-r from-blue-600/10 to-sky-500/10 blur-[6rem] rounded-full pointer-events-none" />
 
-        {/* Vetra Shimmer Pill Badge */}
+        {/* Shimmer Pill Badge */}
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface border border-border text-xs font-mono text-textSecondary mb-6 shadow-sm">
           <span className="px-2 py-0.5 rounded-full bg-gradient-to-r from-sky-400 to-blue-600 text-white text-[9px] font-semibold tracking-wide">
             NEW
@@ -92,10 +92,10 @@ export default function LandingPage() {
           <span>Semantic Incident Attribution & Architecture Synthesis</span>
         </div>
 
-        {/* Main 7XL Headline */}
+        {/* Main 7XL Headline with GLOSSY WHITE "AI Precision" */}
         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-textPrimary leading-[1.1] max-w-4xl mx-auto">
           Pinpoint the exact commit that broke production with{" "}
-          <span className="bg-gradient-to-r from-sky-400 via-blue-500 to-blue-600 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-b from-white via-white/95 to-white/75 bg-clip-text text-transparent font-extrabold drop-shadow-[0_2px_12px_rgba(255,255,255,0.15)]">
             AI Precision
           </span>
         </h1>
@@ -105,11 +105,11 @@ export default function LandingPage() {
           AI-powered root-cause reasoning and codebase walkthroughs to maximize incident resolution speed and onboard engineers to complex repositories in minutes.
         </p>
 
-        {/* CTA Buttons */}
+        {/* CTA Buttons (Reduced glow) */}
         <div className="flex flex-wrap items-center justify-center gap-4 pt-8 font-sans">
           <Link
             href="/rca"
-            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 px-7 py-3.5 text-sm font-semibold text-white shadow-xl shadow-blue-500/25 transition-all hover:-translate-y-0.5"
+            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 px-7 py-3.5 text-sm font-semibold text-white shadow-md shadow-blue-500/15 transition-all hover:-translate-y-0.5"
           >
             <span>Start Root-Cause Analysis</span>
             <ArrowRight className="h-4 w-4" />
@@ -529,7 +529,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 7. SLIDING CUSTOMER FEEDBACK ANIMATION (REPLACED IMAGE 2) */}
+      {/* 7. SLIDING CUSTOMER FEEDBACK ANIMATION */}
       <CustomerFeedbackSlider />
 
       {/* 8. FAQ ACCORDION */}
