@@ -28,17 +28,46 @@ code, pre, .font-mono {
   font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
 }
 
+/* Orbit background animation */
+@keyframes orbit {
+  0% {
+    transform: rotate(0deg) translateY(var(--radius, 250px)) rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg) translateY(var(--radius, 250px)) rotate(-360deg);
+  }
+}
+
+.animate-orbit {
+  animation: orbit var(--duration, 40s) linear infinite;
+}
+
+@keyframes image-glow {
+  0%, 100% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}
+
+.animate-image-glow {
+  animation: image-glow 8s ease-in-out infinite;
+}
+
 /* Subtle Grid Background Pattern */
 .bg-grid-pattern {
-  background-size: 32px 32px;
+  background-size: 36px 36px;
   background-image: 
     linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
 }
 
-/* Subtle Radial Glow */
+/* Ambient Radial Glow */
 .bg-radial-glow {
-  background: radial-gradient(circle at 50% 0%, rgba(249, 115, 22, 0.08) 0%, transparent 65%);
+  background: radial-gradient(circle at 50% 0%, rgba(249, 115, 22, 0.12) 0%, rgba(249, 115, 22, 0.02) 40%, transparent 70%);
 }
 
 /* Restrained scrollbar */
