@@ -238,9 +238,7 @@ All environment variables can be set via environment flags or a `.env` file in `
 | `EMBEDDING_MODEL` | `text-embedding-3-large` | OpenAI embedding model for vector generation. |
 | `EMBEDDING_DIMENSION` | `1536` | Output dimension for vector embeddings stored in `pgvector`. |
 | `GITHUB_CLIENT_ID` | `None` | GitHub OAuth App Client ID. |
-| `GITHUB_CLIENT_SECRET` | `None` | GitHub OAuth App Secret. |
 | `GITHUB_WEBHOOK_SECRET` | `None` | HMAC-SHA256 secret for validating incoming GitHub webhook payloads. |
-| `SECRET_KEY` | `dev_secret_key_change_in_production...` | Secret key for JWT signing and AES-256 token encryption at rest. |
 | `RATE_LIMIT_PER_MINUTE` | `60` | Sliding-window request rate limit per client IP. |
 | `MAX_DIFF_CONTEXT_TOKENS`| `6000` | Token ceiling per candidate commit diff to prevent prompt bloat. |
 
