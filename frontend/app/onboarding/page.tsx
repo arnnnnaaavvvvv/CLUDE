@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   BookOpen,
@@ -18,7 +18,7 @@ import { Repository, OnboardingWalkthrough, WalkthroughSection } from "@/lib/typ
 import { fetchRepos, fetchOnboarding, generateOnboarding } from "@/lib/api";
 import { MermaidViewer } from "@/components/MermaidViewer";
 
-export default function OnboardingPage() {
+function OnboardingContent() {
   const searchParams = useSearchParams();
   const initialRepoId = searchParams.get("repo_id") || "";
 
@@ -267,5 +267,13 @@ export default function OnboardingPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function OnboardingPage() {
+  return (
+    <Suspense fallback={<div className="py-20 text-center text-gray-400">Loading Onboarding Guide...</div>}>
+      <OnboardingContent />
+    </Suspense>
   );
 }

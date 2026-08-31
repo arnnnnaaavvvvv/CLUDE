@@ -1,8 +1,17 @@
 import asyncio
 import uuid
 from datetime import datetime, timezone
-from celery import shared_task
 from sqlalchemy import select
+
+try:
+    from celery import shared_task
+except ImportError:
+    # Fallback decorator if Celery is not installed
+    def shared_task(*args, **kwargs):
+        def decorator(f):
+            f.delay = lambda *a, **kw: f(*a, **kw)
+            return f
+        return decorator
 
 from app.core.database import async_session_maker
 from app.models.repo import Repository
@@ -45,12 +54,10 @@ async def _async_index_repository(repo_id: uuid.UUID):
         embedding_service = EmbeddingService()
 
         try:
-            # 1. Fetch recent 50 commits
             commits_data = await gh.fetch_recent_commits(repo.full_name, branch=repo.default_branch or "main", limit=50)
 
             for c_data in commits_data:
                 sha = c_data["sha"]
-                # Check if commit already exists
                 existing = await session.execute(
                     select(Commit).where(Commit.repo_id == repo.id, Commit.commit_sha == sha)
                 )
@@ -68,7 +75,6 @@ async def _async_index_repository(repo_id: uuid.UUID):
                 session.add(commit_obj)
                 await session.flush()
 
-                # 2. Fetch full commit diff
                 commit_diff_detail = await gh.fetch_commit_diff(repo.full_name, sha)
                 for file_entry in commit_diff_detail.get("files", []):
                     patch = file_entry.get("patch", "")
@@ -82,16 +88,14 @@ async def _async_index_repository(repo_id: uuid.UUID):
                     )
                     session.add(diff_obj)
 
-            # 3. Ingest and vector-index key codebase files
             tree = await gh.fetch_repo_tree(repo.full_name, branch=repo.default_branch or "main")
-            for item in tree[:30]: # Index top 30 representative source files
+            for item in tree[:30]:
                 path = item.get("path", "")
                 if item.get("type") == "blob" and any(path.endswith(ext) for ext in [".py", ".ts", ".js", ".tsx", ".jsx", ".go", ".rs"]):
                     content = await gh.fetch_file_content(repo.full_name, path, ref=repo.default_branch or "main")
                     if content:
                         chunks = ASTCodeChunker.chunk_file(path, content)
                         for chunk in chunks:
-                            # Generate embedding vector
                             vector = await embedding_service.get_embedding(chunk.content)
                             embed_obj = CodeEmbedding(
                                 repo_id=repo.id,

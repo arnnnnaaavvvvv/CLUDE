@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Bug,
@@ -19,7 +19,7 @@ import { fetchRepos, analyzeStackTrace } from "@/lib/api";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { DiffViewer } from "@/components/DiffViewer";
 
-export default function RootCauseStudio() {
+function RootCauseStudioContent() {
   const searchParams = useSearchParams();
   const initialRepoId = searchParams.get("repo_id") || "";
 
@@ -361,5 +361,13 @@ main.main()
         </div>
       </div>
     </div>
+  );
+}
+
+export default function RootCauseStudio() {
+  return (
+    <Suspense fallback={<div className="py-20 text-center text-gray-400">Loading Root-Cause Studio...</div>}>
+      <RootCauseStudioContent />
+    </Suspense>
   );
 }
