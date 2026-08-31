@@ -2,12 +2,15 @@
 
 > **Pinpoint the exact commit that broke production with causal AI reasoning, and onboard engineers to unfamiliar codebases in minutes.**
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-black?style=flat&logo=vercel)](https://frontend-mu-roan-llgeruknl5.vercel.app)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.0.0-emerald.svg)](https://github.com/your-org/clude)
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/your-org/clude/actions)
+[![Version](https://img.shields.io/badge/version-1.0.0-emerald.svg)](https://github.com/arnnnnaaavvvvv/CLUDE)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/arnnnnaaavvvvv/CLUDE)
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-14.2-black.svg?logo=next.js&logoColor=white)](https://nextjs.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16%20%2B%20pgvector-336791.svg?logo=postgresql&logoColor=white)](https://github.com/pgvector/pgvector)
+
+🌐 **Live Application**: [https://frontend-mu-roan-llgeruknl5.vercel.app](https://frontend-mu-roan-llgeruknl5.vercel.app)
 
 ---
 
@@ -69,7 +72,7 @@
 
 ### 1. Clone & Configure Backend
 ```bash
-git clone https://github.com/your-org/clude.git
+git clone https://github.com/arnnnnaaavvvvv/CLUDE.git
 cd clude/backend
 
 # Create virtual environment
