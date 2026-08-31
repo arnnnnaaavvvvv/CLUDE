@@ -8,17 +8,17 @@ interface ScoreBadgeProps {
 export function ScoreBadge({ score, rank }: ScoreBadgeProps) {
   const percentage = Math.round(score * 100);
 
-  let bgClass = "bg-primary/10 text-primary border-primary/30";
-  let dotClass = "bg-primary";
+  let bgClass = "bg-blue-500/15 text-blue-400 border-blue-500/30";
+  let dotClass = "bg-blue-400";
   let label = "High Likelihood";
 
   if (score < 0.5) {
-    bgClass = "bg-accent-muted/20 text-textSecondary border-accent-muted/40";
-    dotClass = "bg-textSecondary";
+    bgClass = "bg-slate-500/15 text-slate-400 border-slate-500/30";
+    dotClass = "bg-slate-400";
     label = "Low Likelihood";
   } else if (score < 0.8) {
-    bgClass = "bg-amber-500/10 text-amber-400 border-amber-500/30";
-    dotClass = "bg-amber-400";
+    bgClass = "bg-sky-500/15 text-sky-400 border-sky-500/30";
+    dotClass = "bg-sky-400";
     label = "Plausible Cause";
   }
 
@@ -29,8 +29,8 @@ export function ScoreBadge({ score, rank }: ScoreBadgeProps) {
           #{rank}
         </span>
       )}
-      <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-semibold border ${bgClass}`}>
-        <span className={`h-1.5 w-1.5 rounded-full ${dotClass}`} />
+      <div className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${bgClass}`}>
+        <span className={`h-1.5 w-1.5 rounded-full ${dotClass} animate-pulse`} />
         <span>{percentage}% Match</span>
         <span className="text-[10px] opacity-75 font-normal">({label})</span>
       </div>

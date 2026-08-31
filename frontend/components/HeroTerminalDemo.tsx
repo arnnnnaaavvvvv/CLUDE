@@ -135,10 +135,8 @@ export function HeroTerminalDemo() {
     }
   }, [step, typedChars, fullTraceText]);
 
-  // Animate score and diff lines when entering ranked state
   useEffect(() => {
     if (step === "ranked") {
-      // Animate score from 0 to target
       let current = 0;
       const target = selectedScenario.confidence;
       const interval = setInterval(() => {
@@ -151,7 +149,6 @@ export function HeroTerminalDemo() {
         }
       }, 15);
 
-      // Line-by-line reveal of diff lines
       let lineIdx = 0;
       const total = selectedScenario.diffLines.length;
       const diffInterval = setInterval(() => {
@@ -170,24 +167,24 @@ export function HeroTerminalDemo() {
   }, [step, selectedScenario]);
 
   return (
-    <div className="rounded-xl border border-border bg-surface shadow-2xl overflow-hidden text-left font-sans">
+    <div className="rounded-xl lg:rounded-2xl border border-border bg-[#080E1A] shadow-2xl overflow-hidden text-left font-sans">
       {/* Top Terminal Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 bg-[#0D0E11] border-b border-border text-xs font-mono">
+      <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 bg-[#050A14] border-b border-border text-xs font-mono">
         <div className="flex items-center gap-2">
           <div className="flex gap-1.5">
-            <div className="h-2.5 w-2.5 rounded-full bg-borderStrong" />
-            <div className="h-2.5 w-2.5 rounded-full bg-borderStrong" />
-            <div className="h-2.5 w-2.5 rounded-full bg-borderStrong" />
+            <div className="h-2.5 w-2.5 rounded-full bg-rose-500/80" />
+            <div className="h-2.5 w-2.5 rounded-full bg-amber-500/80" />
+            <div className="h-2.5 w-2.5 rounded-full bg-emerald-500/80" />
           </div>
           <span className="text-textSecondary ml-2 text-[11px] flex items-center gap-1.5">
-            <Terminal className="h-3 w-3 text-primary" />
+            <Terminal className="h-3 w-3 text-blue-400" />
             <span>clude --trace --correlate</span>
           </span>
         </div>
 
         {/* Scenario Selector & Replay */}
         <div className="flex items-center gap-2">
-          <div className="flex bg-surface rounded p-0.5 border border-border">
+          <div className="flex bg-[#080E1A] rounded-lg p-0.5 border border-border">
             {SCENARIOS.map((s) => (
               <button
                 key={s.id}
@@ -195,9 +192,9 @@ export function HeroTerminalDemo() {
                   setSelectedScenario(s);
                   setStep("ranked");
                 }}
-                className={`px-2 py-0.5 rounded text-[10px] font-mono transition-colors ${
+                className={`px-2.5 py-1 rounded text-[10px] font-mono transition-colors ${
                   selectedScenario.id === s.id
-                    ? "bg-borderStrong text-textPrimary font-semibold"
+                    ? "bg-blue-600 text-white font-semibold shadow-sm"
                     : "text-textSecondary hover:text-textPrimary"
                 }`}
               >
@@ -208,7 +205,7 @@ export function HeroTerminalDemo() {
 
           <button
             onClick={playDemo}
-            className="flex items-center gap-1 text-[11px] text-textSecondary hover:text-textPrimary px-2 py-0.5 rounded hover:bg-surface border border-transparent hover:border-border transition-colors font-mono"
+            className="flex items-center gap-1 text-[11px] text-textSecondary hover:text-textPrimary px-2.5 py-1 rounded-md hover:bg-surfaceHover border border-border transition-colors font-mono"
             title="Replay live typing animation"
           >
             <RotateCcw className="h-3 w-3" />
@@ -220,25 +217,28 @@ export function HeroTerminalDemo() {
       {/* Main Grid: Stack Trace Ingest & Causal Attribution */}
       <div className="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-border">
         {/* Left: Input Error Log */}
-        <div className="lg:col-span-5 p-4 bg-[#0A0B0D] flex flex-col justify-between space-y-4">
+        <div className="lg:col-span-5 p-5 bg-[#030712] flex flex-col justify-between space-y-4">
           <div>
             <div className="flex items-center justify-between text-[11px] font-mono text-textSecondary mb-2 uppercase tracking-wider">
               <span>Ingested Stack Trace</span>
-              <span className="text-primary font-semibold">Active Incident</span>
+              <span className="text-blue-400 font-semibold flex items-center gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-ping" />
+                Active Incident
+              </span>
             </div>
 
-            <div className="font-mono text-xs text-textPrimary leading-relaxed bg-surface/40 p-3 rounded-lg border border-border min-h-[140px] overflow-x-auto whitespace-pre">
+            <div className="font-mono text-xs text-textPrimary leading-relaxed bg-[#080E1A]/80 p-3.5 rounded-xl border border-border min-h-[150px] overflow-x-auto whitespace-pre">
               {step === "typing" ? (
                 <>
-                  <span className="text-danger font-semibold">{fullTraceText.substring(0, typedChars)}</span>
-                  <span className="inline-block w-1.5 h-3.5 bg-primary ml-0.5 animate-pulse" />
+                  <span className="text-rose-400 font-semibold">{fullTraceText.substring(0, typedChars)}</span>
+                  <span className="inline-block w-1.5 h-3.5 bg-blue-400 ml-0.5 animate-pulse" />
                 </>
               ) : (
                 <div className="space-y-1">
                   <div className="text-rose-400 font-semibold text-[11px]">{selectedScenario.errorHeader}</div>
                   <div className="text-textSecondary text-[11px] space-y-0.5">
                     {selectedScenario.traceLines.map((line, idx) => (
-                      <div key={idx} className={line.includes(selectedScenario.filePath) ? "text-primary" : ""}>
+                      <div key={idx} className={line.includes(selectedScenario.filePath) ? "text-blue-400 font-medium" : ""}>
                         {line}
                       </div>
                     ))}
@@ -249,28 +249,28 @@ export function HeroTerminalDemo() {
           </div>
 
           {/* Slicing State */}
-          <div className="text-[11px] font-mono text-textSecondary flex items-center justify-between pt-2 border-t border-border/50">
+          <div className="text-[11px] font-mono text-textSecondary flex items-center justify-between pt-2 border-t border-border/60">
             <span className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-success inline-block" />
+              <span className="h-2 w-2 rounded-full bg-emerald-400 inline-block" />
               <span>AST Coordinate: {selectedScenario.filePath}:142</span>
             </span>
-            <span className="text-primary">14-day history</span>
+            <span className="text-blue-400 font-semibold">14-day history</span>
           </div>
         </div>
 
         {/* Right: Ranked Causal Result */}
-        <div className="lg:col-span-7 p-4 bg-surface flex flex-col justify-between space-y-4">
+        <div className="lg:col-span-7 p-5 bg-[#080E1A] flex flex-col justify-between space-y-4">
           <div>
             {/* Header: Commit & Score Bar */}
             <div className="flex items-start justify-between gap-3 border-b border-border pb-3 mb-3">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs font-bold text-primary">#{selectedScenario.commitSha}</span>
-                  <span className="text-[10px] font-mono text-textSecondary uppercase bg-surfaceHover px-1.5 py-0.5 rounded border border-border">
+                  <span className="font-mono text-xs font-bold text-blue-400">#{selectedScenario.commitSha}</span>
+                  <span className="text-[10px] font-mono text-blue-300 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-full uppercase font-semibold">
                     Rank 1 (Causal Cause)
                   </span>
                 </div>
-                <div className="text-xs font-semibold text-textPrimary mt-1">
+                <div className="text-xs font-semibold text-textPrimary mt-1.5">
                   "{selectedScenario.commitMsg}"
                 </div>
                 <div className="text-[10px] font-mono text-textSecondary mt-0.5">
@@ -280,14 +280,14 @@ export function HeroTerminalDemo() {
 
               {/* Animated Confidence Score */}
               <div className="flex flex-col items-end min-w-[120px]">
-                <div className="flex items-center gap-1.5 font-mono text-xs font-bold text-primary">
+                <div className="flex items-center gap-1.5 font-mono text-xs font-bold text-blue-400">
                   <span>{animatedScore}%</span>
                   <span className="text-[10px] text-textSecondary font-normal">Likelihood</span>
                 </div>
                 {/* Confidence Bar */}
-                <div className="w-full h-1.5 bg-border rounded-full mt-1.5 overflow-hidden">
+                <div className="w-full h-1.5 bg-[#0F172A] rounded-full mt-1.5 overflow-hidden border border-border">
                   <div
-                    className="h-full bg-primary transition-all duration-300 ease-out rounded-full"
+                    className="h-full bg-gradient-to-r from-sky-400 to-blue-600 transition-all duration-300 ease-out rounded-full"
                     style={{ width: `${animatedScore}%` }}
                   />
                 </div>
@@ -297,10 +297,10 @@ export function HeroTerminalDemo() {
             {/* Line-by-Line Code Diff */}
             <div className="space-y-1 mb-3">
               <div className="flex items-center justify-between text-[10px] font-mono text-textSecondary mb-1">
-                <span>{selectedScenario.filePath}</span>
+                <span className="text-textPrimary">{selectedScenario.filePath}</span>
                 <span>Diff Hunk</span>
               </div>
-              <div className="font-mono text-[11px] leading-relaxed bg-[#0A0B0D] rounded-lg border border-border p-2.5 overflow-x-auto">
+              <div className="font-mono text-[11px] leading-relaxed bg-[#030712] rounded-xl border border-border p-3 overflow-x-auto">
                 {selectedScenario.diffLines.slice(0, visibleDiffLines).map((d, idx) => {
                   let textStyle = "text-textSecondary";
                   let bgStyle = "";
@@ -308,14 +308,14 @@ export function HeroTerminalDemo() {
                     textStyle = "text-rose-400";
                     bgStyle = "bg-rose-950/30";
                   } else if (d.type === "add") {
-                    textStyle = "text-primary font-medium";
-                    bgStyle = "bg-primary/10";
+                    textStyle = "text-blue-300 font-medium";
+                    bgStyle = "bg-blue-950/40 border-l-2 border-blue-400";
                   } else if (d.type === "hunk") {
                     textStyle = "text-textSecondary/70 italic text-[10px]";
                   }
 
                   return (
-                    <div key={idx} className={`px-1.5 py-0.5 rounded-sm whitespace-pre ${bgStyle} ${textStyle}`}>
+                    <div key={idx} className={`px-2 py-0.5 rounded-sm whitespace-pre ${bgStyle} ${textStyle}`}>
                       {d.text}
                     </div>
                   );
@@ -324,9 +324,9 @@ export function HeroTerminalDemo() {
             </div>
 
             {/* Causal Reasoning */}
-            <div className="bg-[#0A0B0D]/80 rounded-lg p-3 border border-border">
-              <div className="flex items-center gap-1.5 text-[11px] font-bold text-textPrimary mb-1">
-                <Sparkles className="h-3.5 w-3.5 text-primary" />
+            <div className="bg-[#030712]/90 rounded-xl p-3.5 border border-border">
+              <div className="flex items-center gap-1.5 text-[11px] font-bold text-blue-400 mb-1">
+                <Sparkles className="h-3.5 w-3.5" />
                 <span>Plain-English Reasoning:</span>
               </div>
               <p className="text-xs text-textSecondary leading-relaxed">
@@ -335,9 +335,9 @@ export function HeroTerminalDemo() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-2 border-t border-border text-[11px] font-mono text-textSecondary">
+          <div className="flex items-center justify-between pt-3 border-t border-border text-[11px] font-mono text-textSecondary">
             <span className="text-emerald-400 flex items-center gap-1">
-              <Check className="h-3 w-3" /> Fix Available
+              <Check className="h-3.5 w-3.5" /> Remediation Fix Available
             </span>
             <span>Reasoned with Claude 3.5 Sonnet</span>
           </div>

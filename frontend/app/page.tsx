@@ -17,18 +17,12 @@ import {
   Code2,
   Clock,
   ChevronDown,
-  ChevronRight,
   Github,
-  Search,
   Cpu,
   Lock,
   Check,
-  HelpCircle,
   Activity,
-  GitPullRequest,
   Flame,
-  FileCode,
-  Share2,
 } from "lucide-react";
 import { HeroTerminalDemo } from "@/components/HeroTerminalDemo";
 
@@ -65,7 +59,7 @@ export default function LandingPage() {
 
   return (
     <div className="w-full space-y-28 pb-20 font-sans text-textPrimary overflow-x-hidden">
-      {/* 1. HERO SECTION (VETRA TEMPLATE EXACT STRUCTURE WITH ORBITING BACKGROUND) */}
+      {/* 1. HERO SECTION (EXACT VETRA TEMPLATE WITH ORBITING BACKGROUND & BLUE GLOW) */}
       <section className="relative pt-12 pb-16 text-center max-w-6xl mx-auto px-4">
         {/* Orbiting Concentric Ring Animations in Background */}
         <div className="hidden lg:flex absolute inset-0 top-0 mb-auto flex-col items-center justify-center w-full min-h-[600px] -z-10 pointer-events-none opacity-40">
@@ -75,22 +69,22 @@ export default function LandingPage() {
             <circle className="stroke-white/10 stroke-1" strokeDasharray="5 5" cx="50%" cy="50%" r="560" fill="none" />
           </svg>
           <div style={{ "--duration": "50s", "--radius": "280px" } as any} className="absolute flex size-6 animate-orbit items-center justify-center rounded-full bg-surface border border-border">
-            <Terminal className="h-3 w-3 text-primary" />
+            <Terminal className="h-3 w-3 text-blue-400" />
           </div>
           <div style={{ "--duration": "70s", "--radius": "420px" } as any} className="absolute flex size-6 animate-orbit items-center justify-center rounded-full bg-surface border border-border">
-            <GitBranch className="h-3 w-3 text-emerald-400" />
+            <GitBranch className="h-3 w-3 text-sky-400" />
           </div>
           <div style={{ "--duration": "90s", "--radius": "560px" } as any} className="absolute flex size-6 animate-orbit items-center justify-center rounded-full bg-surface border border-border">
-            <Sparkles className="h-3 w-3 text-amber-400" />
+            <Sparkles className="h-3 w-3 text-blue-300" />
           </div>
         </div>
 
-        {/* Ambient Top Glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -z-10 w-96 h-96 bg-primary/10 blur-[10rem] rounded-full pointer-events-none" />
+        {/* Vetra Ambient Top Glow (from-sky-500 to-blue-600) */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -z-10 w-[500px] h-[500px] bg-gradient-to-r from-sky-500/20 to-blue-600/20 blur-[10rem] rounded-full pointer-events-none animate-image-glow" />
 
-        {/* Shimmer Pill Badge */}
+        {/* Vetra Shimmer Pill Badge */}
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface border border-border text-xs font-mono text-textSecondary mb-6 shadow-sm">
-          <span className="px-2 py-0.5 rounded-full bg-primary/20 text-primary text-[10px] font-bold tracking-wide">
+          <span className="px-2 py-0.5 rounded-full bg-gradient-to-r from-sky-400 to-blue-600 text-white text-[9px] font-semibold tracking-wide">
             NEW
           </span>
           <span className="text-textPrimary font-medium">CLUDE 1.0</span>
@@ -101,7 +95,9 @@ export default function LandingPage() {
         {/* Main 7XL Headline */}
         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-textPrimary leading-[1.1] max-w-5xl mx-auto">
           Pinpoint the exact commit that broke production with{" "}
-          <span className="text-primary">AI Precision</span>
+          <span className="bg-gradient-to-r from-sky-400 via-blue-500 to-blue-600 bg-clip-text text-transparent">
+            AI Precision
+          </span>
         </h1>
 
         {/* Subtitle */}
@@ -113,7 +109,7 @@ export default function LandingPage() {
         <div className="flex flex-wrap items-center justify-center gap-3 pt-6 font-sans">
           <Link
             href="/rca"
-            className="flex items-center gap-2 rounded-lg bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover transition-all shadow-lg shadow-primary/20 hover:-translate-y-0.5"
+            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 px-6 py-3.5 text-sm font-semibold text-white shadow-xl shadow-blue-500/25 transition-all hover:-translate-y-0.5"
           >
             <span>Start Root-Cause Analysis</span>
             <ArrowRight className="h-4 w-4" />
@@ -130,10 +126,10 @@ export default function LandingPage() {
 
         {/* HERO SHOWCASE CONTAINER (Vetra Glowing Dashboard Container) */}
         <div className="relative mt-12 max-w-5xl mx-auto">
-          {/* Ambient Glow behind the dashboard container */}
-          <div className="absolute top-1/4 left-1/2 -z-10 w-3/4 -translate-x-1/2 h-1/2 bg-primary/15 blur-[6rem] lg:blur-[9rem] rounded-full animate-image-glow pointer-events-none" />
+          {/* Ambient Blue Glow behind the dashboard container */}
+          <div className="absolute top-1/4 left-1/2 -z-10 w-3/4 -translate-x-1/2 h-1/2 bg-gradient-to-r from-sky-500/20 to-blue-600/30 blur-[6rem] lg:blur-[9rem] rounded-full animate-image-glow pointer-events-none" />
 
-          <div className="relative rounded-2xl lg:rounded-[28px] border border-border p-2 bg-surface/50 backdrop-blur-xl shadow-2xl">
+          <div className="relative rounded-2xl lg:rounded-[28px] border border-border p-2 bg-surface/60 backdrop-blur-xl shadow-2xl">
             <HeroTerminalDemo />
           </div>
         </div>
@@ -146,7 +142,7 @@ export default function LandingPage() {
         </h4>
         <div className="flex flex-wrap items-center justify-center gap-8 md:gap-14 text-textSecondary/70 font-mono text-sm">
           <div className="flex items-center gap-2 hover:text-textPrimary transition-colors">
-            <GitBranch className="h-4 w-4 text-primary" />
+            <GitBranch className="h-4 w-4 text-blue-400" />
             <span className="font-semibold">GitHub GraphQL & Webhooks</span>
           </div>
           <div className="flex items-center gap-2 hover:text-textPrimary transition-colors">
@@ -154,11 +150,11 @@ export default function LandingPage() {
             <span className="font-semibold">Sentry Ingestion</span>
           </div>
           <div className="flex items-center gap-2 hover:text-textPrimary transition-colors">
-            <Database className="h-4 w-4 text-primary" />
+            <Database className="h-4 w-4 text-sky-400" />
             <span className="font-semibold">pgvector 1536-dim</span>
           </div>
           <div className="flex items-center gap-2 hover:text-textPrimary transition-colors">
-            <Cpu className="h-4 w-4 text-amber-400" />
+            <Cpu className="h-4 w-4 text-blue-400" />
             <span className="font-semibold">Claude 3.5 Sonnet</span>
           </div>
         </div>
@@ -167,7 +163,7 @@ export default function LandingPage() {
       {/* 3. BENTO GRID FEATURES SECTION (Vetra Template Structure) */}
       <section className="space-y-12 max-w-6xl mx-auto px-4">
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface border border-border text-xs font-mono text-primary font-semibold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-mono text-blue-400 font-semibold uppercase tracking-wider">
             <span>Features</span>
           </div>
           <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-textPrimary">
@@ -181,10 +177,10 @@ export default function LandingPage() {
         {/* Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Card 1: Multi-Language Frame Normalizer (Span 2) */}
-          <div className="md:col-span-2 rounded-2xl border border-border bg-surface p-7 shadow-lg flex flex-col justify-between space-y-6 hover:border-borderStrong transition-all group">
+          <div className="md:col-span-2 rounded-2xl border border-border bg-surface p-7 shadow-lg flex flex-col justify-between space-y-6 hover:border-blue-500/40 transition-all group">
             <div className="space-y-3">
-              <div className="h-10 w-10 rounded-xl bg-[#0A0B0D] flex items-center justify-center border border-border group-hover:border-primary/50 transition-colors">
-                <Code2 className="h-5 w-5 text-primary" />
+              <div className="h-10 w-10 rounded-xl bg-[#030712] flex items-center justify-center border border-border group-hover:border-blue-500/50 transition-colors">
+                <Code2 className="h-5 w-5 text-blue-400" />
               </div>
               <h3 className="text-xl font-bold text-textPrimary">Multi-Language Stack Frame Normalizer</h3>
               <p className="text-xs text-textSecondary leading-relaxed max-w-xl">
@@ -193,29 +189,29 @@ export default function LandingPage() {
             </div>
 
             {/* Visual Box */}
-            <div className="rounded-xl border border-border bg-[#0A0B0D] p-4 font-mono text-xs space-y-2">
+            <div className="rounded-xl border border-border bg-[#030712] p-4 font-mono text-xs space-y-2">
               <div className="flex items-center justify-between text-textSecondary text-[11px] pb-1 border-b border-border/50">
                 <span>PARSED COORDINATES</span>
-                <span className="text-success flex items-center gap-1">
+                <span className="text-emerald-400 flex items-center gap-1">
                   <Check className="h-3 w-3" /> Normalized
                 </span>
               </div>
               <div className="flex items-center justify-between text-textPrimary text-[11px]">
-                <span className="text-primary font-semibold">src/services/payment.ts:142:28</span>
+                <span className="text-blue-400 font-semibold">src/services/payment.ts:142:28</span>
                 <span className="text-textSecondary">PaymentProcessor.processOrder</span>
               </div>
               <div className="flex items-center justify-between text-textPrimary text-[11px]">
-                <span className="text-primary font-semibold">src/controllers/checkout.ts:89:12</span>
+                <span className="text-blue-400 font-semibold">src/controllers/checkout.ts:89:12</span>
                 <span className="text-textSecondary">CheckoutController.handleCheckout</span>
               </div>
             </div>
           </div>
 
           {/* Card 2: Temporal Git Slicer */}
-          <div className="rounded-2xl border border-border bg-surface p-7 shadow-lg flex flex-col justify-between space-y-6 hover:border-borderStrong transition-all group">
+          <div className="rounded-2xl border border-border bg-surface p-7 shadow-lg flex flex-col justify-between space-y-6 hover:border-blue-500/40 transition-all group">
             <div className="space-y-3">
-              <div className="h-10 w-10 rounded-xl bg-[#0A0B0D] flex items-center justify-center border border-border group-hover:border-primary/50 transition-colors">
-                <GitBranch className="h-5 w-5 text-primary" />
+              <div className="h-10 w-10 rounded-xl bg-[#030712] flex items-center justify-center border border-border group-hover:border-blue-500/50 transition-colors">
+                <GitBranch className="h-5 w-5 text-blue-400" />
               </div>
               <h3 className="text-xl font-bold text-textPrimary">Temporal Git Slicer</h3>
               <p className="text-xs text-textSecondary leading-relaxed">
@@ -223,17 +219,17 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="rounded-xl border border-border bg-[#0A0B0D] p-3 font-mono text-xs text-textSecondary space-y-1">
-              <div className="text-primary font-semibold text-[11px]">Temporal Window: 14 Days</div>
+            <div className="rounded-xl border border-border bg-[#030712] p-3 font-mono text-xs text-textSecondary space-y-1">
+              <div className="text-blue-400 font-semibold text-[11px]">Temporal Window: 14 Days</div>
               <div className="text-[11px]">Filtered: package-lock.json, *.min.js</div>
             </div>
           </div>
 
           {/* Card 3: Calibrated Causal Scoring */}
-          <div className="rounded-2xl border border-border bg-surface p-7 shadow-lg flex flex-col justify-between space-y-6 hover:border-borderStrong transition-all group">
+          <div className="rounded-2xl border border-border bg-surface p-7 shadow-lg flex flex-col justify-between space-y-6 hover:border-blue-500/40 transition-all group">
             <div className="space-y-3">
-              <div className="h-10 w-10 rounded-xl bg-[#0A0B0D] flex items-center justify-center border border-border group-hover:border-primary/50 transition-colors">
-                <Sparkles className="h-5 w-5 text-primary" />
+              <div className="h-10 w-10 rounded-xl bg-[#030712] flex items-center justify-center border border-border group-hover:border-blue-500/50 transition-colors">
+                <Sparkles className="h-5 w-5 text-blue-400" />
               </div>
               <h3 className="text-xl font-bold text-textPrimary">Calibrated Causal Scoring</h3>
               <p className="text-xs text-textSecondary leading-relaxed">
@@ -242,18 +238,18 @@ export default function LandingPage() {
             </div>
 
             <div className="flex items-center gap-2 font-mono text-xs">
-              <div className="h-2 flex-1 bg-border rounded-full overflow-hidden">
-                <div className="h-full bg-primary w-[94%]" />
+              <div className="h-2 flex-1 bg-[#0F172A] rounded-full overflow-hidden border border-border">
+                <div className="h-full bg-gradient-to-r from-sky-400 to-blue-600 w-[94%]" />
               </div>
-              <span className="text-primary font-bold">94% Confidence</span>
+              <span className="text-blue-400 font-bold">94% Confidence</span>
             </div>
           </div>
 
           {/* Card 4: Architecture Topology Synthesis (Span 2) */}
-          <div className="md:col-span-2 rounded-2xl border border-border bg-surface p-7 shadow-lg flex flex-col justify-between space-y-6 hover:border-borderStrong transition-all group">
+          <div className="md:col-span-2 rounded-2xl border border-border bg-surface p-7 shadow-lg flex flex-col justify-between space-y-6 hover:border-blue-500/40 transition-all group">
             <div className="space-y-3">
-              <div className="h-10 w-10 rounded-xl bg-[#0A0B0D] flex items-center justify-center border border-border group-hover:border-primary/50 transition-colors">
-                <Layers className="h-5 w-5 text-primary" />
+              <div className="h-10 w-10 rounded-xl bg-[#030712] flex items-center justify-center border border-border group-hover:border-blue-500/50 transition-colors">
+                <Layers className="h-5 w-5 text-blue-400" />
               </div>
               <h3 className="text-xl font-bold text-textPrimary">Automated Architecture Topology & Danger Zones</h3>
               <p className="text-xs text-textSecondary leading-relaxed max-w-xl">
@@ -262,7 +258,7 @@ export default function LandingPage() {
             </div>
 
             {/* Visual Mini Graph */}
-            <div className="rounded-xl border border-border bg-[#0A0B0D] p-3 font-mono text-xs flex flex-wrap items-center justify-between gap-2 text-textSecondary text-[11px]">
+            <div className="rounded-xl border border-border bg-[#030712] p-3 font-mono text-xs flex flex-wrap items-center justify-between gap-2 text-textSecondary text-[11px]">
               <span className="text-textPrimary font-semibold">Client Layer &rarr; API Gateway &rarr; Domain Service &rarr; pgvector</span>
               <span className="text-rose-400 font-semibold flex items-center gap-1">
                 <Flame className="h-3.5 w-3.5" /> High Churn Detected
@@ -275,7 +271,7 @@ export default function LandingPage() {
       {/* 4. STEP-BY-STEP WORKFLOW */}
       <section className="space-y-12 max-w-6xl mx-auto px-4">
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface border border-border text-xs font-mono text-primary font-semibold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-mono text-blue-400 font-semibold uppercase tracking-wider">
             <span>Workflow</span>
           </div>
           <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-textPrimary">
@@ -311,9 +307,9 @@ export default function LandingPage() {
           ].map((item, idx) => (
             <div
               key={idx}
-              className="rounded-2xl border border-border bg-surface p-6 space-y-3 relative hover:border-primary/40 transition-all"
+              className="rounded-2xl border border-border bg-surface p-6 space-y-3 relative hover:border-blue-500/40 transition-all"
             >
-              <div className="font-mono text-2xl font-bold text-primary opacity-80">{item.step}</div>
+              <div className="font-mono text-2xl font-bold text-blue-400 opacity-90">{item.step}</div>
               <h4 className="text-base font-bold text-textPrimary">{item.title}</h4>
               <p className="text-xs text-textSecondary leading-relaxed">{item.desc}</p>
             </div>
@@ -324,7 +320,7 @@ export default function LandingPage() {
       {/* 5. COMPARISON TABLE */}
       <section className="space-y-8 max-w-5xl mx-auto px-4">
         <div className="text-center space-y-2">
-          <span className="text-xs font-mono text-primary uppercase tracking-wider font-semibold">
+          <span className="text-xs font-mono text-blue-400 uppercase tracking-wider font-semibold">
             Comparative Benchmark
           </span>
           <h2 className="text-2xl sm:text-4xl font-bold text-textPrimary tracking-tight">
@@ -334,7 +330,7 @@ export default function LandingPage() {
 
         <div className="rounded-2xl border border-border bg-surface overflow-hidden shadow-xl font-mono text-xs">
           <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
-            <div className="p-6 space-y-3 bg-[#0D0E11]/50">
+            <div className="p-6 space-y-3 bg-[#030712]/60">
               <div className="text-textSecondary text-[11px] uppercase tracking-wider font-semibold">
                 git blame
               </div>
@@ -351,7 +347,7 @@ export default function LandingPage() {
               </ul>
             </div>
 
-            <div className="p-6 space-y-3 bg-[#0D0E11]/50">
+            <div className="p-6 space-y-3 bg-[#030712]/60">
               <div className="text-textSecondary text-[11px] uppercase tracking-wider font-semibold">
                 Generic AI Chat
               </div>
@@ -368,19 +364,19 @@ export default function LandingPage() {
               </ul>
             </div>
 
-            <div className="p-6 space-y-3 bg-[#131417] border-l-2 border-l-primary">
-              <div className="text-primary text-[11px] uppercase tracking-wider font-semibold flex items-center justify-between">
+            <div className="p-6 space-y-3 bg-[#080E1A] border-l-2 border-l-blue-500">
+              <div className="text-blue-400 text-[11px] uppercase tracking-wider font-semibold flex items-center justify-between">
                 <span>CLUDE Platform</span>
-                <span className="bg-primary/10 text-primary px-1.5 py-0.5 rounded text-[10px]">Active</span>
+                <span className="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-1.5 py-0.5 rounded text-[10px]">Active</span>
               </div>
               <div className="text-sm font-bold text-textPrimary font-sans">Semantic Causal Proof</div>
               <ul className="space-y-2 text-textPrimary text-xs font-sans">
                 <li className="flex items-start gap-2 font-mono">
-                  <span className="text-primary font-bold">✓</span>
+                  <span className="text-blue-400 font-bold">✓</span>
                   <span>Correlates stack coordinates with temporal commit hunks.</span>
                 </li>
                 <li className="flex items-start gap-2 font-mono">
-                  <span className="text-primary font-bold">✓</span>
+                  <span className="text-blue-400 font-bold">✓</span>
                   <span>Calibrated confidence scoring with actionable code fixes.</span>
                 </li>
               </ul>
@@ -392,7 +388,7 @@ export default function LandingPage() {
       {/* 6. PRICING SECTION (Vetra Template Structure) */}
       <section className="space-y-12 max-w-6xl mx-auto px-4">
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface border border-border text-xs font-mono text-primary font-semibold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-mono text-blue-400 font-semibold uppercase tracking-wider">
             <span>Pricing</span>
           </div>
           <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-textPrimary">
@@ -412,7 +408,7 @@ export default function LandingPage() {
               className="w-12 h-6 rounded-full bg-surface border border-border p-0.5 flex items-center transition-colors"
             >
               <div
-                className={`w-5 h-5 rounded-full bg-primary transition-transform ${
+                className={`w-5 h-5 rounded-full bg-gradient-to-r from-sky-400 to-blue-600 transition-transform ${
                   billingCycle === "annual" ? "translate-x-6" : "translate-x-0"
                 }`}
               />
@@ -439,15 +435,15 @@ export default function LandingPage() {
               </div>
               <ul className="space-y-2.5 text-xs text-textSecondary font-sans border-t border-border pt-4">
                 <li className="flex items-center gap-2 font-mono text-textPrimary">
-                  <Check className="h-4 w-4 text-primary" />
+                  <Check className="h-4 w-4 text-blue-400" />
                   <span>Unlimited public repositories</span>
                 </li>
                 <li className="flex items-center gap-2 font-mono text-textPrimary">
-                  <Check className="h-4 w-4 text-primary" />
+                  <Check className="h-4 w-4 text-blue-400" />
                   <span>Interactive Root-Cause Studio</span>
                 </li>
                 <li className="flex items-center gap-2 font-mono text-textPrimary">
-                  <Check className="h-4 w-4 text-primary" />
+                  <Check className="h-4 w-4 text-blue-400" />
                   <span>Mermaid Architecture Guides</span>
                 </li>
                 <li className="flex items-center gap-2 font-mono text-textSecondary">
@@ -464,42 +460,42 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* Tier 2: Team Pro (Highlighted) */}
-          <div className="rounded-2xl border-2 border-primary bg-surface p-8 space-y-6 flex flex-col justify-between relative shadow-xl shadow-primary/10">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground font-mono text-[10px] font-bold uppercase tracking-wider px-3 py-0.5 rounded-full shadow">
+          {/* Tier 2: Team Pro (Highlighted with Vetra Electric Blue) */}
+          <div className="rounded-2xl border-2 border-blue-500 bg-surface p-8 space-y-6 flex flex-col justify-between relative shadow-xl shadow-blue-500/10">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-sky-400 to-blue-600 text-white font-mono text-[10px] font-bold uppercase tracking-wider px-3 py-0.5 rounded-full shadow">
               Most Popular
             </div>
             <div className="space-y-4">
               <h3 className="text-lg font-bold text-textPrimary">Team Pro</h3>
               <p className="text-xs text-textSecondary">For fast-moving engineering teams managing production services.</p>
               <div className="font-mono">
-                <span className="text-4xl font-bold text-primary">
+                <span className="text-4xl font-bold bg-gradient-to-r from-sky-400 to-blue-500 bg-clip-text text-transparent">
                   {billingCycle === "monthly" ? "$49" : "$39"}
                 </span>
                 <span className="text-xs text-textSecondary"> / seat / mo</span>
               </div>
               <ul className="space-y-2.5 text-xs text-textPrimary font-sans border-t border-border pt-4">
                 <li className="flex items-center gap-2 font-mono">
-                  <Check className="h-4 w-4 text-primary" />
+                  <Check className="h-4 w-4 text-blue-400" />
                   <span>Private repositories & organizations</span>
                 </li>
                 <li className="flex items-center gap-2 font-mono">
-                  <Check className="h-4 w-4 text-primary" />
+                  <Check className="h-4 w-4 text-blue-400" />
                   <span>Sentry & GitHub Webhook triggers</span>
                 </li>
                 <li className="flex items-center gap-2 font-mono">
-                  <Check className="h-4 w-4 text-primary" />
+                  <Check className="h-4 w-4 text-blue-400" />
                   <span>1536-dim pgvector semantic search</span>
                 </li>
                 <li className="flex items-center gap-2 font-mono">
-                  <Check className="h-4 w-4 text-primary" />
+                  <Check className="h-4 w-4 text-blue-400" />
                   <span>Automated PR risk annotations</span>
                 </li>
               </ul>
             </div>
             <Link
               href="/rca"
-              className="w-full text-center rounded-lg bg-primary py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary-hover transition-colors block shadow"
+              className="w-full text-center rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 py-2.5 text-xs font-semibold text-white shadow-lg shadow-blue-500/25 transition-all block"
             >
               Start 14-Day Free Trial
             </Link>
@@ -516,19 +512,19 @@ export default function LandingPage() {
               </div>
               <ul className="space-y-2.5 text-xs text-textSecondary font-sans border-t border-border pt-4">
                 <li className="flex items-center gap-2 font-mono text-textPrimary">
-                  <Check className="h-4 w-4 text-primary" />
+                  <Check className="h-4 w-4 text-blue-400" />
                   <span>Self-hosted VPC deployment</span>
                 </li>
                 <li className="flex items-center gap-2 font-mono text-textPrimary">
-                  <Check className="h-4 w-4 text-primary" />
+                  <Check className="h-4 w-4 text-blue-400" />
                   <span>Custom LLM endpoint routing</span>
                 </li>
                 <li className="flex items-center gap-2 font-mono text-textPrimary">
-                  <Check className="h-4 w-4 text-primary" />
+                  <Check className="h-4 w-4 text-blue-400" />
                   <span>SOC2 Type II & HIPAA compliance</span>
                 </li>
                 <li className="flex items-center gap-2 font-mono text-textPrimary">
-                  <Check className="h-4 w-4 text-primary" />
+                  <Check className="h-4 w-4 text-blue-400" />
                   <span>Dedicated Solutions Engineer</span>
                 </li>
               </ul>
@@ -546,7 +542,7 @@ export default function LandingPage() {
       {/* 7. FAQ ACCORDION (Vetra Template Structure) */}
       <section className="space-y-8 max-w-4xl mx-auto px-4">
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface border border-border text-xs font-mono text-primary font-semibold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-mono text-blue-400 font-semibold uppercase tracking-wider">
             <span>FAQ</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-textPrimary">
@@ -572,7 +568,7 @@ export default function LandingPage() {
                   <span>{faq.q}</span>
                   <ChevronDown
                     className={`h-4 w-4 text-textSecondary transition-transform duration-200 flex-shrink-0 ${
-                      isOpen ? "rotate-180 text-primary" : ""
+                      isOpen ? "rotate-180 text-blue-400" : ""
                     }`}
                   />
                 </button>
@@ -590,10 +586,10 @@ export default function LandingPage() {
       {/* 8. GIANT CTA BANNER (Vetra Template Structure) */}
       <section className="max-w-5xl mx-auto px-4">
         <div className="relative rounded-3xl border border-border bg-surface p-10 md:p-16 text-center space-y-6 overflow-hidden shadow-2xl">
-          {/* Ambient Glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-primary/10 blur-[8rem] rounded-full pointer-events-none" />
+          {/* Ambient Blue Glow */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-gradient-to-r from-sky-500/15 to-blue-600/20 blur-[8rem] rounded-full pointer-events-none" />
 
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0A0B0D] border border-border text-xs font-mono text-primary">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#030712] border border-border text-xs font-mono text-blue-400">
             <Sparkles className="h-3.5 w-3.5" />
             <span>Ready for Zero-Downtime Triage</span>
           </div>
@@ -609,14 +605,14 @@ export default function LandingPage() {
           <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
             <Link
               href="/rca"
-              className="flex items-center gap-2 rounded-lg bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover transition-all shadow-lg shadow-primary/25 hover:-translate-y-0.5"
+              className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 px-7 py-3.5 text-sm font-semibold text-white shadow-xl shadow-blue-500/25 transition-all hover:-translate-y-0.5"
             >
               <span>Launch Studio Now</span>
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="/repos"
-              className="flex items-center gap-2 rounded-lg bg-[#0A0B0D] px-6 py-3.5 text-sm font-medium text-textPrimary border border-border hover:bg-surfaceHover transition-all hover:-translate-y-0.5"
+              className="flex items-center gap-2 rounded-lg bg-[#030712] px-6 py-3.5 text-sm font-medium text-textPrimary border border-border hover:bg-surfaceHover transition-all hover:-translate-y-0.5"
             >
               <GitBranch className="h-4 w-4 text-textSecondary" />
               <span>Connect Repository</span>
@@ -630,10 +626,10 @@ export default function LandingPage() {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 pb-12">
           <div className="col-span-2 space-y-3">
             <div className="flex items-center gap-2">
-              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-surface border border-border">
-                <Terminal className="h-3.5 w-3.5 text-primary" />
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-500/10 border border-blue-500/30">
+                <Terminal className="h-4 w-4 text-blue-400" />
               </div>
-              <span className="font-bold text-sm text-textPrimary">CLUDE</span>
+              <span className="font-bold text-base text-textPrimary">CLUDE</span>
             </div>
             <p className="text-xs text-textSecondary max-w-sm leading-relaxed">
               Pinpoint the exact commit that broke production with causal AI reasoning, and onboard engineers to unfamiliar codebases in minutes.

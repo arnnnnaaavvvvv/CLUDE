@@ -29,7 +29,6 @@ function RootCauseStudioContent() {
   const [analysisResult, setAnalysisResult] = useState<AnalysisRun | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Load repositories on mount
   useEffect(() => {
     fetchRepos()
       .then((data) => {
@@ -96,7 +95,7 @@ main.main()
       {/* Header */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-textPrimary flex items-center gap-2.5">
-          <Bug className="h-7 w-7 text-primary" />
+          <Bug className="h-7 w-7 text-blue-400" />
           AI Root-Cause Analysis Studio
         </h1>
         <p className="text-xs sm:text-sm text-textSecondary mt-1">
@@ -108,7 +107,7 @@ main.main()
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Column: Trace Input */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="rounded-xl border border-border bg-surface p-5 shadow-lg">
+          <div className="rounded-2xl border border-border bg-surface p-5 shadow-lg">
             <form onSubmit={handleAnalyze} className="space-y-4">
               {/* Repo Selector */}
               <div>
@@ -118,7 +117,7 @@ main.main()
                 <select
                   value={selectedRepoId}
                   onChange={(e) => setSelectedRepoId(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-[#0A0B0D] px-3.5 py-2 text-xs text-textPrimary focus:border-primary focus:outline-none font-mono"
+                  className="w-full rounded-lg border border-border bg-[#030712] px-3.5 py-2 text-xs text-textPrimary focus:border-blue-500 focus:outline-none font-mono"
                 >
                   {repos.length === 0 ? (
                     <option value="">No repositories connected</option>
@@ -169,7 +168,7 @@ main.main()
                   onChange={(e) => setRawTrace(e.target.value)}
                   placeholder="Paste stack trace (JS/TS, Python, Go, Java)..."
                   required
-                  className="w-full rounded-lg border border-border bg-[#0A0B0D] p-3.5 font-mono text-xs text-textPrimary placeholder-textSecondary/50 focus:border-primary focus:outline-none leading-relaxed"
+                  className="w-full rounded-lg border border-border bg-[#030712] p-3.5 font-mono text-xs text-textPrimary placeholder-textSecondary/50 focus:border-blue-500 focus:outline-none leading-relaxed"
                 />
               </div>
 
@@ -178,7 +177,7 @@ main.main()
               <button
                 type="submit"
                 disabled={loading || !selectedRepoId || !rawTrace.trim()}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-primary py-3 text-xs font-semibold text-primary-foreground shadow-lg shadow-primary/20 hover:bg-primary-hover disabled:opacity-50 transition-all font-sans"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 py-3 text-xs font-semibold text-white shadow-lg shadow-blue-500/25 disabled:opacity-50 transition-all font-sans"
               >
                 {loading ? (
                   <>
@@ -199,15 +198,15 @@ main.main()
         {/* Right Column: Reasoning & Ranked Results */}
         <div className="lg:col-span-7 space-y-6">
           {loading && (
-            <div className="rounded-xl border border-border bg-surface p-12 text-center space-y-4 shadow-lg">
-              <Sparkles className="mx-auto h-8 w-8 animate-spin text-primary" />
+            <div className="rounded-2xl border border-border bg-surface p-12 text-center space-y-4 shadow-lg">
+              <Sparkles className="mx-auto h-8 w-8 animate-spin text-blue-400" />
               <h3 className="text-sm font-bold text-textPrimary">Analyzing Failure Path</h3>
               <div className="max-w-md mx-auto space-y-2 text-xs text-textSecondary font-mono">
                 <div className="flex items-center gap-2 justify-center">
                   <CheckCircle className="h-3.5 w-3.5 text-success" />
                   <span>Parsed stack frames & normalized coordinates</span>
                 </div>
-                <div className="flex items-center gap-2 justify-center animate-pulse text-primary">
+                <div className="flex items-center gap-2 justify-center animate-pulse text-blue-400">
                   <Clock className="h-3.5 w-3.5" />
                   <span>Traversing commit graph & diff hunks</span>
                 </div>
@@ -220,7 +219,7 @@ main.main()
           )}
 
           {!loading && !analysisResult && (
-            <div className="rounded-xl border border-dashed border-border bg-surface/30 p-12 text-center">
+            <div className="rounded-2xl border border-dashed border-border bg-surface/30 p-12 text-center">
               <Bug className="mx-auto h-10 w-10 text-textSecondary/40 mb-3" />
               <h3 className="text-sm font-semibold text-textPrimary">No Analysis Run Yet</h3>
               <p className="text-xs text-textSecondary max-w-sm mx-auto mt-1">
@@ -232,7 +231,7 @@ main.main()
           {analysisResult && (
             <div className="space-y-6">
               {/* Run Overview Header */}
-              <div className="rounded-xl border border-border bg-surface p-5 shadow-lg">
+              <div className="rounded-2xl border border-border bg-surface p-5 shadow-lg">
                 <div className="flex items-start justify-between gap-4 border-b border-border pb-4 mb-4">
                   <div>
                     <span className="text-[11px] uppercase font-mono tracking-wider text-rose-400 font-bold">
@@ -244,7 +243,7 @@ main.main()
                   </div>
                   <div className="text-right text-[11px] text-textSecondary font-mono">
                     <div>Duration: {analysisResult.execution_duration_sec}s</div>
-                    <div className="text-primary font-semibold">{analysisResult.model_used}</div>
+                    <div className="text-blue-400 font-semibold">{analysisResult.model_used}</div>
                   </div>
                 </div>
 
@@ -257,12 +256,12 @@ main.main()
                     {analysisResult.parsed_frames.map((frame, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center justify-between rounded bg-[#0A0B0D] px-3 py-1.5 border border-border"
+                        className="flex items-center justify-between rounded-lg bg-[#030712] px-3 py-1.5 border border-border"
                       >
                         <div className="flex items-center gap-2 text-textPrimary">
-                          <FileCode className="h-3.5 w-3.5 text-primary" />
+                          <FileCode className="h-3.5 w-3.5 text-blue-400" />
                           <span>{frame.file_path}</span>
-                          <span className="text-primary font-bold">:{frame.line_number}</span>
+                          <span className="text-blue-400 font-bold">:{frame.line_number}</span>
                         </div>
                         <span className="text-textSecondary text-[11px]">
                           {frame.function_name || "global"}
@@ -276,20 +275,20 @@ main.main()
               {/* Ranked Candidates */}
               <div className="space-y-4">
                 <h3 className="text-sm font-bold text-textPrimary flex items-center gap-2">
-                  <GitCommit className="h-4 w-4 text-primary" />
+                  <GitCommit className="h-4 w-4 text-blue-400" />
                   Ranked Candidate Commits ({analysisResult.ranked_candidates.length})
                 </h3>
 
                 {analysisResult.ranked_candidates.map((candidate) => (
                   <div
                     key={candidate.commit.sha}
-                    className="rounded-xl border border-border bg-surface p-5 shadow-md space-y-4 hover:border-primary/40 transition-all"
+                    className="rounded-2xl border border-border bg-surface p-5 shadow-md space-y-4 hover:border-blue-500/40 transition-all"
                   >
                     {/* Header: Score & Commit Info */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-3">
                       <div className="flex items-center gap-3">
                         <ScoreBadge score={candidate.causal_score} rank={candidate.rank} />
-                        <span className="font-mono text-xs text-primary font-bold">
+                        <span className="font-mono text-xs text-blue-400 font-bold">
                           #{candidate.commit.sha.substring(0, 8)}
                         </span>
                       </div>
@@ -305,9 +304,9 @@ main.main()
                     </div>
 
                     {/* Plain-English Reasoning */}
-                    <div className="rounded-lg bg-[#0A0B0D] p-4 border border-border space-y-2">
+                    <div className="rounded-xl bg-[#030712] p-4 border border-border space-y-2">
                       <div className="flex items-center gap-2 text-xs font-bold text-textPrimary">
-                        <Sparkles className="h-3.5 w-3.5 text-primary" />
+                        <Sparkles className="h-3.5 w-3.5 text-blue-400" />
                         <span>Plain-English Reasoning:</span>
                       </div>
                       <p className="text-xs text-textSecondary leading-relaxed">
@@ -318,15 +317,15 @@ main.main()
                     {/* Reproduction Hypothesis & Fix */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                       {candidate.reproduction_hypothesis && (
-                        <div className="rounded bg-[#0A0B0D]/50 p-3 border border-border">
-                          <span className="font-semibold text-amber-400 block mb-1 font-mono text-[11px]">
+                        <div className="rounded-xl bg-[#030712]/50 p-3 border border-border">
+                          <span className="font-semibold text-sky-400 block mb-1 font-mono text-[11px]">
                             Reproduction Path:
                           </span>
                           <p className="text-textSecondary text-[11px]">{candidate.reproduction_hypothesis}</p>
                         </div>
                       )}
                       {candidate.suggested_fix && (
-                        <div className="rounded bg-[#0A0B0D]/50 p-3 border border-border">
+                        <div className="rounded-xl bg-[#030712]/50 p-3 border border-border">
                           <span className="font-semibold text-emerald-400 block mb-1 font-mono text-[11px]">
                             Suggested Remediation:
                           </span>

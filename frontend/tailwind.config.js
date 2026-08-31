@@ -10,28 +10,28 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: "#0A0B0D",
-        surface: "#131417",
-        surfaceHover: "#1B1D22",
-        border: "#1F2127",
-        borderStrong: "#2B2D33",
+        background: "#030712", // Vetra deep navy black
+        surface: "#080E1A",
+        surfaceHover: "#0F172A",
+        border: "rgba(255, 255, 255, 0.09)",
+        borderStrong: "rgba(255, 255, 255, 0.18)",
         primary: {
-          DEFAULT: "#F97316",
-          hover: "#EA580C",
-          foreground: "#0A0B0D",
+          DEFAULT: "#3B82F6", // Vetra Electric Blue
+          hover: "#2563EB",
+          foreground: "#FFFFFF",
         },
         accent: {
-          DEFAULT: "#F97316",
-          muted: "#3F4147",
+          DEFAULT: "#38BDF8", // Sky blue
+          muted: "#1E293B",
         },
-        textPrimary: "#E8E9EB",
-        textSecondary: "#8B8F98",
+        textPrimary: "#F8FAFC",
+        textSecondary: "#94A3B8",
         danger: "#EF4444",
-        success: "#22C55E",
+        success: "#10B981",
       },
       fontFamily: {
         sans: ["'General Sans'", "-apple-system", "BlinkMacSystemFont", "'Segoe UI'", "Roboto", "sans-serif"],
-        mono: ["'JetBrains Mono'", "'Fira Code'", "ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "monospace"],
+        mono: ["'JetBrains Mono'", "'Fira Code'", "ui-monospace", "monospace"],
       },
     },
   },
