@@ -10,6 +10,9 @@ import {
   ShieldAlert,
   Compass,
   RefreshCw,
+  GitBranch,
+  ArrowRight,
+  Code2,
 } from "lucide-react";
 import { Repository, OnboardingWalkthrough } from "@/lib/types";
 import { fetchRepos, fetchOnboarding, generateOnboarding } from "@/lib/api";
@@ -31,16 +34,16 @@ function OnboardingContent() {
   useEffect(() => {
     fetchRepos()
       .then((data) => {
-        setRepos(data);
-        if (!selectedRepoId && data.length > 0) {
-          setSelectedRepoId(data[0].id);
-        }
+        setRepos(data || []);
       })
       .catch((err) => console.error("Error loading repos:", err));
-  }, [selectedRepoId]);
+  }, []);
 
   useEffect(() => {
-    if (!selectedRepoId) return;
+    if (!selectedRepoId) {
+      setWalkthrough(null);
+      return;
+    }
 
     setLoading(true);
     setError(null);
@@ -95,8 +98,9 @@ function OnboardingContent() {
           <select
             value={selectedRepoId}
             onChange={(e) => setSelectedRepoId(e.target.value)}
-            className="rounded-lg border border-border bg-surface px-3.5 py-2 text-xs text-textPrimary focus:border-blue-500 focus:outline-none font-mono"
+            className="rounded-lg border border-border bg-surface px-3.5 py-2 text-xs text-textPrimary focus:border-blue-500 focus:outline-none font-mono min-w-[200px]"
           >
+            <option value="">-- Select a Repository --</option>
             {repos.map((r) => (
               <option key={r.id} value={r.id}>
                 {r.full_name}
@@ -104,32 +108,70 @@ function OnboardingContent() {
             ))}
           </select>
 
-          <button
-            onClick={handleGenerate}
-            disabled={generating || !selectedRepoId}
-            className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-lg shadow-blue-500/25 disabled:opacity-50 transition-all font-sans"
-          >
-            {generating ? (
-              <>
-                <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-                Synthesizing Codebase...
-              </>
-            ) : (
-              <>
-                <Sparkles className="h-3.5 w-3.5" />
-                {walkthrough ? "Regenerate Guide" : "Generate Guide"}
-              </>
-            )}
-          </button>
+          {selectedRepoId && (
+            <button
+              onClick={handleGenerate}
+              disabled={generating || !selectedRepoId}
+              className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-lg shadow-blue-500/25 disabled:opacity-50 transition-all font-sans"
+            >
+              {generating ? (
+                <>
+                  <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                  Synthesizing Codebase...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-3.5 w-3.5" />
+                  {walkthrough ? "Regenerate Guide" : "Generate Guide"}
+                </>
+              )}
+            </button>
+          )}
         </div>
       </div>
 
       {error && <div className="text-xs text-danger font-medium font-mono">{error}</div>}
 
       {/* Main Content Area */}
-      {loading ? (
-        <div className="flex items-center justify-center py-24">
+      {!selectedRepoId ? (
+        /* Empty State: Prompt User to Select a Repository */
+        <div className="space-y-6">
+          <div className="rounded-2xl border border-dashed border-border bg-surface/30 p-12 text-center">
+            <Compass className="mx-auto h-12 w-12 text-blue-400/60 mb-3" />
+            <h3 className="text-lg font-bold text-textPrimary">Select a Repository to Synthesize Guide</h3>
+            <p className="text-xs text-textSecondary max-w-md mx-auto mt-1 mb-8 leading-relaxed">
+              Choose any connected repository below to inspect its dedicated architectural topology graph, critical execution paths, and danger zone runbooks.
+            </p>
+
+            {/* Quick Repo Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto text-left">
+              {repos.map((r) => (
+                <button
+                  key={r.id}
+                  onClick={() => setSelectedRepoId(r.id)}
+                  className="group rounded-xl border border-border bg-surface p-4 hover:border-blue-500 hover:bg-surfaceHover transition-all shadow-sm flex flex-col justify-between space-y-3"
+                >
+                  <div>
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <GitBranch className="h-4 w-4 text-blue-400 group-hover:scale-110 transition-transform" />
+                      <span className="font-mono text-xs font-bold text-textPrimary truncate">{r.full_name}</span>
+                    </div>
+                    <span className="text-[10px] font-mono text-textSecondary block">
+                      Branch: <span className="text-textPrimary">{r.default_branch}</span>
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-semibold text-blue-400 group-hover:translate-x-0.5 transition-transform inline-flex items-center gap-1 font-mono">
+                    Explore Guide &rarr;
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : loading ? (
+        <div className="flex flex-col items-center justify-center py-24 space-y-3">
           <RefreshCw className="h-8 w-8 animate-spin text-blue-400" />
+          <span className="text-xs font-mono text-textSecondary">Loading Architectural Topology...</span>
         </div>
       ) : !walkthrough ? (
         <div className="rounded-2xl border border-dashed border-border bg-surface/30 p-16 text-center">
@@ -148,7 +190,7 @@ function OnboardingContent() {
           </button>
         </div>
       ) : (
-        <div className="space-y-8">
+        <div className="space-y-8 animate-in fade-in duration-200">
           {/* Architecture Diagram Box */}
           {walkthrough.system_diagram_mermaid && (
             <div className="space-y-3">
