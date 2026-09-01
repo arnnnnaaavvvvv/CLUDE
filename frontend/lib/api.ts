@@ -41,6 +41,15 @@ export function clearLocalCustomRepos(): void {
 }
 
 export async function fetchRepos(): Promise<Repository[]> {
+  // If in browser and no user profile is connected, return zero repos
+  if (typeof window !== "undefined") {
+    const profile = localStorage.getItem("clude_github_profile");
+    if (!profile) {
+      return [];
+    }
+    return getLocalCustomRepos();
+  }
+
   let serverRepos: Repository[] | null = null;
 
   try {
@@ -53,31 +62,7 @@ export async function fetchRepos(): Promise<Repository[]> {
     console.warn("Primary fetchRepos failed:", err);
   }
 
-  if (!serverRepos && API_BASE) {
-    try {
-      const fallbackRes = await fetch(`/api/v1/repos`, { cache: "no-store" });
-      if (fallbackRes.ok) {
-        serverRepos = await fallbackRes.json();
-      }
-    } catch {
-      // pass to local store
-    }
-  }
-
-  const baseList: Repository[] = serverRepos && Array.isArray(serverRepos) && serverRepos.length > 0
-    ? serverRepos
-    : (initialRepos as unknown as Repository[]);
-
-  // Merge client-side custom connected repos
-  const customRepos = getLocalCustomRepos();
-  const merged: Repository[] = [...customRepos];
-  for (const r of baseList) {
-    if (!merged.some((m) => m.full_name.toLowerCase() === r.full_name.toLowerCase() || m.id === r.id)) {
-      merged.push(r);
-    }
-  }
-
-  return merged;
+  return serverRepos || [];
 }
 
 export async function connectRepo(payload: {
