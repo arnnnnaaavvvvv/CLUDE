@@ -1,115 +1,205 @@
-import { OnboardingWalkthrough, WalkthroughSection } from "./types";
+import { OnboardingWalkthrough } from "./types";
 
 export function getOnboardingForRepo(repoIdentifier: string, repoFullName?: string): OnboardingWalkthrough {
   const norm = (repoFullName || repoIdentifier || "").toLowerCase();
 
-  // 1. FACEBOOK / REACT
-  if (norm.includes("react") && !norm.includes("react-native")) {
+  // ==========================================
+  // 1. FASTAPI / FASTAPI
+  // ==========================================
+  if (norm.includes("fastapi")) {
     return {
-      id: `walkthrough-react-${repoIdentifier}`,
+      id: `walkthrough-fastapi-${repoIdentifier}`,
       repo_id: repoIdentifier,
-      commit_sha: "a1f4c39e0839e2d3b5b6cf7e4811a684b01e3b62",
+      commit_sha: "88b1f4a1847d8b5b6cf7e4811a684b01e3b62",
       status: "COMPLETED",
-      summary: "React Architecture: Concurrent Fiber Reconciler, Priority-based Scheduling Lanes, and Pluggable Host Renderers.",
+      summary: "FastAPI Architectural Blueprint: Asynchronous Starlette Transport, Rust-Accelerated Pydantic v2 Schema Validation, Hierarchical Dependency Injection DAG, and OpenAPI 3.1 Metadata Synthesis.",
       system_diagram_mermaid: `graph TD
-  JSX[JSX / Component Code] --> Compiler[Babel / SWC / React Compiler]
-  Compiler --> Elements[React Elements Tree]
-  Elements --> Fiber[Fiber Reconciler & WorkLoop]
-  Fiber --> Scheduler[Concurrent Scheduler & Priority Lanes]
-  Scheduler --> CommitPhase[Commit Phase & Mutation Queue]
-  CommitPhase --> DOM[ReactDOM Host Renderer]
-  CommitPhase --> Native[React Native Host Renderer]
-  Fiber --> Hooks[Hook Dispatcher & State Cells]`,
+  HTTP[HTTP / WebSocket Client Request] --> ASGI[Starlette ASGI Engine & Lifespan Hooks]
+  ASGI --> Router[FastAPI APIRouter & Route Dispatcher]
+  Router --> Pydantic[Pydantic v2 Schema Validator & Serializer]
+  Router --> DI[Dependency Injection DAG Container]
+  DI --> Security[OAuth2 Scopes & Bearer Token Resolver]
+  DI --> Handlers[Async / Threadpool Endpoint Handlers]
+  Handlers --> OpenAPI[Dynamic OpenAPI 3.1 & JSON-Schema Generator]
+  Handlers --> Workers[BackgroundTasks Asynchronous Worker Queue]`,
       sections: [
         {
-          id: "sec-fiber",
+          id: "sec-asgi-routing",
           section_type: "OVERVIEW",
-          title: "Fiber Architecture & Reconciliation Pipeline",
-          content_markdown: `### React Fiber Architecture & Dual-Buffering
+          title: "ASGI Substrate & APIRouter Hierarchy",
+          content_markdown: `### Core Architecture & ASGI Substrate
 
-React replaces the legacy stack reconciler with **Fiber**, a specialized virtual call stack that enables asynchronous interruptible rendering.
+FastAPI decouples transport protocols from application routing logic by utilizing **Starlette** as its underlying ASGI (Asynchronous Server Gateway Interface) engine.
 
-- **Dual-Buffering Tree**: React maintains two trees simultaneously: the *current* tree (representing what is currently painted on screen) and the *workInProgress* (WIP) tree constructed during background calculation.
-- **Alternate Pointers**: Each Fiber node contains an \`alternate\` pointer linking the current and WIP nodes, drastically minimizing garbage collection overhead.
-- **Time-Slicing**: Long render passes are chopped into 5ms slices using \`requestPostMessage\` and \`MessageChannel\` to prevent dropping frames on high-refresh displays.`,
+#### 1. The ASGI 3.0 Protocol Contract
+Every incoming HTTP request or WebSocket handshake is processed as an asynchronous tripartite callable:
+\`\`\`python
+async def app(scope: Scope, receive: Receive, send: Send) -> None:
+    # scope: Dictionary containing method, path, headers, client IP
+    # receive: Awaiting incoming body streams
+    # send: Transmitting status codes, headers, and body chunks
+\`\`\`
+
+#### 2. Hierarchical Router Tree Resolution
+FastAPI builds a composite routing tree using \`fastapi.APIRouter\`. Routers can be nested with inherited path prefixes, default response models, dependency gates, and OpenAPI tags:
+
+\`\`\`python
+# Root Router Assembly
+api_v1_router = APIRouter(prefix="/api/v1", dependencies=[Depends(verify_api_key)])
+api_v1_router.include_router(auth_router, prefix="/auth", tags=["Authentication"])
+api_v1_router.include_router(users_router, prefix="/users", tags=["Users Management"])
+\`\`\`
+
+#### 3. Lifespan Context Managers
+State initialization (such as connecting to PostgreSQL connection pools, establishing Redis sessions, or warming ML model weights) is managed using structured \`@asynccontextmanager\` lifespan handlers:
+- **Startup Phase**: Executed before the server accepts incoming traffic.
+- **Yield Boundary**: Application is live and serving requests.
+- **Shutdown Phase**: Executed during graceful termination to flush buffers and close connections.`,
           risk_level: "LOW",
-          referenced_files: ["packages/react-reconciler/src/ReactFiber.js", "packages/react-reconciler/src/ReactFiberWorkLoop.js"],
+          referenced_files: ["fastapi/applications.py", "fastapi/routing.py"],
           display_order: 1,
         },
         {
-          id: "sec-scheduler",
+          id: "sec-pydantic-v2",
           section_type: "CRITICAL_PATH",
-          title: "Concurrent Scheduler & 31-Bit Priority Lanes",
-          content_markdown: `### Priority Lanes & WorkLoop Invariants
+          title: "Pydantic v2 Rust Schema Validation Pipeline",
+          content_markdown: `### Rust-Accelerated Request & Response Pipeline
 
-React uses a 31-bit integer bitmask to represent update priorities (**Lanes**):
+FastAPI uses **Pydantic v2**, which delegates all data parsing, type coercion, and schema validation to the compiled Rust library \`pydantic-core\`.
 
-1. **SyncLane**: Immediate synchronous execution (e.g. controlled input changes).
-2. **InputContinuousLane**: Smooth animations and dragging interactions.
-3. **DefaultLane**: Standard state updates (\`useState\` / \`useReducer\`).
-4. **TransitionLane**: Non-urgent updates marked with \`startTransition\`.
-5. **IdleLane**: Low-priority background pre-warming.
+#### Validation & Coercion Stages
+1. **Parameter Extraction**: FastAPI inspects the Python function signature using \`inspect.signature()\` and extracts parameter definitions (\`Path\`, \`Query\`, \`Header\`, \`Cookie\`, \`Body\`).
+2. **Schema Compilation**: At startup, Pydantic compiles type annotations into an internal validation graph (\`SchemaValidator\`).
+3. **Zero-Copy Serialization**: Outgoing response models are transformed through \`pydantic_core.to_jsonable_python()\` with strict filtering rules:
 
-The \`workLoopConcurrent\` scheduler iteratively executes the fiber with the highest priority lane, yielding execution to the browser main thread whenever \`shouldYieldToHost()\` returns true.`,
+| Stage | Mechanism | Performance Benefit |
+| --- | --- | --- |
+| Type Parsing | \`pydantic_core.SchemaValidator\` | 5x-20x faster than pure Python |
+| Filtering | \`response_model_exclude_unset\` | Eliminates null default payloads |
+| Error Formatting | \`RequestValidationError\` | Auto-generates structured 422 JSON errors |
+
+#### Code Implementation Example:
+\`\`\`python
+from pydantic import BaseModel, EmailStr, Field
+from typing import Optional
+
+class UserCreate(BaseModel):
+    email: EmailStr
+    username: str = Field(..., min_length=3, max_length=32)
+    role: str = Field(default="developer", pattern="^(developer|admin|auditor)$")
+    metadata: Optional[dict] = None
+\`\`\``,
           risk_level: "MEDIUM",
-          referenced_files: ["packages/scheduler/src/forks/Scheduler.js", "packages/react-reconciler/src/ReactFiberLane.js"],
+          referenced_files: ["fastapi/dependencies/utils.py", "fastapi/encoders.py"],
           display_order: 2,
         },
         {
-          id: "sec-hooks",
+          id: "sec-di-container",
           section_type: "DATA_FLOW",
-          title: "Hook Dispatcher & Memoized State LinkedList",
-          content_markdown: `### Hook Lifecycle & State Preservation
+          title: "Dependency Injection DAG & Security Scopes",
+          content_markdown: `### Dependency Injection Directed Acyclic Graph (DAG)
 
-Hooks are organized as a singly-linked list on \`fiber.memoizedState\`.
+FastAPI incorporates a hierarchical, declarative Dependency Injection system resolved per-request using **\`fastapi.Depends\`**.
 
-- **Mount vs Update Dispatchers**: When a component mounts, \`HooksDispatcherOnMount\` initializes cell memory. Subsequent renders switch to \`HooksDispatcherOnUpdate\`.
-- **Hook Invariant**: Hooks must always be called at the top level in fixed deterministic order so index indices match the linked list traversal.
-- **State Queuing**: State dispatches are enqueued into \`hook.queue.pending\` as circular linked lists resolved during the component's next render pass.`,
+#### 1. Topological Sort & Caching
+When a route is called, FastAPI constructs a Directed Acyclic Graph (DAG) of all required sub-dependencies:
+- **Shared Dependency Caching**: If multiple sub-dependencies depend on the same database session (\`get_db\`), FastAPI executes the dependency callable **once** per request and caches the result across the parameter graph (\`use_cache=True\`).
+- **Yield Dependencies (Context Managers)**: Dependencies declared with \`yield\` act as resource context managers. Code before \`yield\` runs before the route handler; code after \`yield\` runs automatically during response cleanup.
+
+\`\`\`python
+async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
+    async with async_session_maker() as session:
+        try:
+            yield session
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            raise
+        finally:
+            await session.close()
+\`\`\`
+
+#### 2. Security Scopes & RBAC Integration
+Dependencies can inspect \`fastapi.security.SecurityScopes\` to enforce granular Role-Based Access Control (RBAC):
+- Validates JWT bearer tokens against required permission scopes (e.g. \`users:read\`, \`repos:write\`).
+- Automatically exports required security schemes and scopes to OpenAPI Swagger UI.`,
           risk_level: "MEDIUM",
-          referenced_files: ["packages/react-reconciler/src/ReactFiberHooks.js"],
+          referenced_files: ["fastapi/dependencies/models.py", "fastapi/security/oauth2.py"],
           display_order: 3,
         },
         {
-          id: "sec-danger-react",
+          id: "sec-danger-fastapi",
           section_type: "DANGER_ZONE",
-          title: "Danger Zone: Synchronous Commit Work & Ref Mutation",
-          content_markdown: `### ⚠️ Critical Danger Zone: ReactFiberCommitWork
+          title: "Danger Zone: Threadpool Offloading & Concurrency Hazards",
+          content_markdown: `### ⚠️ Critical Danger Zone: Concurrency Model & Event Loop Starvation
 
-The commit phase is **synchronous and uninterruptible**. Modifying logic in this phase risks locking the main thread or tearing UI:
+FastAPI handles synchronous (\`def\`) and asynchronous (\`async def\`) endpoint functions fundamentally differently. Failing to follow these rules will degrade performance or crash production workloads.
 
-- **\`packages/react-reconciler/src/ReactFiberCommitWork.js\`**: Executes DOM node insertions, layout effect execution (\`useLayoutEffect\`), and ref attachments.
-- **Circular Update Hazards**: Triggering state updates synchronously inside \`useLayoutEffect\` bypasses scheduling and immediately invokes a re-render pass, triggering maximum update depth exceptions.
+#### The Synchronous Threadpool Offloader
+- **\`def endpoint()\`**: Handled by offloading the call to a background worker threadpool via \`anyio.to_thread.run_sync\`. This prevents blocking the single main asyncio event loop.
+- **\`async def endpoint()\`**: Executed directly inside the main asyncio event loop. 
 
-> **Maintainer Rule**: Never introduce asynchronous yields or uncaught exceptions within \`commitMutationEffects\` or \`commitLayoutEffects\`.`,
+> **CRITICAL RULE**: Never call synchronous blocking I/O (e.g. \`requests.get()\`, \`time.sleep()\`, or standard \`psycopg2\` queries) inside an \`async def\` handler! Doing so blocks the single event loop, stalling all other concurrent connections.
+
+\`\`\`python
+# ❌ INCORRECT (Freezes the entire server event loop)
+@app.get("/bad")
+async def bad_handler():
+    time.sleep(5) # Blocks all concurrent requests!
+    return {"status": "blocked"}
+
+# ✅ CORRECT (Non-blocking async execution)
+@app.get("/good")
+async def good_handler():
+    await asyncio.sleep(5)
+    return {"status": "non-blocking"}
+\`\`\`
+
+#### BackgroundTasks Session Lifecycle Invariants
+Objects passed into \`BackgroundTasks.add_task()\` execute **after** the HTTP response has been sent to the client. Any database sessions created via \`yield\` in the request scope will already be closed. Background jobs must create their own standalone connection context.`,
           risk_level: "CRITICAL",
-          referenced_files: ["packages/react-reconciler/src/ReactFiberCommitWork.js", "packages/react-dom/src/client/ReactDOMComponent.js"],
+          referenced_files: ["fastapi/routing.py", "fastapi/background.py"],
           display_order: 4,
         },
         {
-          id: "sec-setup-react",
+          id: "sec-setup-fastapi",
           section_type: "SETUP_GUIDE",
-          title: "Monorepo Map & Contributor Quickstart",
-          content_markdown: `### Contributor Quickstart
+          title: "Local Python Environment & Pytest Runbook",
+          content_markdown: `### Contributor Quickstart & Testing Runbook
 
+#### 1. Environment Initialization
 \`\`\`bash
-# Clone and install dependencies
-git clone https://github.com/facebook/react.git
-cd react
-yarn install
+# Clone the upstream repository
+git clone https://github.com/fastapi/fastapi.git
+cd fastapi
 
-# Run unit tests across reconciler and DOM
-yarn test
+# Create Python 3.10+ virtual environment
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\\Scripts\\activate
 
-# Build production bundles
-yarn build react/index,react-dom/index --type=PROD
+# Install development dependencies and editable package
+pip install -r requirements-dev.txt
+flit install --symlink
 \`\`\`
 
-- **\`packages/react\`**: Core element creation APIs (\`createElement\`, hooks, context).
-- **\`packages/react-reconciler\`**: State machine, Fiber work loop, and diffing algorithm.
-- **\`packages/react-dom\`**: Host bindings for DOM events, portal management, and SSR streaming.`,
+#### 2. Executing Automated Test Suite
+\`\`\`bash
+# Run all unit tests with verbose output
+pytest tests/ -v
+
+# Run targeted test on routing and dependency injection
+pytest tests/test_routing.py tests/test_dependencies.py -k "test_depends"
+
+# Run with coverage report
+pytest --cov=fastapi --cov-report=term-missing
+\`\`\`
+
+#### Key Module Map:
+- **\`fastapi/applications.py\`**: Main \`FastAPI\` class, configuration, and OpenAPI builder.
+- **\`fastapi/routing.py\`**: Core route dispatcher, dependency tree solver, and threadpool delegator.
+- **\`fastapi/dependencies/utils.py\`**: Signature introspector and parameter coercer.`,
           risk_level: "LOW",
-          referenced_files: ["package.json", "yarn.lock"],
+          referenced_files: ["pyproject.toml", "requirements-dev.txt"],
           display_order: 5,
         },
       ],
@@ -117,14 +207,16 @@ yarn build react/index,react-dom/index --type=PROD
     };
   }
 
+  // ==========================================
   // 2. VERCEL / NEXT.JS
+  // ==========================================
   if (norm.includes("next.js") || norm.includes("nextjs") || norm.includes("vercel/next")) {
     return {
       id: `walkthrough-nextjs-${repoIdentifier}`,
       repo_id: repoIdentifier,
       commit_sha: "c901f4a1847d8b5b6cf7e4811a684b01e3b62",
       status: "COMPLETED",
-      summary: "Next.js Architecture: App Router, React Server Components (RSC) Flight Protocol, Turbopack Rust Engine, and Edge Runtime.",
+      summary: "Next.js Architectural Blueprint: App Router, React Server Components (RSC) Flight Protocol, Turbopack Rust Compiler, and 4-Tier Data Caching Subsystem.",
       system_diagram_mermaid: `graph TD
   Req[Browser / Edge Request] --> Router[Next.js App Router & Manifests]
   Router --> RSC[React Server Component Stream]
@@ -139,13 +231,30 @@ yarn build react/index,react-dom/index --type=PROD
           id: "sec-app-router",
           section_type: "OVERVIEW",
           title: "App Router & Flight Wire Protocol",
-          content_markdown: `### Next.js App Router & Streaming Server Components
+          content_markdown: `### Next.js App Router & React Server Components
 
-Next.js leverages the React Server Components (RSC) architecture to render UI components on the server without shipping JavaScript to client bundles.
+The Next.js App Router utilizes the **React Server Components (RSC)** architecture, rendering component trees on the server and streaming results to the browser without shipping heavy component libraries to client JavaScript bundles.
 
-- **Flight Protocol**: Server components are serialized into a binary/text stream known as the Flight format (delimited JSON metadata and component slot references).
-- **Streaming SSR**: Pages stream chunks using HTTP/1.1 chunked transfer or HTTP/2 frames, rendering top-level layouts instantly while Suspense boundaries await remote promises.
-- **Parallel & Intercepting Routes**: Slots (\`@slot\`) and interception prefixes (\`(.photo)\`) allow advanced multi-view and modal state rendering in the URL.`,
+#### 1. The Flight Wire Protocol
+Server Components are not serialized to HTML alone; they are compiled into the **Flight wire format**:
+- Special delimited JSON stream mapping slot references, props, and promises.
+- Enables client-side state preservation during route transitions while fetching fresh server data.
+- Leaves interactive Client Components (\`"use client"\`) as dynamic references instantiated on the browser DOM.
+
+#### 2. Streaming SSR with Suspense Boundaries
+Rather than blocking the entire page render until the slowest database query finishes, Next.js streams HTML chunks progressively:
+\`\`\`tsx
+export default async function DashboardPage() {
+  return (
+    <main>
+      <Header /> {/* Renders immediately */}
+      <Suspense fallback={<AnalyticsSkeleton />}>
+        <SlowAnalyticsWidget /> {/* Streams when promise resolves */}
+      </Suspense>
+    </main>
+  );
+}
+\`\`\``,
           risk_level: "LOW",
           referenced_files: ["packages/next/src/server/app-render/app-render.tsx", "packages/next/src/client/components/app-router.tsx"],
           display_order: 1,
@@ -156,11 +265,16 @@ Next.js leverages the React Server Components (RSC) architecture to render UI co
           title: "Turbopack Rust Compiler & Module Graph",
           content_markdown: `### Turbopack Engine & SWC Transform Pipeline
 
-Next.js builds and bundles application source files via **Turbopack** and **next-swc**:
+Next.js replaces Webpack and Babel with **Turbopack** and **next-swc**, compiled directly in Rust:
 
-1. **Incremental Computation**: Built in Rust using the Turbo cache model; functions are memoized at the granular file and AST node level.
-2. **SWC Compilation**: Replaces Babel with high-performance Rust transforms for JSX, TypeScript, Server Actions compilation, and font optimization.
-3. **Fast Refresh Protocol**: Emits incremental HMR patches over WebSockets with state-preserving module replacement.`,
+#### 1. Function-Level Incremental Memoization
+- **Turbo Cache Model**: Built around an immutable dependency DAG. When a file is edited, Turbopack invalidates only the exact functions dependent on that module AST.
+- **Fast Refresh WebSocket**: Incremental HMR patches are transmitted in sub-10ms latency over persistent WebSockets.
+
+#### 2. Native SWC AST Transforms
+- Transforms JSX/TSX syntax trees.
+- Extracts and hashes Server Action functions (\`"use server"\`) into cryptographic endpoint identifiers.
+- Inlines CSS Modules and optimizes font families directly during AST parsing.`,
           risk_level: "MEDIUM",
           referenced_files: ["packages/next-swc/crates/core/src/lib.rs", "packages/next/src/build/turbopack-build.ts"],
           display_order: 2,
@@ -169,14 +283,28 @@ Next.js builds and bundles application source files via **Turbopack** and **next
           id: "sec-cache-isr",
           section_type: "DATA_FLOW",
           title: "Data Cache, Tag Invalidation & ISR Engine",
-          content_markdown: `### Next.js 4-Tier Caching Hierarchy
+          content_markdown: `### Next.js 4-Tier Caching Architecture
 
-Next.js implements an aggressive multi-tiered caching system:
+Next.js employs a 4-tier caching model designed for high-concurrency edge workloads:
 
-- **Router Cache**: Client-side in-memory cache of RSC payloads per route segment.
-- **Full Route Cache**: Server-side HTML and RSC payload cache computed at build time or during initial revalidation.
-- **Data Cache**: Persistent fetch store spanning requests across serverless functions.
-- **Tag Invalidation**: \`revalidateTag('tag_name')\` broadcasts tag-based invalidations across the cluster to purge stale entries.`,
+| Cache Tier | Location | Lifecycle | Invalidation Mechanism |
+| --- | --- | --- | --- |
+| **Router Cache** | Browser Memory | Session / Transition | \`router.refresh()\` |
+| **Full Route Cache** | Serverless Node | Build / Revalidate | On-demand or Time-based ISR |
+| **Data Cache** | Persistent Key-Value | Across Requests | \`revalidateTag('tag')\` |
+| **Request Memoization** | React Render Pass | Single Request Lifecycle | Automatic deduplication |
+
+#### Tag-Based Cache Invalidation
+\`\`\`typescript
+import { revalidateTag, revalidatePath } from "next/cache";
+
+export async function updateProduct(id: string, data: FormData) {
+  "use server";
+  await db.products.update(id, data);
+  revalidateTag("products-catalog"); // Purges all cached queries tagged with this key
+  revalidatePath("/products");
+}
+\`\`\``,
           risk_level: "MEDIUM",
           referenced_files: ["packages/next/src/server/lib/incremental-cache/index.ts"],
           display_order: 3,
@@ -185,11 +313,20 @@ Next.js implements an aggressive multi-tiered caching system:
           id: "sec-danger-next",
           section_type: "DANGER_ZONE",
           title: "Danger Zone: Server Action Deserialization & Boundary Leaks",
-          content_markdown: `### ⚠️ Critical Danger Zone: Action Dispatcher & RSC Boundary
+          content_markdown: `### ⚠️ Critical Danger Zone: Server-Client Boundary & Action Security
 
-- **\`packages/next/src/server/app-render/action-handler.ts\`**: Handles incoming HTTP POST requests containing encrypted Server Action IDs.
-- **Hydration Boundary Hazards**: Exporting server-only secrets or database connections across the \`"use client"\` barrier causes security leaks or runtime serialization crashes.
-- **Turbopack SWC Invariants**: Modifying SWC AST visitor passes must preserve sourcemap integrity and avoid infinite recursion during macro expansion.`,
+#### 1. Server Actions are Public HTTP POST Endpoints
+Every function exported with \`"use server"\` is exposed as an open HTTP POST endpoint. 
+- **Security Invariant**: Always authenticate the caller and validate argument schemas inside the Server Action before executing database operations.
+
+#### 2. Hydration Boundary Violations
+Importing server-only secrets (e.g. database credentials, private API keys) into a component imported by a \`"use client"\` module triggers compilation errors or leaks confidential environment variables to client browser bundles.
+
+\`\`\`typescript
+// ❌ DANGEROUS: Leaks server environment variables to the browser
+"use client";
+import { DB_PASSWORD } from "@/lib/db"; // Compilation will fail or leak secret!
+\`\`\``,
           risk_level: "CRITICAL",
           referenced_files: ["packages/next/src/server/app-render/action-handler.ts", "packages/next/src/client/components/react-dev-overlay/"],
           display_order: 4,
@@ -197,27 +334,28 @@ Next.js implements an aggressive multi-tiered caching system:
         {
           id: "sec-setup-next",
           section_type: "SETUP_GUIDE",
-          title: "Local Development & E2E Test Suite",
-          content_markdown: `### Local Next.js Workspace Setup
+          title: "Local Next.js Monorepo Setup & Testing",
+          content_markdown: `### Local Next.js Contributor Guide
 
 \`\`\`bash
-# Clone Next.js monorepo
+# 1. Clone Next.js monorepo
 git clone https://github.com/vercel/next.js.git
 cd next.js
 
-# Install dependencies using pnpm
+# 2. Install pnpm and dependencies
 pnpm install
 
-# Build all packages with Turbopack support
+# 3. Build native SWC packages and core framework
 pnpm build
 
-# Run unit and integration tests
+# 4. Run end-to-end testing suite
 pnpm test-dev test/e2e/app-dir/rsc-basic/
 \`\`\`
 
-- **\`packages/next\`**: Main framework package and CLI runtime.
-- **\`packages/next-swc\`**: Rust native binaries and compiler extensions.
-- **\`packages/create-next-app\`**: Zero-configuration bootstrapping CLI.`,
+#### Monorepo Package Layout:
+- **\`packages/next\`**: Core runtime, CLI, and App Router server logic.
+- **\`packages/next-swc\`**: Rust source code for the Turbopack compiler.
+- **\`packages/create-next-app\`**: Project scaffolding CLI.`,
           risk_level: "LOW",
           referenced_files: ["package.json", "pnpm-workspace.yaml"],
           display_order: 5,
@@ -227,106 +365,123 @@ pnpm test-dev test/e2e/app-dir/rsc-basic/
     };
   }
 
-  // 3. FASTAPI / FASTAPI
-  if (norm.includes("fastapi")) {
+  // ==========================================
+  // 3. FACEBOOK / REACT
+  // ==========================================
+  if (norm.includes("react") && !norm.includes("react-native")) {
     return {
-      id: `walkthrough-fastapi-${repoIdentifier}`,
+      id: `walkthrough-react-${repoIdentifier}`,
       repo_id: repoIdentifier,
-      commit_sha: "88b1f4a1847d8b5b6cf7e4811a684b01e3b62",
+      commit_sha: "a1f4c39e0839e2d3b5b6cf7e4811a684b01e3b62",
       status: "COMPLETED",
-      summary: "FastAPI Architecture: Starlette ASGI Substrate, Pydantic v2 Schema Engine, Dependency Injection DAG, and OpenAPI 3.1 Synthesis.",
+      summary: "React Architectural Blueprint: Concurrent Mode Fiber Reconciler, 31-Bit Priority Scheduling Lanes, State Linked-Lists, and Pluggable Host Renderers.",
       system_diagram_mermaid: `graph TD
-  HTTP[HTTP / WebSocket Request] --> ASGI[Starlette ASGI Engine & Lifespan]
-  ASGI --> Router[FastAPI APIRouter & Route Dispatch]
-  Router --> Pydantic[Pydantic v2 Schema Validator & Serializer]
-  Router --> DI[Dependency Injection DAG Container]
-  DI --> Security[OAuth2 & Security Scopes Resolver]
-  DI --> Handlers[Async Endpoint Handler Functions]
-  Handlers --> OpenAPI[Dynamic OpenAPI 3.1 & Swagger Spec]
-  Handlers --> Workers[BackgroundTasks Worker Pipeline]`,
+  JSX[JSX / TSX Component Tree] --> Compiler[React Compiler / SWC / Babel]
+  Compiler --> Elements[React Elements Tree]
+  Elements --> Fiber[Fiber Reconciler & WorkLoop]
+  Fiber --> Scheduler[Concurrent Scheduler & Priority Lanes]
+  Scheduler --> CommitPhase[Commit Phase & DOM Mutation Queue]
+  CommitPhase --> DOM[ReactDOM Host Renderer]
+  CommitPhase --> Native[React Native Host Renderer]
+  Fiber --> Hooks[Hook Dispatcher & Memoized State]`,
       sections: [
         {
-          id: "sec-asgi-routing",
+          id: "sec-fiber",
           section_type: "OVERVIEW",
-          title: "ASGI Substrate & APIRouter Architecture",
-          content_markdown: `### Starlette Core & Async Route Resolution
+          title: "Fiber Architecture & Dual-Buffering WorkLoop",
+          content_markdown: `### React Fiber Architecture & Dual-Buffering Tree
 
-FastAPI is built on top of **Starlette** (for ASGI web transport) and **Pydantic** (for data contracts and parsing):
+React replaces the classic recursive call stack with **Fiber**, a custom virtual stack frame architecture that enables non-blocking, interruptible rendering.
 
-- **ASGI 3.0 Protocol**: Asynchronous request/response lifecycle operating directly over Python's \`asyncio\` event loop.
-- **APIRouter Graph**: Modular routing trees with prefix hierarchical chaining, global dependencies, and automatic tags for OpenAPI documentation grouping.
-- **Lifespan Context**: Modern \`@asynccontextmanager\` lifecycle handling for database connection pools, ML model loading, and graceful shutdown hooks.`,
+#### 1. Dual-Buffering Tree Structure
+React maintains two fiber trees simultaneously:
+- **\`current\`**: The tree representing what is currently displayed on the DOM.
+- **\`workInProgress\` (WIP)**: The tree being constructed asynchronously in memory.
+- **Alternate Pointer**: Each node in the WIP tree has an \`alternate\` pointer pointing to its counterpart in the \`current\` tree, drastically reducing memory allocation during diffing.
+
+#### 2. Time-Slicing & Yielding
+During heavy rendering passes, React executes the \`workLoopConcurrent\` function in 5ms slices. If the browser main thread has pending input events (e.g. typing or mouse clicks), React yields execution back to the browser event loop.`,
           risk_level: "LOW",
-          referenced_files: ["fastapi/applications.py", "fastapi/routing.py"],
+          referenced_files: ["packages/react-reconciler/src/ReactFiber.js", "packages/react-reconciler/src/ReactFiberWorkLoop.js"],
           display_order: 1,
         },
         {
-          id: "sec-pydantic-v2",
+          id: "sec-scheduler",
           section_type: "CRITICAL_PATH",
-          title: "Pydantic v2 Rust Schema Validation Pipeline",
-          content_markdown: `### High-Throughput Schema Parsing & Coercion
+          title: "Concurrent Scheduler & 31-Bit Priority Lanes",
+          content_markdown: `### Priority Lanes & WorkLoop Invariants
 
-FastAPI leverages Pydantic v2 (\`pydantic-core\` written in Rust) for maximum throughput:
+React schedules updates using a 31-bit integer bitmask (**Lanes**):
 
-1. **Parameter Extraction**: Parses query parameters, path variables, request headers, cookies, and JSON/Form request bodies into type-annotated dataclasses.
-2. **Type Coercion & Validation**: Validates UUIDs, dates, email constraints, and custom validator functions at C/Rust speed.
-3. **Response Model Filtering**: Serializes Python objects while enforcing \`response_model_exclude_unset\` and masking confidential schema attributes.`,
+| Priority Lane | Use Case | Interruption Policy |
+| --- | --- | --- |
+| **SyncLane** | User typing, discrete clicks | Synchronous (Non-interruptible) |
+| **InputContinuousLane** | Dragging, scroll animations | Highest concurrent priority |
+| **DefaultLane** | Normal \`useState\` updates | Interruptible by user input |
+| **TransitionLane** | \`startTransition()\` updates | Lowest priority; deferred rendering |
+| **IdleLane** | Offscreen pre-rendering | Runs only when CPU is idle |
+
+The reconciler executes higher-priority lanes first. If a higher-priority update arrives while a transition is rendering, React discards the WIP tree and starts immediately on the urgent update.`,
           risk_level: "MEDIUM",
-          referenced_files: ["fastapi/dependencies/utils.py", "fastapi/encoders.py"],
+          referenced_files: ["packages/scheduler/src/forks/Scheduler.js", "packages/react-reconciler/src/ReactFiberLane.js"],
           display_order: 2,
         },
         {
-          id: "sec-di-container",
+          id: "sec-hooks",
           section_type: "DATA_FLOW",
-          title: "Dependency Injection DAG & Security Scopes",
-          content_markdown: `### Dependency Injection Resolution Graph
+          title: "Hook Dispatcher & Memoized State LinkedList",
+          content_markdown: `### Hook Lifecycle & State Preservation
 
-FastAPI features a hierarchical, acyclic Dependency Injection system:
+Hooks are stored as a singly-linked list on \`fiber.memoizedState\`.
 
-- **\`Depends()\` DAG Resolution**: Solves complex nested dependencies and caches shared instances across sub-dependencies within the same request scope.
-- **Yield Dependencies**: Context-managed dependencies (\`yield db_session\`) automatically execute cleanup and commit/rollback logic after response transmission.
-- **Security Scopes**: Integrates OAuth2 scopes and JWT claims directly into route parameter signatures.`,
+- **Mount vs Update Dispatchers**: When rendering for the first time, React sets the active dispatcher to \`HooksDispatcherOnMount\`. Subsequent renders swap to \`HooksDispatcherOnUpdate\`.
+- **Top-Level Rule Invariant**: Because hooks rely on index order across the linked list, hooks cannot be placed inside conditionals or loops.
+- **Action Queues**: State updates are queued into circular linked lists (\`hook.queue.pending\`) and reduced during the component's next render pass.`,
           risk_level: "MEDIUM",
-          referenced_files: ["fastapi/dependencies/models.py", "fastapi/security/oauth2.py"],
+          referenced_files: ["packages/react-reconciler/src/ReactFiberHooks.js"],
           display_order: 3,
         },
         {
-          id: "sec-danger-fastapi",
+          id: "sec-danger-react",
           section_type: "DANGER_ZONE",
-          title: "Danger Zone: Threadpool Offloading & Async Context Isolation",
-          content_markdown: `### ⚠️ Critical Danger Zone: Synchronous vs Asynchronous Handlers
+          title: "Danger Zone: Synchronous Commit Phase & Layout Effects",
+          content_markdown: `### ⚠️ Critical Danger Zone: ReactFiberCommitWork
 
-- **\`fastapi/routing.py:run_endpoint_function\`**: Non-async endpoints (\`def endpoint()\`) are automatically offloaded to the \`anyio\` worker threadpool to prevent blocking the main asyncio event loop.
-- **Thread Local Hazards**: Passing non-thread-safe global state or un-awaited database cursors between async and sync contexts can lead to deadlocks or database connection leaks.
-- **BackgroundTasks Concurrency**: Tasks enqueued in \`BackgroundTasks\` run after the HTTP response is sent, meaning request-scoped database sessions may already be closed if not cleanly detached.`,
+The commit phase is **synchronous and uninterruptible**.
+
+- **\`packages/react-reconciler/src/ReactFiberCommitWork.js\`**: Executes DOM node insertions, deletes, ref attachments, and \`useLayoutEffect\` callbacks.
+- **Infinite Loop Hazards**: Triggering synchronous state updates inside \`useLayoutEffect\` bypasses concurrent scheduling and immediately forces an inline re-render, easily causing \`Maximum update depth exceeded\` errors.
+
+> **Maintainer Invariant**: Never introduce async promises or unhandled exceptions within \`commitMutationEffects\` or \`commitLayoutEffects\`.`,
           risk_level: "CRITICAL",
-          referenced_files: ["fastapi/routing.py", "fastapi/background.py"],
+          referenced_files: ["packages/react-reconciler/src/ReactFiberCommitWork.js", "packages/react-dom/src/client/ReactDOMComponent.js"],
           display_order: 4,
         },
         {
-          id: "sec-setup-fastapi",
+          id: "sec-setup-react",
           section_type: "SETUP_GUIDE",
-          title: "Local Python Environment & Pytest Suite",
-          content_markdown: `### Local FastAPI Development Setup
+          title: "Monorepo Map & Contributor Quickstart",
+          content_markdown: `### React Monorepo Build Runbook
 
 \`\`\`bash
-# Clone the repository
-git clone https://github.com/fastapi/fastapi.git
-cd fastapi
+# 1. Clone repository and install dependencies
+git clone https://github.com/facebook/react.git
+cd react
+yarn install
 
-# Create virtual environment and install development dependencies
-pip install -r requirements-dev.txt
-flit install --symlink
+# 2. Run unit test suite
+yarn test
 
-# Run full pytest test suite with coverage
-pytest tests/ -v
+# 3. Build standalone production bundles
+yarn build react/index,react-dom/index --type=PROD
 \`\`\`
 
-- **\`fastapi/applications.py\`**: Main application class and OpenAPI builder.
-- **\`fastapi/routing.py\`**: Endpoint dispatch, threadpool offloader, and parameter injector.
-- **\`fastapi/param_functions.py\`**: Parameter declarations (\`Query\`, \`Body\`, \`Header\`, \`Depends\`).`,
+#### Package Breakdown:
+- **\`packages/react\`**: Core element creation APIs (\`createElement\`, hooks, context).
+- **\`packages/react-reconciler\`**: Fiber state machine and virtual diffing engine.
+- **\`packages/react-dom\`**: Browser DOM bindings and SSR streaming.`,
           risk_level: "LOW",
-          referenced_files: ["pyproject.toml", "requirements-dev.txt"],
+          referenced_files: ["package.json", "yarn.lock"],
           display_order: 5,
         },
       ],
@@ -334,16 +489,18 @@ pytest tests/ -v
     };
   }
 
+  // ==========================================
   // 4. TAILWINDLABS / TAILWINDCSS
+  // ==========================================
   if (norm.includes("tailwind") || norm.includes("tailwindcss")) {
     return {
       id: `walkthrough-tailwind-${repoIdentifier}`,
       repo_id: repoIdentifier,
       commit_sha: "7d890b21847e091b5b6cf7e4811a684b01e3b62",
       status: "COMPLETED",
-      summary: "Tailwind CSS Architecture: Oxide JIT Scanner, AST Rule Generator, Design Token Engine, and Lightning CSS Minifier.",
+      summary: "Tailwind CSS Architectural Blueprint: Oxide Rust JIT Candidate Scanner, Dynamic AST Rule Generator, Cascading Theme Tokens, and Lightning CSS Minifier.",
       system_diagram_mermaid: `graph TD
-  Source[Source Files: HTML / JSX / Vue / Svelte] --> Scanner[JIT Scanner & Candidate Extractor]
+  Source[Source Code: HTML / JSX / Vue / Svelte] --> Scanner[JIT Scanner & Candidate Extractor]
   Scanner --> AST[Tailwind Oxide AST & Theme Engine]
   AST --> Variants[Variant Parser: hover / focus / dark / responsive]
   AST --> Utilities[Utility Class Rule Generator]
@@ -355,13 +512,13 @@ pytest tests/ -v
           id: "sec-jit-oxide",
           section_type: "OVERVIEW",
           title: "Oxide Engine & Sub-Millisecond JIT Candidate Scanner",
-          content_markdown: `### Tailwind Oxide & On-Demand CSS Generation
+          content_markdown: `### Tailwind Oxide & On-Demand CSS Compilation
 
 Tailwind CSS v4 introduces **Oxide**, a high-performance engine written in Rust:
 
-- **Zero-Config Candidate Extraction**: Scans all template files, extracting potential utility candidates without requiring manual glob configurations in \`tailwind.config.js\`.
-- **Parallel Scanning**: Uses multi-threaded scanning to evaluate large monorepos with hundreds of thousands of lines in under 10 milliseconds.
-- **AST Generation**: Compiles extracted candidates directly into optimized CSS AST representations without intermediate string concatenations.`,
+- **Zero-Config Candidate Extraction**: Scans all source files in the project without requiring manual glob configurations in JavaScript configuration files.
+- **Parallel Scanning**: Evaluates large monorepos with hundreds of thousands of lines in under 10 milliseconds using multi-threaded tokenization.
+- **Direct AST Synthesis**: Emits CSS rules directly into syntax trees, bypassing intermediate string interpolations.`,
           risk_level: "LOW",
           referenced_files: ["crates/oxide/src/lib.rs", "packages/tailwindcss/src/index.ts"],
           display_order: 1,
@@ -415,15 +572,15 @@ Tailwind replaces static color palettes with modern CSS variable cascades:
           content_markdown: `### Local Tailwind CSS Workspace Setup
 
 \`\`\`bash
-# Clone the repository
+# 1. Clone the repository
 git clone https://github.com/tailwindlabs/tailwindcss.git
 cd tailwindcss
 
-# Install dependencies and build Rust Oxide native binaries
+# 2. Install dependencies and build Rust Oxide native binaries
 pnpm install
 pnpm build
 
-# Run unit and integration tests
+# 3. Run unit and integration tests
 pnpm test
 \`\`\`
 
@@ -439,7 +596,9 @@ pnpm test
     };
   }
 
+  // ==========================================
   // 5. CUSTOM REPOSITORY (e.g. arnnnnwww / user repos / CLUDE)
+  // ==========================================
   const displayName = repoFullName || repoIdentifier || "Custom Repository";
   const repoSlug = displayName.split("/").pop() || "project";
 
@@ -448,24 +607,25 @@ pnpm test
     repo_id: repoIdentifier,
     commit_sha: "a1f4c39e0839e2d3b5b6cf7e4811a684b01e3b62",
     status: "COMPLETED",
-    summary: `Complete architectural topology, dependency graph, and onboarding walkthrough for ${displayName}.`,
+    summary: `Comprehensive architectural blueprint, causal dependency graph, and engineer onboarding walkthrough for ${displayName}.`,
     system_diagram_mermaid: `graph TD
-  Client[Next.js Client / UI Layer] --> API[API Gateway & Router: /api/v1]
+  Client[Next.js 14 Client / Developer UI] --> API[API Gateway & Router: /api/v1]
   API --> Engine[Core Engine: AST Parser & Causal Analyzer]
   Engine --> VectorDB[(PostgreSQL 16 + pgvector)]
   Engine --> Cache[(Redis Cache & Task Broker)]
-  Cache --> Worker[Async Background Celery Workers]
-  Worker --> GitHub[GitHub API & Webhook Ingestion]`,
+  Cache --> Worker[Async Background Celery Task Workers]
+  Worker --> GitHub[GitHub API & Webhook Ingestion Engine]`,
     sections: [
       {
         id: "sec-custom-arch",
         section_type: "OVERVIEW",
-        title: `System Architecture & Topology for ${displayName}`,
-        content_markdown: `### Architecture Overview of ${displayName}
+        title: `System Architecture & Domain Topology for ${displayName}`,
+        content_markdown: `### High-Level Architecture & Domain Topology
 
-The **${displayName}** repository is engineered around modular domain boundaries designed for high availability and low-latency data processing:
+The **${displayName}** repository is organized around clear service boundaries designed for high availability, low-latency code analytics, and resilient background task execution.
 
-- **Frontend & Interaction Layer**: Next.js 14 App Router rendering developer diagnostics, real-time status indicators, and responsive interactive graphs.
+#### Architectural Layers:
+- **Presentation Layer**: Next.js 14 App Router rendering developer diagnostics, real-time status indicators, and responsive interactive graphs.
 - **API & Orchestration Tier**: Asynchronous endpoint handlers validating client requests and managing task dispatching.
 - **Persistence & Vector Storage**: ACID relational data co-located with vector similarity indexing for high-dimensional code embeddings.
 - **Asynchronous Task Workers**: Background workers handling heavy computational indexing, AST syntax traversal, and git diff correlation.`,
@@ -476,7 +636,7 @@ The **${displayName}** repository is engineered around modular domain boundaries
       {
         id: "sec-custom-pipelines",
         section_type: "CRITICAL_PATH",
-        title: "Critical Ingestion & Execution Pipelines",
+        title: "Critical Ingestion & Causal Execution Pipelines",
         content_markdown: `### Primary Data & Analysis Pipelines in ${repoSlug}
 
 1. **Ingestion & AST Tokenization**: Parses source code files into syntax trees, computing function coordinate maps and complexity metrics.
@@ -497,7 +657,7 @@ The following modules in **${displayName}** manage shared state and require caut
 - **Distributed Lock Management**: Manages cross-worker task deduping and indexing locks.
 - **Vector Embedding Batch Updates**: Performs bulk vector upserts into pgvector indexes. Modifying transaction boundaries can trigger connection exhaustion under load.
 
-> **Team Note**: Ensure all schema migrations are backward-compatible and include non-blocking index creation statements (\`CREATE INDEX CONCURRENTLY\`).`,
+> **Team Invariant**: Ensure all schema migrations are backward-compatible and include non-blocking index creation statements (\`CREATE INDEX CONCURRENTLY\`).`,
         risk_level: "CRITICAL",
         referenced_files: ["backend/app/core/database.py", "backend/app/workers/tasks.py"],
         display_order: 3,

@@ -14,6 +14,7 @@ import {
 import { Repository, OnboardingWalkthrough } from "@/lib/types";
 import { fetchRepos, fetchOnboarding, generateOnboarding } from "@/lib/api";
 import { MermaidViewer } from "@/components/MermaidViewer";
+import { MarkdownContent } from "@/components/MarkdownContent";
 
 function OnboardingContent() {
   const searchParams = useSearchParams();
@@ -232,8 +233,8 @@ function OnboardingContent() {
                   </div>
 
                   {/* Section Content Markdown */}
-                  <div className="prose prose-invert max-w-none text-xs text-textSecondary leading-relaxed whitespace-pre-line">
-                    {activeSection.content_markdown}
+                  <div className="text-xs text-textSecondary leading-relaxed">
+                    <MarkdownContent content={activeSection.content_markdown} />
                   </div>
 
                   {/* Referenced Files List */}
