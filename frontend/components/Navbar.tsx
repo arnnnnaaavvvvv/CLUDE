@@ -17,6 +17,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { GitHubConnectModal } from "./GitHubConnectModal";
+import { clearLocalCustomRepos } from "@/lib/api";
 
 interface GitHubProfile {
   username: string;
@@ -48,7 +49,7 @@ export function Navbar() {
   }, []);
 
   const handleDisconnect = () => {
-    localStorage.removeItem("clude_github_profile");
+    clearLocalCustomRepos();
     setProfile(null);
     setDropdownOpen(false);
     window.location.reload();

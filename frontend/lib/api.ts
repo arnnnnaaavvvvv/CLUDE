@@ -4,9 +4,11 @@ import { initialRepos } from "./reposStore";
 const API_BASE = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
 
 // Helper for local client storage persistence
-function getLocalCustomRepos(): Repository[] {
+export function getLocalCustomRepos(): Repository[] {
   if (typeof window === "undefined") return [];
   try {
+    const profile = localStorage.getItem("clude_github_profile");
+    if (!profile) return []; // If disconnected, return zero repos
     const raw = localStorage.getItem("clude_custom_repos");
     if (raw) return JSON.parse(raw);
   } catch (e) {
@@ -15,7 +17,7 @@ function getLocalCustomRepos(): Repository[] {
   return [];
 }
 
-function saveLocalCustomRepo(repo: Repository): void {
+export function saveLocalCustomRepo(repo: Repository): void {
   if (typeof window === "undefined") return;
   try {
     const existing = getLocalCustomRepos().filter(
@@ -25,6 +27,16 @@ function saveLocalCustomRepo(repo: Repository): void {
     localStorage.setItem("clude_custom_repos", JSON.stringify(existing));
   } catch (e) {
     console.warn("Could not save local custom repo", e);
+  }
+}
+
+export function clearLocalCustomRepos(): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.removeItem("clude_custom_repos");
+    localStorage.removeItem("clude_github_profile");
+  } catch (e) {
+    console.warn("Could not clear custom repos", e);
   }
 }
 
