@@ -307,6 +307,8 @@ export async function fetchAnalysisRun(runId: string): Promise<AnalysisRun> {
   };
 }
 
+import { getOnboardingForRepo } from "./onboardingCatalog";
+
 export async function generateOnboarding(
   repoId: string,
   payload: { commit_sha?: string; force_regenerate?: boolean } = {}
@@ -334,53 +336,12 @@ export async function generateOnboarding(
     // fallback below
   }
 
-  return {
-    id: typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `walkthrough-${Date.now()}`,
-    repo_id: repoId,
-    commit_sha: payload.commit_sha || "a1f4c39e0839e2d3b5b6cf7e4811a684b01e3b62",
-    status: "COMPLETED",
-    summary: "Complete architecture and developer onboarding walkthrough.",
-    system_diagram_mermaid: `graph TD
-  Client[Web Client] --> Gateway[API Gateway & Router]
-  Gateway --> Auth[Auth & Session Service]
-  Gateway --> Core[Core Engine / Business Logic]
-  Core --> DB[(PostgreSQL Database)]
-  Core --> Cache[(Redis Cache Layer)]
-  Core --> Worker[Background Task Worker]`,
-    sections: [
-      {
-        id: "overview",
-        section_type: "OVERVIEW",
-        title: "System Architecture & High-Level Overview",
-        content_markdown:
-          "### System Architecture\n\nThe codebase follows a modular layered architecture with clear boundaries between routing, core application logic, and persistence layers.\n\n- **API Layer**: Handles incoming HTTP requests and input validation\n- **Service Layer**: Implements core domain algorithms and business workflows\n- **Storage Layer**: Type-safe database queries and caching mechanisms",
-        risk_level: "LOW",
-        referenced_files: ["src/index.ts", "src/services/api.ts"],
-        display_order: 1,
-      },
-      {
-        id: "components",
-        section_type: "CRITICAL_PATH",
-        title: "Critical Subsystems & Module Map",
-        content_markdown:
-          "### Key Modules\n\n1. **`src/services/`**: Core business domain logic and computational pipelines.\n2. **`src/controllers/`**: HTTP transport controllers and schema serializers.\n3. **`src/workers/`**: Asynchronous tasks and event processing jobs.",
-        risk_level: "MEDIUM",
-        referenced_files: ["src/services/", "src/controllers/"],
-        display_order: 2,
-      },
-      {
-        id: "setup",
-        section_type: "SETUP_GUIDE",
-        title: "Local Development & Quickstart Runbook",
-        content_markdown:
-          "### Local Setup\n\n```bash\n# Install dependencies\nnpm install\n\n# Run development server\nnpm run dev\n```",
-        risk_level: "LOW",
-        referenced_files: ["package.json"],
-        display_order: 3,
-      },
-    ],
-    created_at: new Date().toISOString(),
-  };
+  // Lookup repo name from local store or initial catalog
+  const customRepos = getLocalCustomRepos();
+  const allRepos = [...customRepos, ...initialRepos];
+  const matched = allRepos.find((r) => r.id === repoId || r.full_name === repoId);
+
+  return getOnboardingForRepo(repoId, matched?.full_name);
 }
 
 export async function fetchOnboarding(repoId: string): Promise<OnboardingWalkthrough> {
@@ -399,5 +360,9 @@ export async function fetchOnboarding(repoId: string): Promise<OnboardingWalkthr
     // fallback to generator
   }
 
-  return generateOnboarding(repoId);
+  const customRepos = getLocalCustomRepos();
+  const allRepos = [...customRepos, ...initialRepos];
+  const matched = allRepos.find((r) => r.id === repoId || r.full_name === repoId);
+
+  return getOnboardingForRepo(repoId, matched?.full_name);
 }
