@@ -18,7 +18,8 @@ export default function RepositoriesPage() {
   const [loading, setLoading] = useState(true);
   const [connecting, setConnecting] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [pageError, setPageError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
 
   // Form State
   const [repoInput, setRepoInput] = useState("");
@@ -36,11 +37,12 @@ export default function RepositoriesPage() {
   const loadRepositories = async () => {
     try {
       setLoading(true);
+      setPageError(null);
       const data = await fetchRepos();
-      setRepos(data);
+      setRepos(data || []);
     } catch (err: any) {
       console.error(err);
-      setError("Failed to load repositories from CLUDE API.");
+      setPageError("Failed to sync remote repositories.");
     } finally {
       setLoading(false);
     }
@@ -55,13 +57,13 @@ export default function RepositoriesPage() {
     const cleanFullName = parseRepoName(repoInput);
 
     if (!cleanFullName || !cleanFullName.includes("/")) {
-      setError("Please enter a valid GitHub repository URL or format like 'owner/repo'");
+      setFormError("Please enter a valid GitHub repository URL or format like 'owner/repo'");
       return;
     }
 
     try {
       setConnecting(true);
-      setError(null);
+      setFormError(null);
       await connectRepo({
         github_repo_id: Math.floor(100000 + Math.random() * 900000),
         full_name: cleanFullName,
@@ -71,7 +73,7 @@ export default function RepositoriesPage() {
       setFormOpen(false);
       await loadRepositories();
     } catch (err: any) {
-      setError(err.message || "Failed to connect repository.");
+      setFormError(err.message || "Failed to connect repository.");
     } finally {
       setConnecting(false);
     }
@@ -93,7 +95,7 @@ export default function RepositoriesPage() {
         <button
           onClick={() => {
             setFormOpen(!formOpen);
-            setError(null);
+            setFormError(null);
           }}
           className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 px-4 py-2.5 text-xs font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:-translate-y-0.5"
         >
@@ -101,6 +103,21 @@ export default function RepositoriesPage() {
           Add Repository Link
         </button>
       </div>
+
+      {pageError && (
+        <div className="rounded-lg bg-yellow-500/10 border border-yellow-500/30 p-3 text-xs text-yellow-400 font-medium flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="h-4 w-4 flex-shrink-0" />
+            <span>{pageError} Using local demo catalog.</span>
+          </div>
+          <button
+            onClick={() => loadRepositories()}
+            className="text-[11px] underline hover:text-white font-mono"
+          >
+            Retry
+          </button>
+        </div>
+      )}
 
       {/* Connect Repo Modal / Form */}
       {formOpen && (
@@ -129,7 +146,7 @@ export default function RepositoriesPage() {
                     value={repoInput}
                     onChange={(e) => {
                       setRepoInput(e.target.value);
-                      setError(null);
+                      setFormError(null);
                     }}
                     required
                     className="w-full rounded-lg border border-border bg-[#030712] px-3.5 py-2.5 text-xs text-textPrimary placeholder-textSecondary/50 focus:border-blue-500 focus:outline-none font-mono"
@@ -160,7 +177,7 @@ export default function RepositoriesPage() {
                   type="button"
                   onClick={() => {
                     setRepoInput(`https://github.com/${preset}`);
-                    setError(null);
+                    setFormError(null);
                   }}
                   className="text-[11px] rounded bg-surfaceHover px-2.5 py-1 text-textSecondary hover:text-textPrimary hover:bg-blue-500/20 hover:border-blue-500/40 border border-border transition-colors"
                 >
@@ -169,10 +186,10 @@ export default function RepositoriesPage() {
               ))}
             </div>
 
-            {error && (
+            {formError && (
               <div className="rounded-lg bg-danger/10 border border-danger/30 p-3 text-xs text-danger font-medium flex items-center gap-2">
                 <AlertCircle className="h-4 w-4 flex-shrink-0" />
-                <span>{error}</span>
+                <span>{formError}</span>
               </div>
             )}
 
