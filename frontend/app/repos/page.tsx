@@ -2,22 +2,31 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { GitBranch, Plus, CheckCircle2, Clock, AlertCircle, ArrowRight, RefreshCw, Sparkles, Globe } from "lucide-react";
+import {
+  GitBranch,
+  Plus,
+  CheckCircle2,
+  Clock,
+  AlertCircle,
+  ArrowRight,
+  RefreshCw,
+  Sparkles,
+  Globe,
+  Github,
+  Network,
+  Cpu,
+  ShieldCheck,
+} from "lucide-react";
 import { Repository } from "@/lib/types";
 import { fetchRepos, connectRepo } from "@/lib/api";
-
-const PRESET_REPOS = [
-  "facebook/react",
-  "vercel/next.js",
-  "fastapi/fastapi",
-  "tailwindlabs/tailwindcss",
-];
+import { GitHubConnectModal } from "@/components/GitHubConnectModal";
 
 export default function RepositoriesPage() {
   const [repos, setRepos] = useState<Repository[]>([]);
   const [loading, setLoading] = useState(true);
   const [connecting, setConnecting] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
+  const [gitHubModalOpen, setGitHubModalOpen] = useState(false);
   const [pageError, setPageError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
 
@@ -42,7 +51,7 @@ export default function RepositoriesPage() {
       setRepos(data || []);
     } catch (err: any) {
       console.error(err);
-      setPageError("Failed to sync remote repositories.");
+      setPageError("Failed to sync repositories.");
     } finally {
       setLoading(false);
     }
@@ -89,26 +98,37 @@ export default function RepositoriesPage() {
             Connected Repositories
           </h1>
           <p className="text-xs sm:text-sm text-textSecondary mt-1">
-            Connect any GitHub repository link to index git history and generate AI root-cause diagnostics & architecture guides.
+            Connect your GitHub profile or repository URLs to index git history and generate AI root-cause diagnostics & architecture guides.
           </p>
         </div>
-        <button
-          onClick={() => {
-            setFormOpen(!formOpen);
-            setFormError(null);
-          }}
-          className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 px-4 py-2.5 text-xs font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:-translate-y-0.5"
-        >
-          <Plus className="h-4 w-4" />
-          Add Repository Link
-        </button>
+
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={() => setGitHubModalOpen(true)}
+            className="inline-flex items-center gap-2 rounded-lg bg-surface hover:bg-surfaceHover border border-blue-500/30 px-3.5 py-2.5 text-xs font-semibold text-textPrimary transition-all shadow-sm"
+          >
+            <Github className="h-4 w-4 text-blue-400" />
+            <span>Connect GitHub</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setFormOpen(!formOpen);
+              setFormError(null);
+            }}
+            className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 px-4 py-2.5 text-xs font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:-translate-y-0.5"
+          >
+            <Plus className="h-4 w-4" />
+            <span>Add Repo Link</span>
+          </button>
+        </div>
       </div>
 
       {pageError && (
         <div className="rounded-lg bg-yellow-500/10 border border-yellow-500/30 p-3 text-xs text-yellow-400 font-medium flex items-center justify-between">
           <div className="flex items-center gap-2">
             <AlertCircle className="h-4 w-4 flex-shrink-0" />
-            <span>{pageError} Using local demo catalog.</span>
+            <span>{pageError}</span>
           </div>
           <button
             onClick={() => loadRepositories()}
@@ -125,12 +145,12 @@ export default function RepositoriesPage() {
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-base font-bold text-textPrimary flex items-center gap-2">
               <Globe className="h-4 w-4 text-blue-400" />
-              Connect GitHub Repository
+              Connect Single Repository URL
             </h3>
-            <span className="text-[11px] text-textSecondary font-mono">No personal access tokens required</span>
+            <span className="text-[11px] text-textSecondary font-mono">No access tokens required</span>
           </div>
           <p className="text-xs text-textSecondary mb-5">
-            Paste any public repository URL (e.g. <code className="text-blue-400 font-mono">https://github.com/facebook/react</code>) or shorthand name (<code className="text-blue-400 font-mono">owner/repo</code>).
+            Paste any public repository URL (e.g. <code className="text-blue-400 font-mono">https://github.com/owner/repo</code>) or shorthand (<code className="text-blue-400 font-mono">owner/repo</code>).
           </p>
 
           <form onSubmit={handleConnect} className="space-y-4">
@@ -166,24 +186,6 @@ export default function RepositoriesPage() {
                   className="w-full rounded-lg border border-border bg-[#030712] px-3.5 py-2.5 text-xs text-textPrimary placeholder-textSecondary/50 focus:border-blue-500 focus:outline-none font-mono"
                 />
               </div>
-            </div>
-
-            {/* Quick Suggestions */}
-            <div className="flex flex-wrap items-center gap-2 pt-1 font-mono">
-              <span className="text-[11px] text-textSecondary">Quick presets:</span>
-              {PRESET_REPOS.map((preset) => (
-                <button
-                  key={preset}
-                  type="button"
-                  onClick={() => {
-                    setRepoInput(`https://github.com/${preset}`);
-                    setFormError(null);
-                  }}
-                  className="text-[11px] rounded bg-surfaceHover px-2.5 py-1 text-textSecondary hover:text-textPrimary hover:bg-blue-500/20 hover:border-blue-500/40 border border-border transition-colors"
-                >
-                  {preset}
-                </button>
-              ))}
             </div>
 
             {formError && (
@@ -229,19 +231,64 @@ export default function RepositoriesPage() {
           <RefreshCw className="h-8 w-8 animate-spin text-blue-400" />
         </div>
       ) : repos.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border bg-surface/30 p-12 text-center">
-          <GitBranch className="mx-auto h-12 w-12 text-textSecondary/50 mb-3" />
-          <h3 className="text-base font-semibold text-textPrimary">No repositories connected yet</h3>
-          <p className="text-xs text-textSecondary max-w-sm mx-auto mt-1 mb-5">
-            Paste a GitHub repository link above to index its git history, AST syntax graph, and vector embeddings.
-          </p>
-          <button
-            onClick={() => setFormOpen(true)}
-            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow"
-          >
-            <Plus className="h-4 w-4" />
-            Connect Your First Repo
-          </button>
+        /* Empty State: Premium Connect GitHub Gate */
+        <div className="relative rounded-3xl border border-blue-500/20 bg-gradient-to-b from-surface/80 via-[#0B0F19] to-surface/40 p-8 sm:p-14 shadow-2xl overflow-hidden text-center space-y-8">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl pointer-events-none" />
+
+          <div className="relative space-y-3 max-w-xl mx-auto">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-600/10 border border-blue-500/30 text-blue-400 shadow-xl shadow-blue-500/10">
+              <Github className="h-8 w-8" />
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-textPrimary">
+              No Repositories Connected
+            </h2>
+            <p className="text-xs sm:text-sm text-textSecondary leading-relaxed">
+              Connect your GitHub account to import and index your repositories, or paste any public repository link to get started.
+            </p>
+          </div>
+
+          <div className="relative grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto text-left">
+            <div className="rounded-2xl border border-border bg-[#030712]/60 p-5 space-y-2">
+              <Network className="h-5 w-5 text-blue-400" />
+              <h4 className="text-xs font-bold text-textPrimary">Git History Indexing</h4>
+              <p className="text-[11px] text-textSecondary leading-relaxed">
+                Indexes commits, authors, and structural diffs into high-dimensional vector embeddings.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-border bg-[#030712]/60 p-5 space-y-2">
+              <Cpu className="h-5 w-5 text-emerald-400" />
+              <h4 className="text-xs font-bold text-textPrimary">AI Causal Diagnostics</h4>
+              <p className="text-[11px] text-textSecondary leading-relaxed">
+                Pinpoints the exact commit that broke production with causal scoring.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-border bg-[#030712]/60 p-5 space-y-2">
+              <ShieldCheck className="h-5 w-5 text-rose-400" />
+              <h4 className="text-xs font-bold text-textPrimary">Architecture Onboarding</h4>
+              <p className="text-[11px] text-textSecondary leading-relaxed">
+                Synthesizes interactive Mermaid system graphs and deep-dive developer runbooks.
+              </p>
+            </div>
+          </div>
+
+          <div className="relative flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+            <button
+              onClick={() => setGitHubModalOpen(true)}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 px-7 py-3.5 text-xs font-bold text-white shadow-xl shadow-blue-500/25 transition-all hover:scale-[1.02]"
+            >
+              <Github className="h-4 w-4" />
+              <span>Connect GitHub Account</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </button>
+
+            <button
+              onClick={() => setFormOpen(true)}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-surface hover:bg-surfaceHover border border-border px-6 py-3.5 text-xs font-semibold text-textSecondary hover:text-textPrimary transition-all"
+            >
+              <Plus className="h-4 w-4" />
+              <span>Paste Single Repo URL</span>
+            </button>
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -306,6 +353,16 @@ export default function RepositoriesPage() {
           })}
         </div>
       )}
+
+      {/* GitHub Connect Modal */}
+      <GitHubConnectModal
+        isOpen={gitHubModalOpen}
+        onClose={() => {
+          setGitHubModalOpen(false);
+          loadRepositories();
+        }}
+        onConnected={loadRepositories}
+      />
     </div>
   );
 }

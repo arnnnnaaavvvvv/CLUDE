@@ -12,12 +12,17 @@ import {
   RefreshCw,
   GitBranch,
   ArrowRight,
-  Code2,
+  Github,
+  Plus,
+  Network,
+  Cpu,
+  ShieldCheck,
 } from "lucide-react";
 import { Repository, OnboardingWalkthrough } from "@/lib/types";
 import { fetchRepos, fetchOnboarding, generateOnboarding } from "@/lib/api";
 import { MermaidViewer } from "@/components/MermaidViewer";
 import { MarkdownContent } from "@/components/MarkdownContent";
+import { GitHubConnectModal } from "@/components/GitHubConnectModal";
 
 function OnboardingContent() {
   const searchParams = useSearchParams();
@@ -30,13 +35,18 @@ function OnboardingContent() {
   const [loading, setLoading] = useState<boolean>(false);
   const [generating, setGenerating] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [connectModalOpen, setConnectModalOpen] = useState(false);
 
-  useEffect(() => {
+  const loadReposList = () => {
     fetchRepos()
       .then((data) => {
         setRepos(data || []);
       })
       .catch((err) => console.error("Error loading repos:", err));
+  };
+
+  useEffect(() => {
+    loadReposList();
   }, []);
 
   useEffect(() => {
@@ -95,18 +105,28 @@ function OnboardingContent() {
 
         {/* Controls */}
         <div className="flex items-center gap-3">
-          <select
-            value={selectedRepoId}
-            onChange={(e) => setSelectedRepoId(e.target.value)}
-            className="rounded-lg border border-border bg-surface px-3.5 py-2 text-xs text-textPrimary focus:border-blue-500 focus:outline-none font-mono min-w-[200px]"
-          >
-            <option value="">-- Select a Repository --</option>
-            {repos.map((r) => (
-              <option key={r.id} value={r.id}>
-                {r.full_name}
-              </option>
-            ))}
-          </select>
+          {repos.length > 0 ? (
+            <select
+              value={selectedRepoId}
+              onChange={(e) => setSelectedRepoId(e.target.value)}
+              className="rounded-lg border border-border bg-surface px-3.5 py-2 text-xs text-textPrimary focus:border-blue-500 focus:outline-none font-mono min-w-[220px]"
+            >
+              <option value="">-- Select a Repository --</option>
+              {repos.map((r) => (
+                <option key={r.id} value={r.id}>
+                  {r.full_name}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <button
+              onClick={() => setConnectModalOpen(true)}
+              className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-lg shadow-blue-500/25 transition-all font-sans"
+            >
+              <Github className="h-4 w-4" />
+              Connect GitHub
+            </button>
+          )}
 
           {selectedRepoId && (
             <button
@@ -132,19 +152,73 @@ function OnboardingContent() {
 
       {error && <div className="text-xs text-danger font-medium font-mono">{error}</div>}
 
-      {/* Main Content Area */}
-      {!selectedRepoId ? (
-        /* Empty State: Prompt User to Select a Repository */
+      {/* CASE 1: No Repos Connected Yet -> Premium Connect GitHub Hero Gate */}
+      {repos.length === 0 ? (
+        <div className="relative rounded-3xl border border-blue-500/20 bg-gradient-to-b from-surface/80 via-[#0B0F19] to-surface/40 p-8 sm:p-14 shadow-2xl overflow-hidden text-center space-y-8">
+          {/* Ambient Glow */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl pointer-events-none" />
+
+          <div className="relative space-y-3 max-w-xl mx-auto">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-600/10 border border-blue-500/30 text-blue-400 shadow-xl shadow-blue-500/10">
+              <Github className="h-8 w-8" />
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-textPrimary">
+              Connect Your GitHub Account
+            </h2>
+            <p className="text-xs sm:text-sm text-textSecondary leading-relaxed">
+              Connect your GitHub profile to import your repositories, automatically synthesize interactive Mermaid architecture topology diagrams, and generate deep-dive onboarding runbooks.
+            </p>
+          </div>
+
+          {/* Feature Highlights Grid */}
+          <div className="relative grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto text-left">
+            <div className="rounded-2xl border border-border bg-[#030712]/60 p-5 space-y-2.5">
+              <Network className="h-5 w-5 text-blue-400" />
+              <h4 className="text-xs font-bold text-textPrimary">AST Topology Mapping</h4>
+              <p className="text-[11px] text-textSecondary leading-relaxed">
+                Parses component trees, ASGI/WSGI lifecycles, and module boundaries into visual diagrams.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-border bg-[#030712]/60 p-5 space-y-2.5">
+              <Cpu className="h-5 w-5 text-emerald-400" />
+              <h4 className="text-xs font-bold text-textPrimary">Execution Pipeline Analysis</h4>
+              <p className="text-[11px] text-textSecondary leading-relaxed">
+                Unpacks critical business logic, dependency graphs, and request lifecycle flows.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-border bg-[#030712]/60 p-5 space-y-2.5">
+              <ShieldCheck className="h-5 w-5 text-rose-400" />
+              <h4 className="text-xs font-bold text-textPrimary">Danger Zone Detection</h4>
+              <p className="text-[11px] text-textSecondary leading-relaxed">
+                Pinpoints high-churn files, concurrency locks, and sensitive invariant mutation paths.
+              </p>
+            </div>
+          </div>
+
+          {/* Primary Action Button */}
+          <div className="relative flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+            <button
+              onClick={() => setConnectModalOpen(true)}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 px-7 py-3.5 text-xs font-bold text-white shadow-xl shadow-blue-500/25 transition-all hover:scale-[1.02] hover:-translate-y-0.5"
+            >
+              <Github className="h-4 w-4" />
+              <span>Connect GitHub Account</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </div>
+      ) : !selectedRepoId ? (
+        /* CASE 2: Repos connected -> Clean selection picker */
         <div className="space-y-6">
           <div className="rounded-2xl border border-dashed border-border bg-surface/30 p-12 text-center">
             <Compass className="mx-auto h-12 w-12 text-blue-400/60 mb-3" />
             <h3 className="text-lg font-bold text-textPrimary">Select a Repository to Synthesize Guide</h3>
             <p className="text-xs text-textSecondary max-w-md mx-auto mt-1 mb-8 leading-relaxed">
-              Choose any connected repository below to inspect its dedicated architectural topology graph, critical execution paths, and danger zone runbooks.
+              Choose one of your connected repositories to inspect its dedicated architectural topology graph and developer guide chapters.
             </p>
 
             {/* Quick Repo Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto text-left">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto text-left">
               {repos.map((r) => (
                 <button
                   key={r.id}
@@ -171,7 +245,7 @@ function OnboardingContent() {
       ) : loading ? (
         <div className="flex flex-col items-center justify-center py-24 space-y-3">
           <RefreshCw className="h-8 w-8 animate-spin text-blue-400" />
-          <span className="text-xs font-mono text-textSecondary">Loading Architectural Topology...</span>
+          <span className="text-xs font-mono text-textSecondary">Synthesizing Architectural Topology...</span>
         </div>
       ) : !walkthrough ? (
         <div className="rounded-2xl border border-dashed border-border bg-surface/30 p-16 text-center">
@@ -304,6 +378,16 @@ function OnboardingContent() {
           </div>
         </div>
       )}
+
+      {/* GitHub Connect Modal */}
+      <GitHubConnectModal
+        isOpen={connectModalOpen}
+        onClose={() => {
+          setConnectModalOpen(false);
+          loadReposList();
+        }}
+        onConnected={loadReposList}
+      />
     </div>
   );
 }
