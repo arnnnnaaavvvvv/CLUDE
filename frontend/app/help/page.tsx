@@ -45,17 +45,21 @@ export default function HelpAndPlatformGuide() {
 
   return (
     <div className="space-y-12 max-w-5xl mx-auto font-sans pb-16">
-      {/* Header */}
-      <div className="text-center space-y-3 max-w-2xl mx-auto">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-mono text-blue-400 font-semibold uppercase tracking-wider">
-          <HelpCircle className="h-3.5 w-3.5" />
-          <span>Help &amp; Guide</span>
+      {/* Premium Hero Header */}
+      <div className="relative text-center space-y-4 max-w-3xl mx-auto pt-4">
+        <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-96 h-40 bg-blue-500/10 blur-3xl rounded-full pointer-events-none" />
+        
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface/80 border border-border text-xs text-textSecondary backdrop-blur-md shadow-sm">
+          <span className="flex h-2 w-2 rounded-full bg-blue-400 animate-pulse" />
+          <span className="font-medium text-textPrimary">Platform Documentation &amp; Assistant</span>
         </div>
-        <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-textPrimary">
-          How to Use CLUDE
+
+        <h1 className="text-3xl sm:text-5xl font-bold tracking-tight bg-gradient-to-b from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
+          Learning Center &amp; Help
         </h1>
+
         <p className="text-sm text-textSecondary max-w-xl mx-auto leading-relaxed">
-          Learn how to quickly fix production errors, attach screenshots, and understand complex codebases.
+          Step-by-step guides, interactive AI assistance, and essential workflows to help you master root-cause analysis and codebase intelligence.
         </p>
       </div>
 
