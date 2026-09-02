@@ -283,11 +283,6 @@ export function CustomerFeedbackSlider() {
             <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
             <span className="text-textPrimary font-semibold">100% Verified Developer Feedback</span>
           </div>
-          <span className="hidden sm:inline text-borderStrong">•</span>
-          <div className="flex items-center gap-1.5">
-            <Users className="h-3.5 w-3.5 text-blue-400" />
-            <span className="text-textPrimary font-semibold">{totalReviewsCount} Reviews Live</span>
-          </div>
         </div>
       </div>
 

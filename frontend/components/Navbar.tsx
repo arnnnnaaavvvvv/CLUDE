@@ -70,14 +70,9 @@ export function Navbar() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10 border border-blue-500/30 group-hover:border-blue-500/60 transition-colors shadow-sm shadow-blue-500/10">
               <Terminal className="h-4 w-4 text-blue-400" />
             </div>
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-lg tracking-tight text-textPrimary font-sans">
-                CLUDE
-              </span>
-              <span className="text-[10px] font-mono text-blue-400 bg-blue-500/10 border border-blue-500/20 px-1.5 py-0.5 rounded">
-                v1.0
-              </span>
-            </div>
+            <span className="font-bold text-lg tracking-tight text-textPrimary font-sans">
+              CLUDE
+            </span>
           </Link>
 
           {/* Navigation Links */}

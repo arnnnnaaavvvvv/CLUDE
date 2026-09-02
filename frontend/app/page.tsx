@@ -83,15 +83,18 @@ export default function LandingPage() {
         {/* Refined Subtle Ambient Top Glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 -z-10 w-[420px] h-[320px] bg-gradient-to-r from-blue-600/10 to-sky-500/10 blur-[6rem] rounded-full pointer-events-none" />
 
-        {/* Shimmer Pill Badge */}
+        {/* Luxury Hero Announcement Pill */}
         <ScrollReveal direction="down" duration={600}>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface border border-border text-xs font-mono text-textSecondary mb-6 shadow-sm">
-            <span className="px-2 py-0.5 rounded-full bg-gradient-to-r from-sky-400 to-blue-600 text-white text-[9px] font-semibold tracking-wide">
-              NEW
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#081120]/80 border border-blue-500/30 text-xs text-textSecondary mb-7 shadow-lg shadow-blue-500/10 backdrop-blur-md hover:border-blue-400/60 transition-all group cursor-default">
+            <span className="flex h-2 w-2 rounded-full bg-sky-400 animate-pulse" />
+            <span className="font-semibold text-textPrimary text-xs tracking-tight">
+              Autonomous Root-Cause Intelligence
             </span>
-            <span className="text-textPrimary font-medium">CLUDE 1.0</span>
             <span className="text-borderStrong">•</span>
-            <span>Semantic Incident Attribution & Architecture Synthesis</span>
+            <span className="font-mono text-[11px] text-blue-400 flex items-center gap-1 font-medium">
+              AST Delta Slicing &amp; LLM Causal Proof
+              <ArrowRight className="h-3 w-3 text-sky-400 group-hover:translate-x-0.5 transition-transform" />
+            </span>
           </div>
         </ScrollReveal>
 
@@ -525,38 +528,53 @@ export default function LandingPage() {
 
           {/* Tier 3: Enterprise */}
           <ScrollReveal direction="up" delay={300} duration={700}>
-            <div className="h-full rounded-2xl border border-border bg-surface p-8 space-y-6 flex flex-col justify-between hover:border-borderStrong transition-all">
+            <div className="h-full rounded-2xl border border-blue-500/30 bg-gradient-to-b from-[#0B1528] to-[#060B14] p-8 space-y-6 flex flex-col justify-between hover:border-blue-400/60 shadow-xl shadow-blue-500/5 transition-all group relative overflow-hidden">
+              <div className="absolute top-0 right-0 left-0 h-0.5 bg-gradient-to-r from-blue-500 via-sky-400 to-indigo-500" />
               <div className="space-y-4">
-                <h3 className="text-lg font-bold text-textPrimary">Enterprise</h3>
-                <p className="text-xs text-textSecondary">For organizations requiring on-premise VPC and custom SLA.</p>
-                <div className="font-mono">
-                  <span className="text-4xl font-bold text-textPrimary">Custom</span>
-                  <span className="text-xs text-textSecondary"> / tailored</span>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-bold text-textPrimary">Enterprise Scale</h3>
+                  <span className="text-[10px] font-mono text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded-full border border-sky-500/20 font-semibold">
+                    Custom VPC &amp; SLA
+                  </span>
                 </div>
-                <ul className="space-y-2.5 text-xs text-textSecondary font-sans border-t border-border pt-4">
-                  <li className="flex items-center gap-2 font-mono text-textPrimary">
-                    <Check className="h-4 w-4 text-blue-400" />
-                    <span>Self-hosted VPC deployment</span>
+                <p className="text-xs text-textSecondary leading-relaxed">
+                  Tailored for high-scale organizations requiring air-gapped infrastructure, private LLM endpoints, and custom compliance.
+                </p>
+                <div className="font-mono flex items-baseline gap-2">
+                  <span className="text-4xl font-bold bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
+                    Custom
+                  </span>
+                  <span className="text-xs text-textSecondary font-sans">/ volume-scaled</span>
+                </div>
+                <ul className="space-y-2.5 text-xs text-textPrimary font-sans border-t border-border/80 pt-4">
+                  <li className="flex items-center gap-2 font-mono">
+                    <Check className="h-4 w-4 text-sky-400 flex-shrink-0" />
+                    <span>Dedicated Air-Gapped &amp; Private VPC</span>
                   </li>
-                  <li className="flex items-center gap-2 font-mono text-textPrimary">
-                    <Check className="h-4 w-4 text-blue-400" />
-                    <span>Custom LLM endpoint routing</span>
+                  <li className="flex items-center gap-2 font-mono">
+                    <Check className="h-4 w-4 text-sky-400 flex-shrink-0" />
+                    <span>Custom private LLM routing &amp; local pgvector</span>
                   </li>
-                  <li className="flex items-center gap-2 font-mono text-textPrimary">
-                    <Check className="h-4 w-4 text-blue-400" />
-                    <span>SOC2 Type II & HIPAA compliance</span>
+                  <li className="flex items-center gap-2 font-mono">
+                    <Check className="h-4 w-4 text-sky-400 flex-shrink-0" />
+                    <span>Strict 0-day code retention &amp; SOC2 Type II</span>
                   </li>
-                  <li className="flex items-center gap-2 font-mono text-textPrimary">
-                    <Check className="h-4 w-4 text-blue-400" />
-                    <span>Dedicated Solutions Engineer</span>
+                  <li className="flex items-center gap-2 font-mono">
+                    <Check className="h-4 w-4 text-sky-400 flex-shrink-0" />
+                    <span>Custom Sentry, Datadog &amp; Slack webhooks</span>
+                  </li>
+                  <li className="flex items-center gap-2 font-mono">
+                    <Check className="h-4 w-4 text-sky-400 flex-shrink-0" />
+                    <span>Dedicated Solutions Architect &amp; 15-min SLA</span>
                   </li>
                 </ul>
               </div>
               <a
-                href="mailto:contact@clude.dev"
-                className="w-full text-center rounded-lg bg-surfaceHover py-2.5 text-xs font-semibold text-textPrimary hover:bg-surfaceHover/80 border border-border transition-colors block"
+                href="mailto:contact@clude.dev?subject=Enterprise%20Inquiry%20-%20CLUDE"
+                className="w-full text-center rounded-xl bg-surface hover:bg-[#0f1d38] border border-blue-500/30 hover:border-blue-400/60 py-3 text-xs font-semibold text-textPrimary hover:text-white shadow-lg shadow-black/40 transition-all flex items-center justify-center gap-2 group"
               >
-                Contact Solutions
+                <span>Book Solutions Demo</span>
+                <ArrowRight className="h-3.5 w-3.5 text-sky-400 group-hover:translate-x-1 transition-transform" />
               </a>
             </div>
           </ScrollReveal>
