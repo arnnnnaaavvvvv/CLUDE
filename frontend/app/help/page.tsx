@@ -8,19 +8,12 @@ import {
   Bug,
   BookOpen,
   GitBranch,
-  Terminal,
   ArrowRight,
   CheckCircle2,
-  Layers,
-  Image as ImageIcon,
-  ShieldCheck,
-  Zap,
-  Code2,
   ChevronDown,
   ChevronUp,
-  Cpu,
   Workflow,
-  ExternalLink,
+  MessageSquare,
 } from "lucide-react";
 import { HelpChatbot } from "@/components/HelpChatbot";
 
@@ -29,52 +22,52 @@ export default function HelpAndPlatformGuide() {
 
   const faqs = [
     {
-      q: "How does CLUDE identify the exact commit that broke production?",
-      a: "Unlike naive `git blame` which only checks who touched a single line, CLUDE parses AST (Abstract Syntax Tree) modifications across all commits within your time window. Claude 3.5 Sonnet performs causal verification against normalized stack coordinates, ranking commits by causal likelihood and explaining the exact runtime failure propagation."
+      q: "How does CLUDE find the commit that broke production?",
+      a: "When an error occurs, CLUDE examines the exact changes made in recent commits. It analyzes how the code evolved over time and identifies the exact commit that introduced the problem, explaining why it happened and giving you a fix."
     },
     {
-      q: "How does the Screenshot Ingestion feature work in Root-Cause Studio?",
-      a: "When you drag-and-drop or upload a screenshot (e.g., of a browser DevTools console, Sentry incident page, terminal panic, or UI error banner), CLUDE's multimodal vision engine extracts visual error codes, failing URLs, and exception messages to complement or substitute for raw textual traces."
+      q: "How does the screenshot feature work in Root-Cause Studio?",
+      a: "You can drag and drop any screenshot of your error (like a browser console or terminal screen) into Root-Cause Studio. CLUDE reads the error directly from your screenshot and finds the cause automatically."
     },
     {
-      q: "Is my proprietary source code stored or sent to public LLMs?",
-      a: "No. CLUDE enforces a strict zero raw-code retention policy. Repositories are processed in ephemeral memory for AST bisection and vector embeddings. For enterprise environments with strict air-gap compliance, CLUDE can be deployed in private VPCs with local LLM endpoints."
+      q: "Is my code safe and private?",
+      a: "Yes, completely. CLUDE does not permanently store your proprietary source code on external servers. Code is analyzed in temporary memory and immediately cleared."
     },
     {
-      q: "What programming languages and frameworks are supported?",
-      a: "CLUDE supports TypeScript/JavaScript (Node.js, Next.js, Express), Python (FastAPI, Django, Flask, PyTorch), Go (Standard library panics, Gin, Fiber), and Java/Kotlin (Spring Boot, Android). Monorepos with multiple languages are parsed automatically."
+      q: "Which programming languages are supported?",
+      a: "CLUDE supports TypeScript, JavaScript, Python, Go, and Java. It also works seamlessly with full-stack and multi-language projects."
     },
     {
-      q: "How do I generate an architecture walkthrough for a new codebase?",
-      a: "Navigate to the Onboarding Guide (/onboarding), select your connected repository, and click 'Generate Walkthrough'. CLUDE will synthesize the entire project structure into an interactive Mermaid.js diagram, critical runtime execution paths, danger zones, and developer setup instructions."
+      q: "How does the Onboarding Guide help new developers?",
+      a: "The Onboarding Guide creates visual system maps and clear explanations of how a codebase works, helping new developers become productive in days instead of weeks."
     }
   ];
 
   return (
-    <div className="space-y-12 max-w-6xl mx-auto font-sans pb-16">
+    <div className="space-y-12 max-w-5xl mx-auto font-sans pb-16">
       {/* Header */}
-      <div className="text-center space-y-4 max-w-3xl mx-auto">
+      <div className="text-center space-y-3 max-w-2xl mx-auto">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-mono text-blue-400 font-semibold uppercase tracking-wider">
           <HelpCircle className="h-3.5 w-3.5" />
-          <span>Help &amp; Platform Guide</span>
+          <span>Help &amp; Guide</span>
         </div>
         <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-textPrimary">
-          Master CLUDE in Minutes
+          How to Use CLUDE
         </h1>
-        <p className="text-sm text-textSecondary max-w-2xl mx-auto leading-relaxed">
-          Learn how to correlate incidents to git history, ingest error screenshots, generate architectural onboarding guides, or chat with our interactive AI assistant below.
+        <p className="text-sm text-textSecondary max-w-xl mx-auto leading-relaxed">
+          Learn how to quickly fix production errors, attach screenshots, and understand complex codebases.
         </p>
       </div>
 
       {/* 1. INTERACTIVE CHATBOT SECTION */}
-      <div className="space-y-4">
+      <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-blue-400" />
-            <h2 className="text-lg font-bold text-textPrimary">Interactive AI Platform Tutor</h2>
+            <MessageSquare className="h-4 w-4 text-blue-400" />
+            <h2 className="text-base font-bold text-textPrimary">Ask the Assistant</h2>
           </div>
-          <span className="text-xs font-mono text-textSecondary hidden sm:inline">
-            Trained on CLUDE Architecture &amp; Workflows
+          <span className="text-xs text-textSecondary">
+            Instant answers &amp; walkthroughs
           </span>
         </div>
 
@@ -82,35 +75,35 @@ export default function HelpAndPlatformGuide() {
       </div>
 
       {/* 2. PLATFORM WORKFLOW MODULES */}
-      <div className="space-y-6 pt-6">
+      <div className="space-y-6 pt-4">
         <div className="flex items-center gap-2">
-          <Workflow className="h-5 w-5 text-sky-400" />
-          <h2 className="text-lg font-bold text-textPrimary">Step-by-Step Platform Modules</h2>
+          <Workflow className="h-4 w-4 text-sky-400" />
+          <h2 className="text-base font-bold text-textPrimary">Platform Features</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Module 1: Root-Cause Studio */}
           <div className="rounded-2xl border border-border bg-surface p-6 shadow-lg flex flex-col justify-between space-y-4 hover:border-blue-500/50 transition-all">
             <div className="space-y-3">
-              <div className="h-10 w-10 rounded-xl bg-blue-500/10 border border-blue-500/30 text-blue-400 flex items-center justify-center">
-                <Bug className="h-5 w-5" />
+              <div className="h-9 w-9 rounded-xl bg-blue-500/10 border border-blue-500/30 text-blue-400 flex items-center justify-center">
+                <Bug className="h-4 w-4" />
               </div>
-              <h3 className="font-bold text-base text-textPrimary">1. Root-Cause Studio</h3>
+              <h3 className="font-bold text-sm text-textPrimary">1. Root-Cause Studio</h3>
               <p className="text-xs text-textSecondary leading-relaxed">
-                Paste stack traces or drop error screenshots to bisect breaking commits with AST diff analysis and get copyable hotfix patches.
+                Paste error logs or drop screenshots to find the exact commit that broke the build and get ready-to-use code fixes.
               </p>
-              <ul className="space-y-1.5 text-xs text-textSecondary font-mono pt-1">
+              <ul className="space-y-1.5 text-xs text-textSecondary pt-1">
                 <li className="flex items-center gap-1.5 text-textPrimary">
                   <CheckCircle2 className="h-3.5 w-3.5 text-blue-400" />
-                  <span>Multimodal Screenshot Ingestion</span>
+                  <span>Attach Error Screenshots</span>
                 </li>
                 <li className="flex items-center gap-1.5 text-textPrimary">
                   <CheckCircle2 className="h-3.5 w-3.5 text-blue-400" />
-                  <span>Committer Provenance &amp; Profile</span>
+                  <span>Author &amp; Committer Details</span>
                 </li>
                 <li className="flex items-center gap-1.5 text-textPrimary">
                   <CheckCircle2 className="h-3.5 w-3.5 text-blue-400" />
-                  <span>Interactive Code Fix Snippets</span>
+                  <span>Copyable Fix Code &amp; Diffs</span>
                 </li>
               </ul>
             </div>
@@ -127,25 +120,25 @@ export default function HelpAndPlatformGuide() {
           {/* Module 2: Onboarding Guide */}
           <div className="rounded-2xl border border-border bg-surface p-6 shadow-lg flex flex-col justify-between space-y-4 hover:border-sky-500/50 transition-all">
             <div className="space-y-3">
-              <div className="h-10 w-10 rounded-xl bg-sky-500/10 border border-sky-500/30 text-sky-400 flex items-center justify-center">
-                <BookOpen className="h-5 w-5" />
+              <div className="h-9 w-9 rounded-xl bg-sky-500/10 border border-sky-500/30 text-sky-400 flex items-center justify-center">
+                <BookOpen className="h-4 w-4" />
               </div>
-              <h3 className="font-bold text-base text-textPrimary">2. Onboarding Assistant</h3>
+              <h3 className="font-bold text-sm text-textPrimary">2. Onboarding Guide</h3>
               <p className="text-xs text-textSecondary leading-relaxed">
-                Generate dynamic Mermaid.js architecture topologies, critical paths, danger zones, and setup guides for unfamiliar codebases.
+                Generate visual architecture maps, learn how data flows, and see which files are most sensitive to changes.
               </p>
-              <ul className="space-y-1.5 text-xs text-textSecondary font-mono pt-1">
+              <ul className="space-y-1.5 text-xs text-textSecondary pt-1">
                 <li className="flex items-center gap-1.5 text-textPrimary">
                   <CheckCircle2 className="h-3.5 w-3.5 text-sky-400" />
-                  <span>Mermaid System Topologies</span>
+                  <span>Visual System Diagrams</span>
                 </li>
                 <li className="flex items-center gap-1.5 text-textPrimary">
                   <CheckCircle2 className="h-3.5 w-3.5 text-sky-400" />
-                  <span>Danger Zones &amp; High-Churn Files</span>
+                  <span>High-Risk File Warnings</span>
                 </li>
                 <li className="flex items-center gap-1.5 text-textPrimary">
                   <CheckCircle2 className="h-3.5 w-3.5 text-sky-400" />
-                  <span>Step-by-Step Developer Setup</span>
+                  <span>Step-by-Step Setup Steps</span>
                 </li>
               </ul>
             </div>
@@ -159,28 +152,28 @@ export default function HelpAndPlatformGuide() {
             </Link>
           </div>
 
-          {/* Module 3: Repositories & Webhooks */}
+          {/* Module 3: Repositories */}
           <div className="rounded-2xl border border-border bg-surface p-6 shadow-lg flex flex-col justify-between space-y-4 hover:border-indigo-500/50 transition-all">
             <div className="space-y-3">
-              <div className="h-10 w-10 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 flex items-center justify-center">
-                <GitBranch className="h-5 w-5" />
+              <div className="h-9 w-9 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 flex items-center justify-center">
+                <GitBranch className="h-4 w-4" />
               </div>
-              <h3 className="font-bold text-base text-textPrimary">3. Repository Hub</h3>
+              <h3 className="font-bold text-sm text-textPrimary">3. Connected Repos</h3>
               <p className="text-xs text-textSecondary leading-relaxed">
-                Connect GitHub accounts with fine-grained tokens, track vector indexing status, and manage monitored repository branches.
+                Connect your GitHub account or link public and private repositories to keep code analysis ready anytime.
               </p>
-              <ul className="space-y-1.5 text-xs text-textSecondary font-mono pt-1">
+              <ul className="space-y-1.5 text-xs text-textSecondary pt-1">
                 <li className="flex items-center gap-1.5 text-textPrimary">
                   <CheckCircle2 className="h-3.5 w-3.5 text-indigo-400" />
-                  <span>1536-dim pgvector Indexing</span>
+                  <span>Public &amp; Private Repo Support</span>
                 </li>
                 <li className="flex items-center gap-1.5 text-textPrimary">
                   <CheckCircle2 className="h-3.5 w-3.5 text-indigo-400" />
-                  <span>Real-Time Index Status Polling</span>
+                  <span>Automatic Code Indexing</span>
                 </li>
                 <li className="flex items-center gap-1.5 text-textPrimary">
                   <CheckCircle2 className="h-3.5 w-3.5 text-indigo-400" />
-                  <span>Sentry &amp; Datadog Webhook Support</span>
+                  <span>Sentry Webhook Automation</span>
                 </li>
               </ul>
             </div>
@@ -197,13 +190,10 @@ export default function HelpAndPlatformGuide() {
       </div>
 
       {/* 3. FREQUENTLY ASKED QUESTIONS */}
-      <div className="space-y-4 pt-6">
-        <div className="flex items-center gap-2">
-          <Terminal className="h-5 w-5 text-blue-400" />
-          <h2 className="text-lg font-bold text-textPrimary">Frequently Asked Questions</h2>
-        </div>
+      <div className="space-y-4 pt-4">
+        <h2 className="text-base font-bold text-textPrimary">Frequently Asked Questions</h2>
 
-        <div className="space-y-3">
+        <div className="space-y-2.5">
           {faqs.map((faq, idx) => {
             const isOpen = openFaq === idx;
             return (
@@ -213,7 +203,7 @@ export default function HelpAndPlatformGuide() {
               >
                 <button
                   onClick={() => setOpenFaq(isOpen ? null : idx)}
-                  className="w-full flex items-center justify-between p-4 text-left font-semibold text-sm text-textPrimary hover:bg-surfaceHover/50 transition-colors"
+                  className="w-full flex items-center justify-between p-4 text-left font-semibold text-xs text-textPrimary hover:bg-surfaceHover/50 transition-colors"
                 >
                   <span>{faq.q}</span>
                   {isOpen ? (
@@ -224,7 +214,7 @@ export default function HelpAndPlatformGuide() {
                 </button>
 
                 {isOpen && (
-                  <div className="px-4 pb-4 pt-1 text-xs text-textSecondary leading-relaxed border-t border-border/40 font-sans">
+                  <div className="px-4 pb-4 pt-1 text-xs text-textSecondary leading-relaxed border-t border-border/40">
                     {faq.a}
                   </div>
                 )}
