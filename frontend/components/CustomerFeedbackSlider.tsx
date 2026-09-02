@@ -4,18 +4,10 @@ import React, { useState, useEffect } from "react";
 import {
   Star,
   MessageSquare,
-  Quote,
-  Sparkles,
-  CheckCircle2,
   PenSquare,
-  ThumbsUp,
   Heart,
   Trash2,
   X,
-  ExternalLink,
-  Plus,
-  Users,
-  Filter,
 } from "lucide-react";
 import { WriteFeedbackModal, ReviewItem } from "./WriteFeedbackModal";
 
@@ -134,7 +126,6 @@ export function CustomerFeedbackSlider() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedReview, setSelectedReview] = useState<ReviewItem | null>(null);
   const [likedReviewIds, setLikedReviewIds] = useState<Set<string>>(new Set());
-  const [filterMode, setFilterMode] = useState<"all" | "community">("all");
 
   // Load user reviews and likes from localStorage on mount
   useEffect(() => {
@@ -203,9 +194,6 @@ export function CustomerFeedbackSlider() {
   const displayRow1 = fullRow1.length < 5 ? [...fullRow1, ...fullRow1, ...fullRow1] : [...fullRow1, ...fullRow1];
   const displayRow2 = fullRow2.length < 5 ? [...fullRow2, ...fullRow2, ...fullRow2] : [...fullRow2, ...fullRow2];
 
-  const totalReviewsCount = fullRow1.length + fullRow2.length;
-  const communityReviewsCount = userReviews.length;
-
   const getBadgeStyle = (badgeName?: string) => {
     if (badgeName?.toLowerCase().includes("user")) {
       return "text-blue-400 bg-blue-500/10 border-blue-500/20";
@@ -217,12 +205,12 @@ export function CustomerFeedbackSlider() {
   };
 
   return (
-    <section className="space-y-8 max-w-7xl mx-auto px-4 overflow-hidden py-8 font-sans">
+    <section className="space-y-10 max-w-7xl mx-auto px-4 overflow-hidden py-8 font-sans">
       {/* Section Header */}
-      <div className="text-center space-y-4 max-w-3xl mx-auto">
+      <div className="text-center space-y-3.5 max-w-3xl mx-auto">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-mono text-blue-400 font-semibold uppercase tracking-wider">
           <MessageSquare className="h-3.5 w-3.5" />
-          <span>Customer Feedback & Wall of Love</span>
+          <span>Customer Feedback &amp; Wall of Love</span>
         </div>
         <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-textPrimary">
           Trusted by engineering leaders worldwide
@@ -231,375 +219,216 @@ export function CustomerFeedbackSlider() {
           See how engineering teams at high-growth tech companies eliminate incident bisection and accelerate developer onboarding with CLUDE.
         </p>
 
-        {/* Action Controls & Interactive Review Button */}
-        <div className="pt-2 flex flex-wrap items-center justify-center gap-3.5">
+        {/* Clean, Simple CTA */}
+        <div className="pt-2 flex items-center justify-center">
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-sky-500 to-blue-500 hover:from-blue-500 hover:to-blue-600 px-5 py-2.5 text-xs font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:-translate-y-0.5 hover:shadow-blue-500/40"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-surface hover:bg-surfaceHover text-xs font-medium text-textPrimary border border-border hover:border-borderStrong transition-all shadow-sm"
           >
-            <PenSquare className="h-4 w-4" />
-            <span>Write Feedback & Review</span>
+            <PenSquare className="h-3.5 w-3.5 text-blue-400" />
+            <span>Share your feedback</span>
           </button>
-
-          {/* Filter / View Toggle */}
-          <div className="inline-flex items-center rounded-xl bg-surface border border-border p-1 text-xs font-mono">
-            <button
-              onClick={() => setFilterMode("all")}
-              className={`px-3 py-1.5 rounded-lg transition-all ${
-                filterMode === "all"
-                  ? "bg-blue-500/20 text-blue-400 font-semibold border border-blue-500/30"
-                  : "text-textSecondary hover:text-textPrimary"
-              }`}
-            >
-              All Feedback ({totalReviewsCount})
-            </button>
-            <button
-              onClick={() => setFilterMode("community")}
-              className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
-                filterMode === "community"
-                  ? "bg-blue-500/20 text-blue-400 font-semibold border border-blue-500/30"
-                  : "text-textSecondary hover:text-textPrimary"
-              }`}
-            >
-              <Sparkles className="h-3 w-3 text-amber-400" />
-              <span>Community Submissions ({communityReviewsCount})</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Quick Stats Bar */}
-        <div className="flex flex-wrap items-center justify-center gap-6 pt-2 text-xs font-mono text-textSecondary">
-          <div className="flex items-center gap-1.5">
-            <div className="flex text-amber-400">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="h-3.5 w-3.5 fill-amber-400" />
-              ))}
-            </div>
-            <span className="text-textPrimary font-bold">4.9 / 5.0</span>
-            <span>Average Rating</span>
-          </div>
-          <span className="hidden sm:inline text-borderStrong">•</span>
-          <div className="flex items-center gap-1.5">
-            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
-            <span className="text-textPrimary font-semibold">100% Verified Developer Feedback</span>
-          </div>
         </div>
       </div>
 
-      {/* Community Spotlight View (When filter is 'community' or when user submits reviews) */}
-      {filterMode === "community" && (
-        <div className="space-y-4 pt-2">
-          {userReviews.length === 0 ? (
-            <div className="text-center py-12 px-4 rounded-2xl border border-dashed border-border bg-surface/50 max-w-xl mx-auto space-y-3">
-              <div className="h-12 w-12 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center mx-auto">
-                <PenSquare className="h-5 w-5" />
-              </div>
-              <h4 className="font-bold text-sm text-textPrimary">Be the first to share your feedback!</h4>
-              <p className="text-xs text-textSecondary max-w-sm mx-auto">
-                Write a review about your experience with CLUDE and see it spotlighted on the community wall.
-              </p>
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-blue-400 hover:text-blue-300 bg-blue-500/10 border border-blue-500/30 px-4 py-2 rounded-xl"
-              >
-                <Plus className="h-3.5 w-3.5" />
-                <span>Write Your Review Now</span>
-              </button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-              {userReviews.map((item) => {
-                const isLiked = likedReviewIds.has(item.id);
-                const currentLikes = (item.likes || 1) + (isLiked ? 1 : 0);
+      {/* Sliding Testimonials Container */}
+      <div className="relative space-y-6 pt-2">
+        {/* Left and Right Fade Gradients */}
+        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
 
-                return (
-                  <div
-                    key={item.id}
-                    onClick={() => setSelectedReview(item)}
-                    className="rounded-2xl border border-blue-500/40 bg-[#091122] p-6 shadow-xl flex flex-col justify-between space-y-4 hover:border-blue-400 hover:bg-[#0c162c] transition-all cursor-pointer group relative overflow-hidden"
-                  >
-                    <div className="absolute top-0 right-0 left-0 h-0.5 bg-gradient-to-r from-blue-500 via-sky-400 to-indigo-500" />
+        {/* Row 1: Sliding Left */}
+        <div className="overflow-hidden flex">
+          <div className="animate-marquee gap-6 py-2 flex items-stretch">
+            {displayRow1.map((item, idx) => {
+              const isLiked = likedReviewIds.has(item.id);
+              const currentLikes = (item.likes || 1) + (isLiked ? 1 : 0);
 
-                    <div className="space-y-3">
-                      {/* Rating Stars & Highlight */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex text-amber-400">
-                          {[...Array(item.rating)].map((_, i) => (
-                            <Star key={i} className="h-3.5 w-3.5 fill-amber-400" />
-                          ))}
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <span
-                            className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${getBadgeStyle(
-                              item.badge
-                            )}`}
+              return (
+                <div
+                  key={`r1-${idx}-${item.id}`}
+                  onClick={() => setSelectedReview(item)}
+                  className={`w-[360px] sm:w-[420px] rounded-2xl border p-6 shadow-xl flex flex-col justify-between space-y-4 transition-all cursor-pointer group flex-shrink-0 ${
+                    item.isUserSubmission
+                      ? "border-blue-500/60 bg-[#0a1224] hover:border-blue-400 hover:bg-[#0e1930] ring-1 ring-blue-500/20"
+                      : "border-border bg-surface hover:border-blue-500/50 hover:bg-[#0c1424]"
+                  }`}
+                >
+                  <div className="space-y-3">
+                    {/* Rating Stars & Highlight */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex text-amber-400">
+                        {[...Array(item.rating)].map((_, i) => (
+                          <Star key={i} className="h-3.5 w-3.5 fill-amber-400" />
+                        ))}
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span
+                          className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${getBadgeStyle(
+                            item.badge
+                          )}`}
+                        >
+                          {item.isUserSubmission ? "✨ " : ""}
+                          {item.badge || "Verified User"}
+                        </span>
+                        {item.isUserSubmission && (
+                          <button
+                            onClick={(e) => handleDeleteReview(item.id, e)}
+                            title="Delete your review"
+                            className="text-textSecondary hover:text-rose-400 p-1 rounded hover:bg-surface transition-colors"
                           >
-                            ✨ {item.badge || "Community Review"}
-                          </span>
-                          {item.isUserSubmission && (
-                            <button
-                              onClick={(e) => handleDeleteReview(item.id, e)}
-                              title="Delete your review"
-                              className="text-textSecondary hover:text-rose-400 p-1 rounded hover:bg-surface transition-colors"
-                            >
-                              <Trash2 className="h-3 w-3" />
-                            </button>
-                          )}
-                        </div>
+                            <Trash2 className="h-3 w-3" />
+                          </button>
+                        )}
                       </div>
-
-                      <div className="font-bold text-sm text-textPrimary group-hover:text-blue-300 transition-colors">
-                        "{item.highlight}"
-                      </div>
-
-                      <p className="text-xs text-textSecondary leading-relaxed line-clamp-3">
-                        {item.content}
-                      </p>
                     </div>
 
-                    {/* User Info & Likes */}
-                    <div className="flex items-center justify-between pt-3 border-t border-border/60">
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={item.avatar}
-                          alt={item.name}
-                          className="h-10 w-10 rounded-full object-cover border border-blue-500/30"
-                          onError={(e) => {
-                            (e.target as HTMLElement).setAttribute(
-                              "src",
-                              `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
-                                item.name
-                              )}`
-                            );
-                          }}
-                        />
-                        <div>
-                          <h5 className="font-semibold text-xs text-textPrimary">{item.name}</h5>
-                          <p className="text-[11px] text-textSecondary font-mono">{item.role}</p>
-                          <p className="text-[10px] text-blue-400 font-mono">{item.company}</p>
-                        </div>
-                      </div>
-
-                      <button
-                        onClick={(e) => handleToggleLike(item.id, e)}
-                        className={`flex items-center gap-1 text-xs font-mono px-2.5 py-1 rounded-lg border transition-all ${
-                          isLiked
-                            ? "bg-rose-500/10 text-rose-400 border-rose-500/30"
-                            : "bg-surface text-textSecondary border-border hover:text-textPrimary"
-                        }`}
-                      >
-                        <Heart className={`h-3 w-3 ${isLiked ? "fill-rose-400 text-rose-400" : ""}`} />
-                        <span>{currentLikes}</span>
-                      </button>
+                    <div className="font-bold text-sm text-textPrimary group-hover:text-blue-300 transition-colors">
+                      "{item.highlight}"
                     </div>
+
+                    <p className="text-xs text-textSecondary leading-relaxed line-clamp-3">
+                      {item.content}
+                    </p>
                   </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      )}
 
-      {/* Sliding Testimonials Container (All Mode) */}
-      {filterMode === "all" && (
-        <div className="relative space-y-6 pt-2">
-          {/* Left and Right Fade Gradients */}
-          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
-
-          {/* Row 1: Sliding Left */}
-          <div className="overflow-hidden flex">
-            <div className="animate-marquee gap-6 py-2 flex items-stretch">
-              {displayRow1.map((item, idx) => {
-                const isLiked = likedReviewIds.has(item.id);
-                const currentLikes = (item.likes || 1) + (isLiked ? 1 : 0);
-
-                return (
-                  <div
-                    key={`r1-${idx}-${item.id}`}
-                    onClick={() => setSelectedReview(item)}
-                    className={`w-[360px] sm:w-[420px] rounded-2xl border p-6 shadow-xl flex flex-col justify-between space-y-4 transition-all cursor-pointer group flex-shrink-0 ${
-                      item.isUserSubmission
-                        ? "border-blue-500/60 bg-[#0a1224] hover:border-blue-400 hover:bg-[#0e1930] ring-1 ring-blue-500/20"
-                        : "border-border bg-surface hover:border-blue-500/50 hover:bg-[#0c1424]"
-                    }`}
-                  >
-                    <div className="space-y-3">
-                      {/* Rating Stars & Highlight */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex text-amber-400">
-                          {[...Array(item.rating)].map((_, i) => (
-                            <Star key={i} className="h-3.5 w-3.5 fill-amber-400" />
-                          ))}
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <span
-                            className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${getBadgeStyle(
-                              item.badge
-                            )}`}
-                          >
-                            {item.isUserSubmission ? "✨ " : ""}
-                            {item.badge || "Verified User"}
-                          </span>
-                          {item.isUserSubmission && (
-                            <button
-                              onClick={(e) => handleDeleteReview(item.id, e)}
-                              title="Delete your review"
-                              className="text-textSecondary hover:text-rose-400 p-1 rounded hover:bg-surface transition-colors"
-                            >
-                              <Trash2 className="h-3 w-3" />
-                            </button>
-                          )}
-                        </div>
+                  {/* User Info & Likes */}
+                  <div className="flex items-center justify-between pt-3 border-t border-border/60">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={item.avatar}
+                        alt={item.name}
+                        className="h-10 w-10 rounded-full object-cover border border-blue-500/30"
+                        onError={(e) => {
+                          (e.target as HTMLElement).setAttribute(
+                            "src",
+                            `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
+                              item.name
+                            )}`
+                          );
+                        }}
+                      />
+                      <div>
+                        <h5 className="font-semibold text-xs text-textPrimary">{item.name}</h5>
+                        <p className="text-[11px] text-textSecondary font-mono">{item.role}</p>
+                        <p className="text-[10px] text-blue-400 font-mono">{item.company}</p>
                       </div>
-
-                      <div className="font-bold text-sm text-textPrimary group-hover:text-blue-300 transition-colors">
-                        "{item.highlight}"
-                      </div>
-
-                      <p className="text-xs text-textSecondary leading-relaxed line-clamp-3">
-                        {item.content}
-                      </p>
                     </div>
 
-                    {/* User Info & Likes */}
-                    <div className="flex items-center justify-between pt-3 border-t border-border/60">
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={item.avatar}
-                          alt={item.name}
-                          className="h-10 w-10 rounded-full object-cover border border-blue-500/30"
-                          onError={(e) => {
-                            (e.target as HTMLElement).setAttribute(
-                              "src",
-                              `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
-                                item.name
-                              )}`
-                            );
-                          }}
-                        />
-                        <div>
-                          <h5 className="font-semibold text-xs text-textPrimary">{item.name}</h5>
-                          <p className="text-[11px] text-textSecondary font-mono">{item.role}</p>
-                          <p className="text-[10px] text-blue-400 font-mono">{item.company}</p>
-                        </div>
-                      </div>
-
-                      <button
-                        onClick={(e) => handleToggleLike(item.id, e)}
-                        className={`flex items-center gap-1 text-xs font-mono px-2.5 py-1 rounded-lg border transition-all ${
-                          isLiked
-                            ? "bg-rose-500/10 text-rose-400 border-rose-500/30"
-                            : "bg-surface text-textSecondary border-border hover:text-textPrimary"
-                        }`}
-                      >
-                        <Heart className={`h-3 w-3 ${isLiked ? "fill-rose-400 text-rose-400" : ""}`} />
-                        <span>{currentLikes}</span>
-                      </button>
-                    </div>
+                    <button
+                      onClick={(e) => handleToggleLike(item.id, e)}
+                      className={`flex items-center gap-1 text-xs font-mono px-2.5 py-1 rounded-lg border transition-all ${
+                        isLiked
+                          ? "bg-rose-500/10 text-rose-400 border-rose-500/30"
+                          : "bg-surface text-textSecondary border-border hover:text-textPrimary"
+                      }`}
+                    >
+                      <Heart className={`h-3 w-3 ${isLiked ? "fill-rose-400 text-rose-400" : ""}`} />
+                      <span>{currentLikes}</span>
+                    </button>
                   </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Row 2: Sliding Right (Reverse) */}
-          <div className="overflow-hidden flex">
-            <div className="animate-marquee-reverse gap-6 py-2 flex items-stretch">
-              {displayRow2.map((item, idx) => {
-                const isLiked = likedReviewIds.has(item.id);
-                const currentLikes = (item.likes || 1) + (isLiked ? 1 : 0);
-
-                return (
-                  <div
-                    key={`r2-${idx}-${item.id}`}
-                    onClick={() => setSelectedReview(item)}
-                    className={`w-[360px] sm:w-[420px] rounded-2xl border p-6 shadow-xl flex flex-col justify-between space-y-4 transition-all cursor-pointer group flex-shrink-0 ${
-                      item.isUserSubmission
-                        ? "border-blue-500/60 bg-[#0a1224] hover:border-blue-400 hover:bg-[#0e1930] ring-1 ring-blue-500/20"
-                        : "border-border bg-surface hover:border-blue-500/50 hover:bg-[#0c1424]"
-                    }`}
-                  >
-                    <div className="space-y-3">
-                      {/* Rating Stars & Highlight */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex text-amber-400">
-                          {[...Array(item.rating)].map((_, i) => (
-                            <Star key={i} className="h-3.5 w-3.5 fill-amber-400" />
-                          ))}
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <span
-                            className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${getBadgeStyle(
-                              item.badge
-                            )}`}
-                          >
-                            {item.isUserSubmission ? "✨ " : ""}
-                            {item.badge || "Verified Review"}
-                          </span>
-                          {item.isUserSubmission && (
-                            <button
-                              onClick={(e) => handleDeleteReview(item.id, e)}
-                              title="Delete your review"
-                              className="text-textSecondary hover:text-rose-400 p-1 rounded hover:bg-surface transition-colors"
-                            >
-                              <Trash2 className="h-3 w-3" />
-                            </button>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="font-bold text-sm text-textPrimary group-hover:text-blue-300 transition-colors">
-                        "{item.highlight}"
-                      </div>
-
-                      <p className="text-xs text-textSecondary leading-relaxed line-clamp-3">
-                        {item.content}
-                      </p>
-                    </div>
-
-                    {/* User Info & Likes */}
-                    <div className="flex items-center justify-between pt-3 border-t border-border/60">
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={item.avatar}
-                          alt={item.name}
-                          className="h-10 w-10 rounded-full object-cover border border-blue-500/30"
-                          onError={(e) => {
-                            (e.target as HTMLElement).setAttribute(
-                              "src",
-                              `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
-                                item.name
-                              )}`
-                            );
-                          }}
-                        />
-                        <div>
-                          <h5 className="font-semibold text-xs text-textPrimary">{item.name}</h5>
-                          <p className="text-[11px] text-textSecondary font-mono">{item.role}</p>
-                          <p className="text-[10px] text-sky-400 font-mono">{item.company}</p>
-                        </div>
-                      </div>
-
-                      <button
-                        onClick={(e) => handleToggleLike(item.id, e)}
-                        className={`flex items-center gap-1 text-xs font-mono px-2.5 py-1 rounded-lg border transition-all ${
-                          isLiked
-                            ? "bg-rose-500/10 text-rose-400 border-rose-500/30"
-                            : "bg-surface text-textSecondary border-border hover:text-textPrimary"
-                        }`}
-                      >
-                        <Heart className={`h-3 w-3 ${isLiked ? "fill-rose-400 text-rose-400" : ""}`} />
-                        <span>{currentLikes}</span>
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                </div>
+              );
+            })}
           </div>
         </div>
-      )}
+
+        {/* Row 2: Sliding Right (Reverse) */}
+        <div className="overflow-hidden flex">
+          <div className="animate-marquee-reverse gap-6 py-2 flex items-stretch">
+            {displayRow2.map((item, idx) => {
+              const isLiked = likedReviewIds.has(item.id);
+              const currentLikes = (item.likes || 1) + (isLiked ? 1 : 0);
+
+              return (
+                <div
+                  key={`r2-${idx}-${item.id}`}
+                  onClick={() => setSelectedReview(item)}
+                  className={`w-[360px] sm:w-[420px] rounded-2xl border p-6 shadow-xl flex flex-col justify-between space-y-4 transition-all cursor-pointer group flex-shrink-0 ${
+                    item.isUserSubmission
+                      ? "border-blue-500/60 bg-[#0a1224] hover:border-blue-400 hover:bg-[#0e1930] ring-1 ring-blue-500/20"
+                      : "border-border bg-surface hover:border-blue-500/50 hover:bg-[#0c1424]"
+                  }`}
+                >
+                  <div className="space-y-3">
+                    {/* Rating Stars & Highlight */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex text-amber-400">
+                        {[...Array(item.rating)].map((_, i) => (
+                          <Star key={i} className="h-3.5 w-3.5 fill-amber-400" />
+                        ))}
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span
+                          className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${getBadgeStyle(
+                            item.badge
+                          )}`}
+                        >
+                          {item.isUserSubmission ? "✨ " : ""}
+                          {item.badge || "Verified Review"}
+                        </span>
+                        {item.isUserSubmission && (
+                          <button
+                            onClick={(e) => handleDeleteReview(item.id, e)}
+                            title="Delete your review"
+                            className="text-textSecondary hover:text-rose-400 p-1 rounded hover:bg-surface transition-colors"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="font-bold text-sm text-textPrimary group-hover:text-blue-300 transition-colors">
+                      "{item.highlight}"
+                    </div>
+
+                    <p className="text-xs text-textSecondary leading-relaxed line-clamp-3">
+                      {item.content}
+                    </p>
+                  </div>
+
+                  {/* User Info & Likes */}
+                  <div className="flex items-center justify-between pt-3 border-t border-border/60">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={item.avatar}
+                        alt={item.name}
+                        className="h-10 w-10 rounded-full object-cover border border-blue-500/30"
+                        onError={(e) => {
+                          (e.target as HTMLElement).setAttribute(
+                            "src",
+                            `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
+                              item.name
+                            )}`
+                          );
+                        }}
+                      />
+                      <div>
+                        <h5 className="font-semibold text-xs text-textPrimary">{item.name}</h5>
+                        <p className="text-[11px] text-textSecondary font-mono">{item.role}</p>
+                        <p className="text-[10px] text-sky-400 font-mono">{item.company}</p>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={(e) => handleToggleLike(item.id, e)}
+                      className={`flex items-center gap-1 text-xs font-mono px-2.5 py-1 rounded-lg border transition-all ${
+                        isLiked
+                          ? "bg-rose-500/10 text-rose-400 border-rose-500/30"
+                          : "bg-surface text-textSecondary border-border hover:text-textPrimary"
+                      }`}
+                    >
+                      <Heart className={`h-3 w-3 ${isLiked ? "fill-rose-400 text-rose-400" : ""}`} />
+                      <span>{currentLikes}</span>
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
 
       {/* Review Write Modal */}
       <WriteFeedbackModal
