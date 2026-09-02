@@ -581,8 +581,8 @@ export default function LandingPage() {
       {/* 9. FOOTER */}
       <ScrollReveal direction="fade" duration={800}>
         <footer className="border-t border-border pt-12 pb-8 max-w-6xl mx-auto px-4 font-sans text-xs text-textSecondary">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 pb-12">
-            <div className="col-span-2 space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 pb-12">
+            <div className="md:col-span-2 space-y-3">
               <div className="flex items-center gap-2">
                 <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-500/10 border border-blue-500/30">
                   <Terminal className="h-4 w-4 text-blue-400" />
@@ -600,15 +600,6 @@ export default function LandingPage() {
                 <li><Link href="/rca" className="hover:text-textPrimary transition-colors">Root-Cause Studio</Link></li>
                 <li><Link href="/onboarding" className="hover:text-textPrimary transition-colors">Onboarding Guide</Link></li>
                 <li><Link href="/repos" className="hover:text-textPrimary transition-colors">Repositories</Link></li>
-              </ul>
-            </div>
-
-            <div className="space-y-2.5">
-              <h5 className="font-semibold text-textPrimary font-mono uppercase text-[11px]">Platform</h5>
-              <ul className="space-y-2 font-mono text-[11px]">
-                <li><span>Python 3.11+</span></li>
-                <li><span>FastAPI & Next.js 14</span></li>
-                <li><span>Postgres + pgvector</span></li>
               </ul>
             </div>
 
