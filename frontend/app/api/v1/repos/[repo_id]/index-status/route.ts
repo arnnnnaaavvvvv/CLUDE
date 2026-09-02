@@ -1,6 +1,16 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+export function generateStaticParams() {
+  return [
+    { repo_id: "facebook-react" },
+    { repo_id: "fastapi" },
+    { repo_id: "nextjs" },
+    { repo_id: "calcom" },
+    { repo_id: "demo" },
+  ];
+}
+
 const ParamsSchema = z.object({
   repo_id: z.string().min(1, "repo_id is required"),
 });

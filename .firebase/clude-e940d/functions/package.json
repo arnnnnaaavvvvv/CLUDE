@@ -1,0 +1,24 @@
+{
+  "name": "clude-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@react-oauth/google": "^0.13.5",
+    "clsx": "^2.1.1",
+    "firebase": "^12.18.0",
+    "lucide-react": "^0.395.0",
+    "mermaid": "^10.9.1",
+    "next": "14.2.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^2.3.0",
+    "zod": "^4.5.4",
+    "firebase-frameworks": "^0.11.0",
+    "firebase-functions": "^6.0.1",
+    "firebase-admin": "^11.11.1"
+  },
+  "main": "server.js",
+  "engines": {
+    "node": "24"
+  }
+}
