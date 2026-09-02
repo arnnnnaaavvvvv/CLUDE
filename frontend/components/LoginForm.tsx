@@ -16,7 +16,6 @@ import {
   Terminal,
   Github,
 } from "lucide-react";
-import { GoogleLogin } from "@react-oauth/google";
 import { useAuth } from "@/lib/authContext";
 
 interface LoginFormProps {
@@ -26,7 +25,7 @@ interface LoginFormProps {
 
 export function LoginForm({ onSuccess, isModal = false }: LoginFormProps) {
   const router = useRouter();
-  const { loginWithGoogleToken, loginWithGoogleQuick, loginWithEmail, signupWithEmail, loginWithGithub } = useAuth();
+  const { loginWithGoogleFirebase, loginWithGithubFirebase, loginWithEmail, signupWithEmail } = useAuth();
 
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [name, setName] = useState("");
@@ -39,24 +38,19 @@ export function LoginForm({ onSuccess, isModal = false }: LoginFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
-  const handleGoogleSuccess = async (credentialResponse: any) => {
+  const handleGoogleLogin = async () => {
     try {
       setLoading(true);
       setError(null);
-      if (credentialResponse.credential) {
-        const ok = await loginWithGoogleToken(credentialResponse.credential);
-        if (ok) {
-          setSuccessMsg("Signed in with Google successfully!");
-          setTimeout(() => {
-            if (onSuccess) onSuccess();
-            else router.push("/rca");
-          }, 600);
-        } else {
-          setError("Could not parse Google credentials.");
-        }
-      } else {
-        // Fallback to quick simulated login
-        await handleGoogleQuickLogin();
+      const res = await loginWithGoogleFirebase();
+      if (res.success) {
+        setSuccessMsg("Signed in with Google Firebase Auth!");
+        setTimeout(() => {
+          if (onSuccess) onSuccess();
+          else router.push("/rca");
+        }, 600);
+      } else if (res.error) {
+        setError(res.error);
       }
     } catch (err: any) {
       setError(err?.message || "Google authentication failed.");
@@ -65,18 +59,22 @@ export function LoginForm({ onSuccess, isModal = false }: LoginFormProps) {
     }
   };
 
-  const handleGoogleQuickLogin = async () => {
+  const handleGithubLogin = async () => {
     try {
       setLoading(true);
       setError(null);
-      await loginWithGoogleQuick();
-      setSuccessMsg("Authenticated with Google!");
-      setTimeout(() => {
-        if (onSuccess) onSuccess();
-        else router.push("/rca");
-      }, 600);
+      const res = await loginWithGithubFirebase();
+      if (res.success) {
+        setSuccessMsg("Authenticated with GitHub!");
+        setTimeout(() => {
+          if (onSuccess) onSuccess();
+          else router.push("/rca");
+        }, 600);
+      } else if (res.error) {
+        setError(res.error);
+      }
     } catch (err: any) {
-      setError(err?.message || "Google sign in failed.");
+      setError(err?.message || "GitHub authentication failed.");
     } finally {
       setLoading(false);
     }
@@ -104,7 +102,7 @@ export function LoginForm({ onSuccess, isModal = false }: LoginFormProps) {
           setLoading(false);
           return;
         }
-        setSuccessMsg("Account created successfully! Welcome to CLUDE.");
+        setSuccessMsg("Account created successfully with Firebase Auth!");
       }
 
       setTimeout(() => {
@@ -113,27 +111,6 @@ export function LoginForm({ onSuccess, isModal = false }: LoginFormProps) {
       }, 600);
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDemoGithub = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      await loginWithGithub({
-        username: "octocat",
-        avatar_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
-        name: "The Octocat",
-      });
-      setSuccessMsg("Connected with GitHub profile!");
-      setTimeout(() => {
-        if (onSuccess) onSuccess();
-        else router.push("/rca");
-      }, 600);
-    } catch (err: any) {
-      setError(err?.message || "GitHub authentication failed.");
     } finally {
       setLoading(false);
     }
@@ -207,50 +184,39 @@ export function LoginForm({ onSuccess, isModal = false }: LoginFormProps) {
 
       {/* OAuth Action Buttons */}
       <div className="space-y-2.5 mb-6">
-        {/* Google Authentication Button */}
-        <div className="relative group">
-          <button
-            type="button"
-            onClick={handleGoogleQuickLogin}
-            disabled={loading}
-            className="w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-xl bg-surface hover:bg-[#0D1527] border border-border hover:border-blue-500/50 text-xs font-semibold text-textPrimary transition-all shadow-sm group-hover:shadow-blue-500/10 active:scale-[0.99]"
-          >
-            {/* Google Brand SVG Icon */}
-            <svg className="h-4 w-4" viewBox="0 0 24 24">
-              <path
-                fill="#4285F4"
-                d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
-              />
-              <path
-                fill="#34A853"
-                d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"
-              />
-              <path
-                fill="#FBBC05"
-                d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.03 0 12s.45 3.82 1.25 5.42l4.03-3.15z"
-              />
-              <path
-                fill="#EA4335"
-                d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
-              />
-            </svg>
-            <span>Continue with Google</span>
-          </button>
-
-          {/* Hidden Google Identity Services Button for actual OAuth token flow */}
-          <div className="sr-only">
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={() => setError("Google login failed.")}
-              useOneTap={false}
+        {/* Google Authentication via Firebase Button */}
+        <button
+          type="button"
+          onClick={handleGoogleLogin}
+          disabled={loading}
+          className="w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-xl bg-surface hover:bg-[#0D1527] border border-border hover:border-blue-500/50 text-xs font-semibold text-textPrimary transition-all shadow-sm group-hover:shadow-blue-500/10 active:scale-[0.99]"
+        >
+          {/* Google Brand SVG Icon */}
+          <svg className="h-4 w-4" viewBox="0 0 24 24">
+            <path
+              fill="#4285F4"
+              d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
             />
-          </div>
-        </div>
+            <path
+              fill="#34A853"
+              d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"
+            />
+            <path
+              fill="#FBBC05"
+              d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.03 0 12s.45 3.82 1.25 5.42l4.03-3.15z"
+            />
+            <path
+              fill="#EA4335"
+              d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
+            />
+          </svg>
+          <span>Continue with Google</span>
+        </button>
 
         {/* GitHub OAuth Button */}
         <button
           type="button"
-          onClick={handleDemoGithub}
+          onClick={handleGithubLogin}
           disabled={loading}
           className="w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-xl bg-surface hover:bg-[#0D1527] border border-border hover:border-borderStrong text-xs font-semibold text-textPrimary transition-all shadow-sm active:scale-[0.99]"
         >
@@ -357,7 +323,7 @@ export function LoginForm({ onSuccess, isModal = false }: LoginFormProps) {
           {loading ? (
             <span className="flex items-center gap-2">
               <span className="h-3.5 w-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              <span>Authenticating...</span>
+              <span>Authenticating with Firebase...</span>
             </span>
           ) : (
             <>
@@ -371,7 +337,7 @@ export function LoginForm({ onSuccess, isModal = false }: LoginFormProps) {
       {/* Security Footer */}
       <div className="mt-8 pt-6 border-t border-border flex items-center justify-center gap-2 text-[11px] text-textSecondary">
         <ShieldCheck className="h-4 w-4 text-emerald-400 shrink-0" />
-        <span>TLS 1.3 256-bit Encrypted Session • SOC2 Type II Certified</span>
+        <span>Firebase Auth Encrypted • Google Cloud Identity Engine</span>
       </div>
     </div>
   );
