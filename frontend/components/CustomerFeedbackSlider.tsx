@@ -219,14 +219,14 @@ export function CustomerFeedbackSlider() {
           See how engineering teams at high-growth tech companies eliminate incident bisection and accelerate developer onboarding with CLUDE.
         </p>
 
-        {/* Clean, Simple CTA */}
-        <div className="pt-2 flex items-center justify-center">
+        {/* Highly Visible, Premium CTA */}
+        <div className="pt-3 flex items-center justify-center">
           <button
             onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-surface hover:bg-surfaceHover text-xs font-medium text-textPrimary border border-border hover:border-borderStrong transition-all shadow-sm"
+            className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 via-blue-500 to-sky-500 hover:from-blue-500 hover:to-blue-600 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:-translate-y-0.5 transition-all group"
           >
-            <PenSquare className="h-3.5 w-3.5 text-blue-400" />
-            <span>Share your feedback</span>
+            <PenSquare className="h-4 w-4 text-white" />
+            <span>Share Your Feedback</span>
           </button>
         </div>
       </div>
