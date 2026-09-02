@@ -5,9 +5,13 @@
   "scripts": {
     "build": "cd frontend && npm install && npm run build",
     "dev": "cd frontend && npm run dev",
-    "start": "cd frontend && npm start"
+    "start": "cd frontend && npm start",
+    "deploy:firebase": "firebase deploy --only hosting"
   },
   "dependencies": {
     "@tarunagnihotri534/jennie": "^1.1.1"
+  },
+  "devDependencies": {
+    "firebase-tools": "^15.28.2"
   }
 }
