@@ -2,7 +2,8 @@
 
 > **Pinpoint the exact commit that broke production with causal AI reasoning, and onboard engineers to unfamiliar codebases in minutes.**
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-black?style=flat&logo=vercel)](https://frontend-mu-roan-llgeruknl5.vercel.app)
+[![Live Demo (Vercel)](https://img.shields.io/badge/Live%20Demo-Vercel-black?style=flat&logo=vercel)](https://frontend-mu-roan-llgeruknl5.vercel.app)
+[![Live Demo (Firebase)](https://img.shields.io/badge/Live%20Demo-Firebase-orange?style=flat&logo=firebase)](https://clude-e940d.web.app)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Version](https://img.shields.io/badge/version-1.0.0-emerald.svg)](https://github.com/arnnnnaaavvvvv/CLUDE)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/arnnnnaaavvvvv/CLUDE)
@@ -10,7 +11,10 @@
 [![Next.js](https://img.shields.io/badge/Next.js-14.2-black.svg?logo=next.js&logoColor=white)](https://nextjs.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16%20%2B%20pgvector-336791.svg?logo=postgresql&logoColor=white)](https://github.com/pgvector/pgvector)
 
-🌐 **Live Application**: [https://frontend-mu-roan-llgeruknl5.vercel.app](https://frontend-mu-roan-llgeruknl5.vercel.app)
+🌐 **Live Deployments**:
+- **Firebase Hosting**: [https://clude-e940d.web.app](https://clude-e940d.web.app)
+- **Vercel Production**: [https://frontend-mu-roan-llgeruknl5.vercel.app](https://frontend-mu-roan-llgeruknl5.vercel.app)
+- **GitHub Repository**: [https://github.com/arnnnnaaavvvvv/CLUDE](https://github.com/arnnnnaaavvvvv/CLUDE)
 
 ---
 

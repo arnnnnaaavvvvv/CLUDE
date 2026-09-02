@@ -593,8 +593,9 @@ export default function LandingPage() {
             <div className="space-y-2.5">
               <h5 className="font-semibold text-textPrimary font-mono uppercase text-[11px]">Resources</h5>
               <ul className="space-y-2">
-                <li><a href="https://github.com/arnnnnaaavvvvv/CLUDE" target="_blank" rel="noreferrer" className="hover:text-textPrimary transition-colors flex items-center gap-1"><Github className="h-3.5 w-3.5" /> GitHub</a></li>
-                <li><a href="https://frontend-mu-roan-llgeruknl5.vercel.app" className="hover:text-textPrimary transition-colors">Live Deployment</a></li>
+                <li><a href="https://github.com/arnnnnaaavvvvv/CLUDE" target="_blank" rel="noreferrer" className="hover:text-textPrimary transition-colors flex items-center gap-1"><Github className="h-3.5 w-3.5" /> GitHub Repository</a></li>
+                <li><a href="https://clude-e940d.web.app" target="_blank" rel="noreferrer" className="hover:text-textPrimary transition-colors">Firebase Hosting</a></li>
+                <li><a href="https://frontend-mu-roan-llgeruknl5.vercel.app" target="_blank" rel="noreferrer" className="hover:text-textPrimary transition-colors">Vercel Deployment</a></li>
                 <li><span className="text-emerald-400 font-mono text-[11px]">All Systems Normal</span></li>
               </ul>
             </div>
