@@ -444,7 +444,7 @@ export default function LandingPage() {
         </ScrollReveal>
 
         {/* Pricing Cards Grid with Staggered Animations */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto items-stretch">
           {/* Tier 1: Developer */}
           <ScrollReveal direction="up" delay={100} duration={700}>
             <div className="h-full rounded-2xl border border-border bg-surface p-8 space-y-6 flex flex-col justify-between hover:border-borderStrong transition-all">
@@ -523,59 +523,6 @@ export default function LandingPage() {
               >
                 Start 14-Day Free Trial
               </Link>
-            </div>
-          </ScrollReveal>
-
-          {/* Tier 3: Enterprise */}
-          <ScrollReveal direction="up" delay={300} duration={700}>
-            <div className="h-full rounded-2xl border border-blue-500/30 bg-gradient-to-b from-[#0B1528] to-[#060B14] p-8 space-y-6 flex flex-col justify-between hover:border-blue-400/60 shadow-xl shadow-blue-500/5 transition-all group relative overflow-hidden">
-              <div className="absolute top-0 right-0 left-0 h-0.5 bg-gradient-to-r from-blue-500 via-sky-400 to-indigo-500" />
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-bold text-textPrimary">Enterprise Scale</h3>
-                  <span className="text-[10px] font-mono text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded-full border border-sky-500/20 font-semibold">
-                    Custom VPC &amp; SLA
-                  </span>
-                </div>
-                <p className="text-xs text-textSecondary leading-relaxed">
-                  Tailored for high-scale organizations requiring air-gapped infrastructure, private LLM endpoints, and custom compliance.
-                </p>
-                <div className="font-mono flex items-baseline gap-2">
-                  <span className="text-4xl font-bold bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
-                    Custom
-                  </span>
-                  <span className="text-xs text-textSecondary font-sans">/ volume-scaled</span>
-                </div>
-                <ul className="space-y-2.5 text-xs text-textPrimary font-sans border-t border-border/80 pt-4">
-                  <li className="flex items-center gap-2 font-mono">
-                    <Check className="h-4 w-4 text-sky-400 flex-shrink-0" />
-                    <span>Dedicated Air-Gapped &amp; Private VPC</span>
-                  </li>
-                  <li className="flex items-center gap-2 font-mono">
-                    <Check className="h-4 w-4 text-sky-400 flex-shrink-0" />
-                    <span>Custom private LLM routing &amp; local pgvector</span>
-                  </li>
-                  <li className="flex items-center gap-2 font-mono">
-                    <Check className="h-4 w-4 text-sky-400 flex-shrink-0" />
-                    <span>Strict 0-day code retention &amp; SOC2 Type II</span>
-                  </li>
-                  <li className="flex items-center gap-2 font-mono">
-                    <Check className="h-4 w-4 text-sky-400 flex-shrink-0" />
-                    <span>Custom Sentry, Datadog &amp; Slack webhooks</span>
-                  </li>
-                  <li className="flex items-center gap-2 font-mono">
-                    <Check className="h-4 w-4 text-sky-400 flex-shrink-0" />
-                    <span>Dedicated Solutions Architect &amp; 15-min SLA</span>
-                  </li>
-                </ul>
-              </div>
-              <a
-                href="mailto:contact@clude.dev?subject=Enterprise%20Inquiry%20-%20CLUDE"
-                className="w-full text-center rounded-xl bg-surface hover:bg-[#0f1d38] border border-blue-500/30 hover:border-blue-400/60 py-3 text-xs font-semibold text-textPrimary hover:text-white shadow-lg shadow-black/40 transition-all flex items-center justify-center gap-2 group"
-              >
-                <span>Book Solutions Demo</span>
-                <ArrowRight className="h-3.5 w-3.5 text-sky-400 group-hover:translate-x-1 transition-transform" />
-              </a>
             </div>
           </ScrollReveal>
         </div>
