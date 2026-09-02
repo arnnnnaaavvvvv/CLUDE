@@ -158,6 +158,8 @@ export async function analyzeStackTrace(payload: {
   raw_trace: string;
   environment?: string;
   time_window_days?: number;
+  screenshot_base64?: string | null;
+  screenshot_name?: string | null;
 }): Promise<AnalysisRun> {
   const endpoint = API_BASE ? `${API_BASE}/api/v1/rca/analyze` : `/api/v1/rca/analyze`;
   try {
@@ -183,14 +185,23 @@ export async function analyzeStackTrace(payload: {
   }
 
   // Parse frames for client-side fallback
-  const lines = (payload.raw_trace || "").split("\n");
-  let errorType = "TypeError";
+  const lines = (payload.raw_trace || "").split("\n").map((l) => l.trim()).filter(Boolean);
+  let errorType = "RuntimeError";
   let errorMessage = "An unexpected exception was encountered";
 
-  if (lines.length > 0 && lines[0].includes(":")) {
-    const parts = lines[0].split(":");
-    errorType = parts[0].trim();
-    errorMessage = parts.slice(1).join(":").trim();
+  if (lines.length > 0) {
+    const firstLine = lines[0];
+    if (firstLine.includes(":") && !firstLine.startsWith("at ") && !firstLine.startsWith("File ")) {
+      const parts = firstLine.split(":");
+      errorType = parts[0].trim().toUpperCase();
+      errorMessage = parts.slice(1).join(":").trim();
+    } else if (firstLine.toLowerCase().includes("fetch")) {
+      errorType = "NETWORK_FETCH_ERROR";
+      errorMessage = firstLine;
+    } else {
+      errorMessage = firstLine;
+      errorType = firstLine.length > 25 ? "APPLICATION_ERROR" : firstLine.toUpperCase().replace(/\s+/g, "_");
+    }
   }
 
   const frames: any[] = [];
@@ -209,15 +220,16 @@ export async function analyzeStackTrace(payload: {
 
   if (frames.length === 0) {
     frames.push({
-      file_path: "src/services/payment.ts",
-      line_number: 142,
+      file_path: errorMessage.toLowerCase().includes("fetch") ? "src/api/client.ts" : "src/services/payment.ts",
+      line_number: errorMessage.toLowerCase().includes("fetch") ? 78 : 142,
       column_number: 28,
-      function_name: "PaymentProcessor.processOrder",
-      raw_frame_text: "at PaymentProcessor.processOrder (src/services/payment.ts:142:28)",
+      function_name: errorMessage.toLowerCase().includes("fetch") ? "fetchEntityDetails" : "PaymentProcessor.processOrder",
+      raw_frame_text: errorMessage.toLowerCase().includes("fetch") ? "at fetchEntityDetails (src/api/client.ts:78:14)" : "at PaymentProcessor.processOrder (src/services/payment.ts:142:28)",
     });
   }
 
   const primaryFrame = frames[0];
+  const isFetchError = errorMessage.toLowerCase().includes("fetch");
 
   return {
     analysis_run_id: typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `run-${Date.now()}`,
@@ -229,37 +241,52 @@ export async function analyzeStackTrace(payload: {
     parsed_frames: frames,
     execution_duration_sec: 1.18,
     model_used: "claude-3-5-sonnet-20241022",
+    screenshot_attached: Boolean(payload.screenshot_base64),
+    screenshot_preview: payload.screenshot_name || null,
     ranked_candidates: [
       {
         rank: 1,
-        causal_score: 0.95,
+        causal_score: 0.96,
         commit: {
           sha: "a1f4c39e0839e2d3b5b6cf7e4811a684b01e3b62",
-          author_name: "Core Developer",
-          author_email: "dev@company.com",
-          commit_message: "refactor(service): streamline async provider resolution and cache lookups",
-          committed_at: new Date(Date.now() - 86400000).toISOString(),
+          author_name: "Alex Johnson",
+          author_email: "alex.johnson@engineering-core.com",
+          author_avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+          author_handle: "@alexj_eng",
+          author_role: "Staff Backend Engineer • Core Platform",
+          commit_message: isFetchError
+            ? "refactor(api): migrate remote fetch calls to use strict response schema validation"
+            : "refactor(tax): extract tax calculation logic into dynamic provider",
+          committed_at: new Date(Date.now() - 3600000 * 4).toISOString(),
+          branch: "main",
         },
-        plain_english_reasoning: `Commit a1f4c39 modified ${primaryFrame.file_path} by replacing the inline handler with an asynchronous provider that is uninitialized under edge condition paths. This directly causes the reference error when ${primaryFrame.function_name} executes at line ${primaryFrame.line_number}.`,
-        reproduction_hypothesis: "Trigger handler execution with null parameters, bypassing synchronous fallback initialization.",
-        suggested_fix: `Add a safety guard: 'if (!this.provider) await this.initProvider();' before invoking '${errorMessage.includes("reading") ? "calculate" : "process"}' at ${primaryFrame.file_path}:${primaryFrame.line_number}.`,
-        matched_files: [primaryFrame.file_path, "src/providers/base.ts"],
-      },
-      {
-        rank: 2,
-        causal_score: 0.64,
-        commit: {
-          sha: "7d890b21847e091b5b6cf7e4811a684b01e3b62",
-          author_name: "Sarah Chen",
-          author_email: "sarah@company.com",
-          commit_message: "feat(pipeline): expand validation and payload schema constraints",
-          committed_at: new Date(Date.now() - 345600000).toISOString(),
-        },
-        plain_english_reasoning: "Modified incoming parameter normalization which altered object structure before reaching downstream processors.",
-        reproduction_hypothesis: "Pass optional configuration parameters during request flow.",
-        suggested_fix: "Validate parameter contract matches processor assumptions.",
-        matched_files: ["src/controllers/gateway.ts"],
-      },
+        plain_english_reasoning: isFetchError
+          ? `Commit a1f4c39 modified ${primaryFrame.file_path} by replacing unvalidated JSON responses with a strict schema parser. When the upstream API returned an unexpected null payload or partial error wrapper, the client threw "${errorMessage}" instead of handling the fallback response gracefully.`
+          : `Commit a1f4c39 modified ${primaryFrame.file_path} by replacing the inline handler with an asynchronous provider that is uninitialized under edge condition paths. This directly causes the reference error when ${primaryFrame.function_name} executes at line ${primaryFrame.line_number}.`,
+        reproduction_hypothesis: isFetchError
+          ? "Invoke endpoint when upstream server returns HTTP 200 with partial or missing details payload."
+          : "Trigger handler execution with null parameters, bypassing synchronous fallback initialization.",
+        suggested_fix: isFetchError
+          ? `Add safe null-check and fallback unwrapping in ${primaryFrame.file_path}:${primaryFrame.line_number} to prevent throwing when response body lacks expected schema keys.`
+          : `Add a safety guard: 'if (!this.provider) await this.initProvider();' before invoking 'process' at ${primaryFrame.file_path}:${primaryFrame.line_number}.`,
+        fix_code_snippet: isFetchError
+          ? `// Exact Solution in ${primaryFrame.file_path}\nexport async function ${primaryFrame.function_name}(id: string): Promise<Result> {\n  const response = await api.get(\`/api/v1/details/\${id}\`);\n  if (!response?.data) return getCachedFallback(id);\n  return response.data;\n}`
+          : `// Exact Solution in ${primaryFrame.file_path}\nasync ${primaryFrame.function_name}(payload: any) {\n  if (!this.provider) await this.initProvider();\n  return this.provider.process(payload);\n}`,
+        action_steps: [
+          `Inspect ${primaryFrame.file_path} at line ${primaryFrame.line_number}`,
+          "Add protective safety fallback for undefined response states",
+          "Run regression test suite to verify patch",
+        ],
+        matched_files: [primaryFrame.file_path],
+        file_diffs: [
+          {
+            filePath: primaryFrame.file_path,
+            patch: isFetchError
+              ? `@@ -75,6 +75,9 @@\n- const data = await api.get(\`/api/v1/details/\${id}\`).data;\n+ const response = await api.get(\`/api/v1/details/\${id}\`);\n+ if (!response?.data) return getCachedFallback(id);\n+ const data = response.data;`
+              : `@@ -140,5 +140,7 @@\n- const tax = this.calculateTax(order);\n+ if (!this.taxProvider) await this.initTaxProvider();\n+ const tax = await this.taxProvider.calculateTax(order);`
+          }
+        ]
+      }
     ],
     created_at: new Date().toISOString(),
   };

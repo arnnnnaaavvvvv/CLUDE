@@ -32,8 +32,19 @@ export interface CandidateCommit {
   sha: string;
   author_name: string | null;
   author_email: string | null;
+  author_avatar?: string | null;
+  author_handle?: string | null;
+  author_role?: string | null;
   commit_message: string;
   committed_at: string;
+  branch?: string | null;
+}
+
+export interface FileDiffItem {
+  filePath: string;
+  patch: string;
+  oldCode?: string;
+  newCode?: string;
 }
 
 export interface RankedCandidate {
@@ -43,7 +54,10 @@ export interface RankedCandidate {
   plain_english_reasoning: string;
   reproduction_hypothesis: string | null;
   suggested_fix: string | null;
+  fix_code_snippet?: string | null;
+  action_steps?: string[];
   matched_files: string[];
+  file_diffs?: FileDiffItem[];
 }
 
 export interface AnalysisRun {
@@ -56,6 +70,8 @@ export interface AnalysisRun {
   parsed_frames: ParsedStackFrame[];
   execution_duration_sec: number | null;
   model_used: string;
+  screenshot_attached?: boolean;
+  screenshot_preview?: string | null;
   ranked_candidates: RankedCandidate[];
   created_at: string;
 }
