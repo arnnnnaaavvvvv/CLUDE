@@ -1,8 +1,25 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 
-export async function POST(req: Request) {
+const AnalyzeRequestSchema = z.object({
+  raw_trace: z.string().optional().default(""),
+  screenshot_base64: z.string().nullable().optional().default(null),
+  screenshot_name: z.string().nullable().optional().default(null),
+  repo_id: z.string().optional().default("9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"),
+});
+
+export const POST = async (req: Request) => {
   try {
-    const body = await req.json();
+    const json = await req.json().catch(() => ({}));
+    const parseResult = AnalyzeRequestSchema.safeParse(json);
+    if (!parseResult.success) {
+      return NextResponse.json(
+        { error: "Invalid request payload", details: parseResult.error.format() },
+        { status: 400 }
+      );
+    }
+
+    const body = parseResult.data;
     const rawTrace = (body.raw_trace || "").trim();
     const screenshotBase64 = body.screenshot_base64 || null;
     const screenshotName = body.screenshot_name || null;
@@ -251,4 +268,4 @@ if (!payload.currency) {
   } catch (err: any) {
     return NextResponse.json({ error: err.message || "Failed to analyze error" }, { status: 500 });
   }
-}
+};

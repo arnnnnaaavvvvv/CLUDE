@@ -6,5 +6,8 @@
     "build": "cd frontend && npm install && npm run build",
     "dev": "cd frontend && npm run dev",
     "start": "cd frontend && npm start"
+  },
+  "dependencies": {
+    "@tarunagnihotri534/jennie": "^1.1.1"
   }
 }

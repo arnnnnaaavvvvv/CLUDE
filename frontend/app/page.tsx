@@ -83,20 +83,6 @@ export default function LandingPage() {
         {/* Refined Subtle Ambient Top Glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 -z-10 w-[420px] h-[320px] bg-gradient-to-r from-blue-600/10 to-sky-500/10 blur-[6rem] rounded-full pointer-events-none" />
 
-        {/* Luxury Hero Announcement Pill */}
-        <ScrollReveal direction="down" duration={600}>
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#081120]/80 border border-blue-500/30 text-xs text-textSecondary mb-7 shadow-lg shadow-blue-500/10 backdrop-blur-md hover:border-blue-400/60 transition-all group cursor-default">
-            <span className="flex h-2 w-2 rounded-full bg-sky-400 animate-pulse" />
-            <span className="font-semibold text-textPrimary text-xs tracking-tight">
-              Autonomous Root-Cause Intelligence
-            </span>
-            <span className="text-borderStrong">•</span>
-            <span className="font-mono text-[11px] text-blue-400 flex items-center gap-1 font-medium">
-              AST Delta Slicing &amp; LLM Causal Proof
-              <ArrowRight className="h-3 w-3 text-sky-400 group-hover:translate-x-0.5 transition-transform" />
-            </span>
-          </div>
-        </ScrollReveal>
 
         {/* Main 7XL Headline */}
         <ScrollReveal direction="up" delay={100} duration={800}>

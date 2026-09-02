@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export const dynamic = "force-dynamic";
+
+export const GET = async () => {
   return NextResponse.json({
     status: "healthy",
     service: "clude-web",
-    timestamp: Date.now() / 1000
+    timestamp: Date.now() / 1000,
   });
-}
+};
