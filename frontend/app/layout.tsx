@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
+import { AuthProvider } from "@/lib/authContext";
 
 export const metadata: Metadata = {
   title: "CLUDE | AI Code Intelligence & Root Cause Engine",
@@ -15,12 +16,14 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className="bg-background text-foreground antialiased selection:bg-primary/30 selection:text-white">
-        <div className="flex min-h-screen flex-col">
-          <Navbar />
-          <main className="flex-1 container mx-auto px-4 py-8 max-w-7xl">
-            {children}
-          </main>
-        </div>
+        <AuthProvider>
+          <div className="flex min-h-screen flex-col">
+            <Navbar />
+            <main className="flex-1 container mx-auto px-4 py-8 max-w-7xl">
+              {children}
+            </main>
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );
