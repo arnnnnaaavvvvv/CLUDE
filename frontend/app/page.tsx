@@ -122,7 +122,7 @@ export default function LandingPage() {
               href="/rca"
               className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 px-7 py-3.5 text-sm font-semibold text-white shadow-md shadow-blue-500/15 transition-all hover:-translate-y-0.5"
             >
-              <span>Start Root-Cause Analysis</span>
+              <span>Launch Studio</span>
               <ArrowRight className="h-4 w-4" />
             </Link>
 
@@ -600,6 +600,7 @@ export default function LandingPage() {
                 <li><Link href="/rca" className="hover:text-textPrimary transition-colors">Root-Cause Studio</Link></li>
                 <li><Link href="/onboarding" className="hover:text-textPrimary transition-colors">Onboarding Guide</Link></li>
                 <li><Link href="/repos" className="hover:text-textPrimary transition-colors">Repositories</Link></li>
+                <li><Link href="/help" className="hover:text-textPrimary transition-colors">Help &amp; AI Chatbot Guide</Link></li>
               </ul>
             </div>
 

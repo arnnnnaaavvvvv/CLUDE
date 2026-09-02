@@ -15,6 +15,7 @@ import {
   ExternalLink,
   ChevronDown,
   CheckCircle2,
+  HelpCircle,
 } from "lucide-react";
 import { GitHubConnectModal } from "./GitHubConnectModal";
 import { clearLocalCustomRepos } from "@/lib/api";
@@ -59,6 +60,7 @@ export function Navbar() {
     { href: "/rca", label: "Root-Cause Studio", icon: Bug },
     { href: "/onboarding", label: "Onboarding Guide", icon: BookOpen },
     { href: "/repos", label: "Repositories", icon: GitBranch },
+    { href: "/help", label: "Help & Guide", icon: HelpCircle },
   ];
 
   return (
@@ -167,10 +169,9 @@ export function Navbar() {
 
             <Link
               href="/rca"
-              className="flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:-translate-y-0.5"
+              className="flex items-center rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:-translate-y-0.5 font-sans"
             >
               <span>Launch Studio</span>
-              <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
         </div>
