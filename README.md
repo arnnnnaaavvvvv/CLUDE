@@ -579,7 +579,8 @@ npm run build
 
 ## Authors & Contributors
 
-- **CLUDE Core Engineering Team** ([@clude-ai](https://github.com/clude-ai))
+- **Arnav Singh** ([@arnnnnaaavvvvv](https://github.com/arnnnnaaavvvvv)) — Lead Architect & Maintainer
+- **CLUDE Open Source Contributors**
 
 ---
 
