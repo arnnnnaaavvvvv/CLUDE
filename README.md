@@ -1,5 +1,4 @@
 # CLUDE
-
 > **Pinpoint the exact commit that broke production with causal AI reasoning, and onboard engineers to unfamiliar codebases in minutes.**
 
 [![Live Demo (Vercel)](https://img.shields.io/badge/Live%20Demo-Vercel-black?style=flat&logo=vercel)](https://frontend-mu-roan-llgeruknl5.vercel.app)
@@ -20,11 +19,11 @@
 
 ## Overview
 
-**CLUDE** eliminates two of the costliest engineering time-sinks: (1) manually bisecting git history during high-severity production incidents to identify the commit that introduced an error, and (2) spending weeks navigating unfamiliar architectural topologies during developer onboarding. Instead of relying on naive string searches or line-ownership heuristics like `git blame`, CLUDE models **semantic causality**—evaluating how structural diffs across recent commits plausibly induced the exact failure pattern in a stack trace. Built on a shared AST parsing, vector indexing, and LLM orchestration substrate, CLUDE powers both precision root-cause diagnostics and repo-grounded onboarding walkthroughs within a single platform.
+**CLUDE** eliminates two of the costliest engineering bottlenecks: (1) manually bisecting git history during high-severity production incidents to identify the commit that introduced a failure, and (2) spending weeks navigating unfamiliar architectural topologies during developer onboarding. Instead of relying on naive string searches or line-ownership heuristics like `git blame`, CLUDE models **semantic causality**—evaluating how structural diffs across recent commits plausibly induced the exact failure pattern in a stack trace. Built on a shared AST parsing, vector indexing, and LLM orchestration substrate, CLUDE powers both precision root-cause diagnostics and repo-grounded onboarding walkthroughs within a single platform.
 
 ---
 
-## Feature Matrix
+## Feature Table
 
 | Feature | Description |
 | :--- | :--- |
@@ -43,23 +42,23 @@
 
 ## What It Can Do Now
 
-- Ingest raw multiline stack traces or JSON payloads from Python, Node.js, Go, Java, and Rust.
-- Connect public and private GitHub repositories over OAuth with read-only repository permissions.
-- Index git commit trees, extract per-file diff hunks, and generate 1536-dimensional semantic embeddings.
-- Filter out non-code assets (lockfiles, minified bundles, images) to maintain compact LLM token budgets.
-- Evaluate candidate commits against stack frames to generate structured JSON causal ranking reports in under 8 seconds.
-- Compute repository churn metrics and flag files in the 90th percentile of change frequency as high-risk danger zones.
-- Render interactive, dark-mode Mermaid.js architectural topology diagrams from repository source analysis.
-- Receive GitHub `push` webhooks to execute incremental delta re-indexing without full-tree recalculation.
+- **Ingest Multi-Language Stack Traces**: Parses raw multiline error logs or JSON exception payloads from Python, Node.js, Go, Java, and Rust.
+- **Connect GitHub Repositories**: Authorizes public and private repositories securely via OAuth with least-privilege read-only permissions.
+- **Index Semantic AST Deltas**: Indexes commit trees, extracts per-file diff hunks, and generates 1536-dimensional semantic embeddings in PostgreSQL.
+- **Filter Generated Artifacts**: Automatically excludes lockfiles, minified bundle dumps, and binary assets to keep LLM token windows focused.
+- **Deliver Root-Cause Diagnosis in < 8s**: Evaluates candidate commits against stack frames to generate structured JSON causal ranking reports in seconds.
+- **Calculate Code Churn Metrics**: Identifies files in the 90th percentile of change frequency and marks them as high-risk architectural danger zones.
+- **Generate Onboarding Guides**: Synthesizes interactive architectural documentation and Mermaid diagrams directly from codebase topology.
+- **Process Incremental Delta Syncs**: Listens to GitHub `push` webhooks and updates vector indices incrementally without re-indexing unchanged trees.
 
 ---
 
 ## The Problem
 
-| Dimension | `git blame` / Manual Search | Generic AI Chat (ChatGPT / Copilot) | **CLUDE** |
+| Dimension | `git blame` / Manual Search | Generic AI Chat (ChatGPT / Copilot) | CLUDE (This Engine) |
 | :--- | :--- | :--- | :--- |
 | **Reasoning Depth** | None. Shows who last touched a line, regardless of whether that change caused the bug. | High general reasoning, but lacks git context and diff history. | **Deep semantic causality.** Analyzes how a diff altered execution state to trigger the reported error. |
-| **Incidence to Root Cause** | 30–90 minutes of manual `git log`, `git bisect`, and PR hunting. | 15–30 minutes copying code snippets and diffs into chat windows. | **< 10 seconds.** Paste trace $\to$ receive ranked commits with reasoning. |
+| **Incident to Root Cause** | 30–90 minutes of manual `git log`, `git bisect`, and PR hunting. | 15–30 minutes copying code snippets and diffs into chat windows. | **< 10 seconds.** Paste trace $\to$ receive ranked commits with reasoning. |
 | **Repo Awareness** | Limited to single-file line annotations. | Zero repo-level topology awareness unless pasted manually into context. | **Full graph context.** Indexes entire commit history, AST chunk embeddings, and file churn. |
 | **Confidence Signal** | Binary (author of line). | Hallucinated confidence without verifying actual repository diffs. | **Calibrated scoring ($0.0 - 1.0$)** backed by matched hunks and frame coordinates. |
 | **Onboarding Support** | None. Requires reading raw code and internal wikis. | Generic architectural summaries without repo churn or danger-zone grounding. | **Repo-grounded walkthroughs** with risk matrices, critical paths, and Mermaid graphs. |
@@ -69,24 +68,27 @@
 ## Get Started
 
 ### Prerequisites
-- Node.js 18+ & npm
-- Python 3.11+
-- PostgreSQL 16 with `pgvector` extension
-- Redis 7+
+- **Node.js**: 18+ & npm
+- **Python**: 3.11+
+- **PostgreSQL**: 16 with `pgvector` extension
+- **Redis**: 7+
 
 ### 1. Clone & Configure Backend
 ```bash
 git clone https://github.com/arnnnnaaavvvvv/CLUDE.git
-cd clude/backend
+cd CLUDE/backend
 
 # Create virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+# Windows:
+.\venv\Scripts\activate
+# Linux/macOS:
+source venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Configure environment
+# Configure environment variables
 cp .env.example .env
 ```
 
@@ -107,11 +109,11 @@ The frontend will be live at `http://localhost:3000`.
 
 ## Docker Quick Start
 
-Launch the entire stack (PostgreSQL + pgvector, Redis, FastAPI Backend, Celery Worker, Next.js Frontend) with a single command:
+Launch the entire stack (PostgreSQL + pgvector, Redis, FastAPI Backend, Celery Worker, Next.js Frontend) with Docker Compose:
 
 ```bash
-cd clude/infra
-docker compose up --build
+cd CLUDE/infra
+docker compose up --build -d
 ```
 
 ### Health Check
@@ -123,18 +125,16 @@ curl -f http://localhost:8000/health
 
 ---
 
-## Example Input & Output
+## Example input → output
 
-### 1. AI Root-Cause Analysis
-
-#### Input (Stack Trace)
+### Example Input: Raw Production Stack Trace
 ```text
 TypeError: Cannot read properties of undefined (reading 'calculateTax')
     at PaymentProcessor.processOrder (src/services/payment.ts:142:28)
     at CheckoutController.handleCheckout (src/controllers/checkout.ts:89:12)
 ```
 
-#### Output (Ranked Causal Report)
+### Example Output: Ranked Causal Report
 ```json
 {
   "analysis_run_id": "4a72d3e1-88fc-42fa-9a4f-56bbcc381a11",
@@ -163,31 +163,6 @@ TypeError: Cannot read properties of undefined (reading 'calculateTax')
       "reproduction_hypothesis": "Trigger checkout when payment type is 'CREDIT_CARD' and tax region is unset, bypassing synchronous fallback initialization.",
       "suggested_fix": "Add an explicit initialization check: await this.ensureTaxProviderInitialized() before calling this.taxProvider.calculateTax(order) at line 140.",
       "matched_files": ["src/services/payment.ts", "src/providers/tax.ts"]
-    }
-  ]
-}
-```
-
----
-
-### 2. AI Codebase Onboarding
-
-#### Output (Walkthrough Section)
-```json
-{
-  "walkthrough_id": "b1820120-d3a9-4672-a1f9-8669c2789182",
-  "repo_id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
-  "system_diagram_mermaid": "graph TD\n  Client --> API[API Gateway]\n  API --> PaymentSvc[Payment Service]\n  PaymentSvc --> DB[(PostgreSQL)]\n  PaymentSvc --> Stripe[Stripe Gateway]",
-  "sections": [
-    {
-      "section_type": "DANGER_ZONE",
-      "title": "Stateful Payment Concurrency & Distributed Locks",
-      "risk_level": "CRITICAL",
-      "content_markdown": "### ⚠️ Caution: Redis Distributed Mutex\nThe files under `src/core/locking/` manage stateful execution locks for idempotent billing. **Do not alter** the retry interval or acquisition TTL without executing the distributed chaos test suite.",
-      "referenced_files": [
-        { "file_path": "src/core/locking/redis_mutex.ts", "lines": "45-120" }
-      ],
-      "display_order": 1
     }
   ]
 }
@@ -228,7 +203,7 @@ curl -X GET http://localhost:8000/api/v1/onboarding/9b1deb4d-3b7d-4bad-9bdd-2b0d
 
 ---
 
-## Configuration Reference
+## Configuration table
 
 All environment variables can be set via environment flags or a `.env` file in `backend/`:
 
@@ -251,7 +226,7 @@ All environment variables can be set via environment flags or a `.env` file in `
 
 ---
 
-## System Architecture
+## System Architecture Diagram
 
 The following diagram illustrates CLUDE's end-to-end component topology, highlighting the separation between ingestion, intelligence, and persistence tiers.
 
@@ -301,7 +276,7 @@ flowchart LR
 
 ---
 
-## Core Workflow Sequence
+## Core Workflow Sequence Diagram
 
 The following sequence diagram outlines both the synchronous root-cause analysis path and the asynchronous background webhook ingestion pipeline.
 
@@ -339,24 +314,25 @@ sequenceDiagram
 
 ---
 
-## Root-Cause Decision Flow
+## Key Decision/Logic Flow: Root-Cause Attribution & Gating
 
-The following decision chart outlines how CLUDE retrieves candidate commits, widens the search window when direct line matches are absent, and applies confidence thresholds to candidate results.
+The following Raptor-style decision flowchart outlines how CLUDE retrieves candidate commits, widens the search window when direct line matches are absent, and applies calibrated confidence thresholds.
 
-*Figure 3: Decision tree for candidate correlation and confidence filtering.*
+*Figure 3: Raptor-style deterministic decision flowchart for candidate correlation and confidence filtering.*
 ```mermaid
 flowchart TD
     classDef highlight fill:#4f46e5,stroke:#818cf8,stroke-width:2px,color:#ffffff;
     classDef standard fill:#1e293b,stroke:#475569,stroke-width:1px,color:#f8fafc;
+    classDef terminal fill:#0f766e,stroke:#14b8a6,stroke-width:2px,color:#ffffff;
 
-    START([Stack Trace Ingested]):::standard
+    START([Stack Trace Ingested]):::terminal
     PARSE[Extract Stack Frames & Normalize Paths]:::standard
-    MATCH_CHECK{Commits touch<br/>implicated lines?}:::standard
+    MATCH_CHECK{Commits Touch<br/>Implicated Lines?}:::standard
     DIRECT[Retrieve Direct Line Commits & Hunks]:::standard
     WIDEN[Widen Search: Query Semantic Vectors & Fallback Commits]:::standard
     LLM_CALL[LLM Causal Reasoning & Explanation Generation]:::highlight
     SCORE_CHECK{Causal Score<br/>Evaluation}:::standard
-    SURFACE[High Likelihood >= 0.80<br/>Surface at Top Rank with Fix]:::standard
+    SURFACE[High Likelihood >= 0.80<br/>Surface at Top Rank with Fix Patch]:::terminal
     CAVEAT[Plausible 0.50 - 0.79<br/>Include with Explanatory Caveat]:::standard
     SUPPRESS[Low Likelihood < 0.50<br/>Suppress or Mark as Unlikely]:::standard
 
@@ -374,7 +350,7 @@ flowchart TD
 
 ---
 
-## Database Schema & Entity Relationships
+## Database / Entity Relationship Diagram
 
 The relational schema co-locates relational git entities with 1536-dimensional vector embeddings in PostgreSQL using `pgvector`.
 
@@ -483,7 +459,7 @@ erDiagram
 
 ---
 
-## Core Algorithm: Semantic Causal Attribution
+## Core Algorithm/Logic Explanation
 
 Unlike naive tools that simply report who last edited a line of code, CLUDE solves for **causal probability**:
 
@@ -518,7 +494,7 @@ flowchart LR
 
 ---
 
-## Error Handling Reference
+## Error Handling table
 
 | Error Code | HTTP Status | Description | Remediation |
 | :--- | :--- | :--- | :--- |
@@ -531,11 +507,11 @@ flowchart LR
 
 ---
 
-## Testing & Verification
+## Testing
 
 ### Running Backend Unit & Integration Tests
 ```bash
-cd clude/backend
+cd CLUDE/backend
 pytest -v tests/
 ```
 
@@ -547,7 +523,7 @@ pytest -v tests/test_rca_integration.py -k "test_rca_pipeline_with_injected_bug_
 
 ### Running Frontend Tests & Type Checking
 ```bash
-cd clude/frontend
+cd CLUDE/frontend
 npm run lint
 npm run build
 ```
@@ -577,7 +553,7 @@ npm run build
 
 ---
 
-## Authors & Contributors
+## Author / Contributors
 
 - **Arnav Singh** ([@arnnnnaaavvvvv](https://github.com/arnnnnaaavvvvv)) — Lead Architect & Maintainer
 - **CLUDE Open Source Contributors**
